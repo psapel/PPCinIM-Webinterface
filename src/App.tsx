@@ -4,19 +4,17 @@ import DataSources from "./pages/Datasources";
 import DecisionSupport from "./pages/Decisionsupport";
 import Models from "./pages/Models";
 import Navbar from "./components/Navbar";
-// import SideMenu from "./components/Sidemenu";
 
 function App() {
   return (
     <div>
       <Router>
         <Navbar />
-        {/* <SideMenu/> */}
         <Routes>
-          <Route path="/" element={<Assets />} />
-          <Route path="/" element={<DecisionSupport />} />
-          <Route path="/" element={<Models />} />
-          <Route path="/" element={<DataSources />} />
+          <Route path="/assets" element={<Assets />} />
+          <Route path="/decision-support" element={<DecisionSupport />} />
+          <Route path="/models" element={<Models />} />
+          <Route path="/data-sources" element={<DataSources />} />
         </Routes>
       </Router>
     </div>
