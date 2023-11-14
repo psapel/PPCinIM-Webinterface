@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
@@ -39,7 +40,12 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <a className="btn btn-ghost normal-case text-xl">PPCIM</a>
+        <a
+          className="btn btn-ghost normal-case text-xl"
+          onClick={() => navigate("/assets")}
+        >
+          PPCIM
+        </a>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
