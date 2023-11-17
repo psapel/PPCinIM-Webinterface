@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 
-const Newasset = () => {
+const Newmodel = () => {
   const navigate = useNavigate();
 
   return (
     <div className="m-4 flex-col flex items-center">
       <button
         className="btn btn-circle btn-outline"
-        onClick={() => navigate("/assets")}
+        onClick={() => navigate("/data-sources")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -25,31 +25,31 @@ const Newasset = () => {
         </svg>
       </button>
       <div className="my-3">
-        Asset Name:
+        Data Connector Name:
         <div>
           <input
             type="text"
-            placeholder="Asset Name"
+            placeholder="Data Connector Name"
             className="input input-bordered input-primary w-full max-w-xs"
           />
         </div>
       </div>
       <div className="my-3">
-        Asset Type:
+        Data Connector Type:
         <div>
           <select className="select select-primary w-full max-w-xs">
             <option disabled selected>
-              Asset Type
+              Data Connector Type
             </option>
-            <option>Injection Molding Machine</option>
-            <option>Mold</option>
-            <option>Temperature Control Unit</option>
-            <option>Hot Runner Device</option>
+            <option>SPARQL</option>
+            <option>SQL</option>
+            <option>Odoo</option>
+            <option>MongoDB</option>
           </select>
         </div>
       </div>
       <div className="my-3">
-        Asset Administration Shell
+        Data Connector Image:
         <div>
           <input
             type="file"
@@ -64,4 +64,4 @@ const Newasset = () => {
   );
 };
 
-export default Newasset;
+export default Newmodel;

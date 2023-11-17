@@ -5,6 +5,8 @@ import DecisionSupport from "./pages/Decisionsupport";
 import Models from "./pages/Models";
 import Navbar from "./components/Navbar";
 import NewAsset from "./pages/Newasset";
+import NewModel from "./pages/Newmodel";
+import NewDataConnector from "./pages/Newdataconnector";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="/models" element={<Models />} />
           <Route path="/data-sources" element={<DataSources />} />
           <Route path="/new-asset" element={<NewAsset />} />
+          <Route path="/new-model" element={<NewModel />} />
+          <Route path="/new-data-connector" element={<NewDataConnector />} />
         </Routes>
       </Router>
     </div>
