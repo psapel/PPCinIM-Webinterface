@@ -1,12 +1,16 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Assets from "./pages/Assets";
-import DataSources from "./pages/Datasources";
-import DecisionSupport from "./pages/Decisionsupport";
-import Models from "./pages/Models";
+import Assets from "./pages/asset/Assets";
+import DataSources from "./pages/datasources/Datasources";
+import DecisionSupport from "./pages/decisionsupport/Decisionsupport";
+import Models from "./pages/models/Models";
 import Navbar from "./components/Navbar";
-import NewAsset from "./pages/Newasset";
-import NewModel from "./pages/Newmodel";
-import NewDataConnector from "./pages/Newdataconnector";
+import NewAsset from "./pages/asset/Newasset";
+import NewModel from "./pages/models/Newmodel";
+import NewDataConnector from "./pages/datasources/Newdataconnector";
+import FilteredModelCatalogue from "./pages/decisionsupport/Filteredmodel";
+import AssetDetails from "./pages/asset/Assetdetails";
+import ModelDetails from "./pages/models/Modeldetails";
+import DataDetails from "./pages/datasources/Datadetails";
 
 function App() {
   return (
@@ -21,6 +25,10 @@ function App() {
           <Route path="/new-asset" element={<NewAsset />} />
           <Route path="/new-model" element={<NewModel />} />
           <Route path="/new-data-connector" element={<NewDataConnector />} />
+          <Route path="/model-catalogue" element={<FilteredModelCatalogue />} />
+          <Route path="/asset-details" element={<AssetDetails />} />
+          <Route path="/model-details" element={<ModelDetails />} />
+          <Route path="/data-details" element={<DataDetails />} />
         </Routes>
       </Router>
     </div>
