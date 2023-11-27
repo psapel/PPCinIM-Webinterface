@@ -24,13 +24,11 @@ const AssetDetails = () => {
           />
         </svg>
       </button>
-
       <div>
-        <div>Details for Name</div>
-        <span>Name</span>
-        <div>Manufacturer</div>
-        <div>Maximum Clamping Force</div>
-        <div>Maximum Opening Stroke</div>
+        <p>Name:</p>
+        <p>Manufacturer:</p>
+        <p>Maximum Clamping Force:</p>
+        <p>Maximum Opening Stroke:</p>
       </div>
     </div>
   );
