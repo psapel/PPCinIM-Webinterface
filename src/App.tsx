@@ -8,7 +8,7 @@ import NewAsset from "./pages/asset/Newasset";
 import NewModel from "./pages/models/Newmodel";
 import NewDataConnector from "./pages/datasources/Newdataconnector";
 import FilteredModelCatalogue from "./pages/decisionsupport/Filteredmodel";
-import AssetDetails from "./pages/asset/Assetdetails";
+import AssetDetails from "./pages/asset/AssetDetails";
 import ModelDetails from "./pages/models/Modeldetails";
 import DataDetails from "./pages/datasources/Datadetails";
 

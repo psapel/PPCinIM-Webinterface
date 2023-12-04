@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import AssetDsc from "./AssetDsc";
 
 const AssetDetails = () => {
   const navigate = useNavigate();
@@ -27,8 +28,7 @@ const AssetDetails = () => {
       <div>
         <p>Name:</p>
         <p>Manufacturer:</p>
-        <p>Maximum Clamping Force:</p>
-        <p>Maximum Opening Stroke:</p>
+        <AssetDsc />
       </div>
     </div>
   );
