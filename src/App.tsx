@@ -26,7 +26,10 @@ function App() {
           <Route path="/new-model" element={<NewModel />} />
           <Route path="/new-data-connector" element={<NewDataConnector />} />
           <Route path="/model-catalogue" element={<FilteredModelCatalogue />} />
-          <Route path="/asset-details" element={<AssetDetails />} />
+          <Route
+            path="/asset-details/:machineType"
+            element={<AssetDetails />}
+          />
           <Route path="/model-details" element={<ModelDetails />} />
           <Route path="/data-details" element={<DataDetails />} />
         </Routes>

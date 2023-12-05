@@ -1,8 +1,9 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import AssetDsc from "./AssetDsc";
 
 const AssetDetails = () => {
   const navigate = useNavigate();
+  const { machineType } = useParams();
 
   return (
     <div className="flex flex-col items-center m-4">
@@ -28,7 +29,7 @@ const AssetDetails = () => {
       <div>
         <p>Name:</p>
         <p>Manufacturer:</p>
-        <AssetDsc machineType="IMM" />
+        <AssetDsc machineType={machineType as string} />
       </div>
     </div>
   );

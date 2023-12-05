@@ -32,7 +32,7 @@ const Assets = () => {
             </figure>
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/asset-details")}
+              onClick={() => navigate("/asset-details/IMM")}
             >
               Show Details
             </button>
@@ -53,7 +53,7 @@ const Assets = () => {
             </figure>
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/asset-details")}
+              onClick={() => navigate("/asset-details/Mold")}
             >
               Show Details
             </button>

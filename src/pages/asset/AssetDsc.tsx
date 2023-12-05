@@ -34,6 +34,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
     <>
       <div>
         <p>{machineType === "IMM" && "Max Clamping Force"}: </p>
+        <p>{machineType === "Mold" && "Random"}: </p>
 
         <button
           className="btn"
@@ -45,7 +46,9 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           <div className="modal-box">
             <h3 className="font-bold text-lg"></h3>
             <p className="py-4">
-              <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
+              {machineType === "IMM" && (
+                <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
+              )}
             </p>
           </div>
           <form method="dialog" className="modal-backdrop">
@@ -55,6 +58,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       </div>
       <div>
         <p>{machineType === "IMM" && "Max Opening Stroke"}: </p>
+        <p>{machineType === "Mold" && "Mold Depth"}: </p>
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_3").showModal()}
@@ -65,8 +69,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           <div className="modal-box">
             <h3 className="font-bold text-lg"></h3>
             <p className="py-4">
-              <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
-              <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
+              {machineType === "IMM" && (
+                <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
+              )}
+              {machineType === "Mold" && (
+                <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
+              )}
             </p>
           </div>
           <form method="dialog" className="modal-backdrop">
