@@ -1,19 +1,39 @@
 import MetaDataIMM from "./MetaDataIMM";
-import json from "./json/InjectionMoldingMachine-Example-new.json";
+import immJson from "./json/InjectionMoldingMachine-v2.json";
+import moldJson from "./json/InjectionMold-v2.json";
+import hrdJson from "./json/HotRunnerDevice-v2.json";
+import tcuJson from "./json/TemperatureControlUnit-v2.json";
 
-const AssetDsc = () => {
-  const maxClampingForce = json.conceptDescriptions.find(
-    (obj) => obj.idShort === "MaxClampingForce"
-  )?.displayName[0].text;
+const AssetDsc = ({ machineType }: { machineType: string }) => {
+  let json;
+  if (machineType === "IMM") {
+    json = immJson;
+  } else if (machineType === "Mold") {
+    json = moldJson;
+  } else if (machineType === "HRD") {
+    json = hrdJson;
+  } else if (machineType === "TCU") {
+    json = tcuJson;
+  }
 
-  const maxOpeningStroke = json.conceptDescriptions.find(
-    (obj) => obj.idShort === "MaxOpeningStroke"
-  )?.displayName[0].text;
+  // if (machineType === "IMM") {
+  //   const maxClampingForce = json.conceptDescriptions.find(
+  //     (obj) => obj.idShort === "MaxClampingForce"
+  //   )?.displayName[0].text;
+
+  //   const maxOpeningStroke = json.conceptDescriptions.find(
+  //     (obj) => obj.idShort === "MaxOpeningStroke"
+  //   )?.displayName[0].text;
+  // } else if (machineType === "Mold") {
+  //   const moldDepth = json.conceptDescriptions.find(
+  //     (obj) => obj.idShort === "MoldDepth"
+  //   )?.displayName[0].text;
+  // }
 
   return (
     <>
       <div>
-        <p>{maxClampingForce}: </p>
+        <p>{machineType === "IMM" && "Max Clamping Force"}: </p>
 
         <button
           className="btn"
@@ -25,7 +45,7 @@ const AssetDsc = () => {
           <div className="modal-box">
             <h3 className="font-bold text-lg"></h3>
             <p className="py-4">
-              <MetaDataIMM dataType="MaxClampingForce" />
+              <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
             </p>
           </div>
           <form method="dialog" className="modal-backdrop">
@@ -34,7 +54,7 @@ const AssetDsc = () => {
         </dialog>
       </div>
       <div>
-        <p>{maxOpeningStroke}: </p>
+        <p>{machineType === "IMM" && "Max Opening Stroke"}: </p>
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_3").showModal()}
@@ -45,7 +65,8 @@ const AssetDsc = () => {
           <div className="modal-box">
             <h3 className="font-bold text-lg"></h3>
             <p className="py-4">
-              <MetaDataIMM dataType="MaxOpeningStroke" />
+              <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
+              <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
             </p>
           </div>
           <form method="dialog" className="modal-backdrop">

@@ -1,7 +1,27 @@
-import json from "./json/InjectionMoldingMachine-Example-new.json";
+import immJson from "./json/InjectionMoldingMachine-v2.json";
+import moldJson from "./json/InjectionMold-v2.json";
+import hrdJson from "./json/HotRunnerDevice-v2.json";
+import tcuJson from "./json/TemperatureControlUnit-v2.json";
 
-const MetaDataIMM = ({ dataType }: { dataType: string }) => {
-  const concept = json.conceptDescriptions.find(
+const MetaDataIMM = ({
+  dataType,
+  machineType,
+}: {
+  dataType: string;
+  machineType: string;
+}) => {
+  let json;
+  if (machineType === "IMM") {
+    json = immJson;
+  } else if (machineType === "Mold") {
+    json = moldJson;
+  } else if (machineType === "HRD") {
+    json = hrdJson;
+  } else if (machineType === "TCU") {
+    json = tcuJson;
+  }
+
+  const concept = json?.conceptDescriptions.find(
     (obj) => obj.idShort === dataType
   );
 

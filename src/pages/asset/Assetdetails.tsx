@@ -28,7 +28,7 @@ const AssetDetails = () => {
       <div>
         <p>Name:</p>
         <p>Manufacturer:</p>
-        <AssetDsc />
+        <AssetDsc machineType="IMM" />
       </div>
     </div>
   );
