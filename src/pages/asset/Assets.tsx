@@ -76,7 +76,7 @@ const Assets = () => {
             </figure>
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/asset-details")}
+              onClick={() => navigate("/asset-details/TCU")}
             >
               Show Details
             </button>
@@ -97,7 +97,7 @@ const Assets = () => {
             </figure>
             <button
               className="btn btn-primary"
-              onClick={() => navigate("/asset-details")}
+              onClick={() => navigate("/asset-details/HRD")}
             >
               Show Details
             </button>
