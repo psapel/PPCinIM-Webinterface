@@ -1,5 +1,5 @@
-import MetaDataMCF from "./MetaDataMCF";
-import json from "./json/InjectionMoldingMachine-Example.json";
+import MetaDataIMM from "./MetaDataIMM";
+import json from "./json/InjectionMoldingMachine-Example-new.json";
 
 const AssetDsc = () => {
   const maxClampingForce = json.conceptDescriptions.find(
@@ -25,7 +25,7 @@ const AssetDsc = () => {
           <div className="modal-box">
             <h3 className="font-bold text-lg"></h3>
             <p className="py-4">
-              <MetaDataMCF dataType="MaxClampingForce" />
+              <MetaDataIMM dataType="MaxClampingForce" />
             </p>
           </div>
           <form method="dialog" className="modal-backdrop">
@@ -45,7 +45,7 @@ const AssetDsc = () => {
           <div className="modal-box">
             <h3 className="font-bold text-lg"></h3>
             <p className="py-4">
-              <MetaDataMCF dataType="MaxOpeningStroke" />
+              <MetaDataIMM dataType="MaxOpeningStroke" />
             </p>
           </div>
           <form method="dialog" className="modal-backdrop">

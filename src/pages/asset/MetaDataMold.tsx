@@ -1,4 +1,4 @@
-import json from "./json/InjectionMoldingMachine-Example.json";
+import json from "./json/InjectionMold-Example-new.json";
 
 const MetaDataMCF = ({ dataType }: { dataType: string }) => {
   const descriptionClamp = json.conceptDescriptions.find(
