@@ -18,6 +18,16 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
 
   let clampingForce;
   let openingStroke;
+  let maxHeatingPower;
+  let maxOperatingTemperature;
+  let maxPumpPressure;
+  let moldDepth;
+  let largerMoldDim;
+  let smallerMoldDim;
+  let coolant1;
+  let shotVolume;
+  let maxHeatingCap;
+  let coolant;
 
   if (machineType === "IMM") {
     clampingForce = json.submodels[0].submodelElements
@@ -33,13 +43,68 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       .value.find((el) => el.idShort === "MaxOpeningStroke").value;
   }
 
+  if (machineType === "HRD") {
+    maxHeatingPower = json.submodels[0].submodelElements[0].value.find(
+      (el) => el.idShort === "MaxHeatingPower"
+    ).value;
+
+    maxOperatingTemperature = json.conceptDescriptions.find(
+      (el) => el.idShort === "MaxOperatingTemperature"
+    ).value;
+  }
+
+  if (machineType === "Mold") {
+    largerMoldDim = json.submodels[0].submodelElements[0].value
+      .find((el) => el.idShort === "DimAndWeight")
+      .value.find((el) => el.idShort === "InjectionMold")
+      .value.find((el) => el.idShort === "LargerMoldDimension").value;
+
+    moldDepth = json.submodels[0].submodelElements[0].value
+      .find((el) => el.idShort === "DimAndWeight")
+      .value.find((el) => el.idShort === "InjectionMold")
+      .value.find((el) => el.idShort === "MoldDepth").value;
+
+    smallerMoldDim = json.submodels[0].submodelElements[0].value
+      .find((el) => el.idShort === "DimAndWeight")
+      .value.find((el) => el.idShort === "InjectionMold")
+      .value.find((el) => el.idShort === "SmallerMoldDimension").value;
+
+    coolant1 = json.submodels[0].submodelElements[0].value
+      .find((el) => el.idShort === "TemperingSystem")
+      .value.find((el) => el.idShort === "Coolant").value[0].text;
+
+    shotVolume = json.submodels[0].submodelElements[0].value
+      .find((el) => el.idShort === "Cavity")
+      .value.find((el) => el.idShort === "ShotVolume").value;
+  }
+
+  if (machineType === "TCU") {
+    maxPumpPressure = json.conceptDescriptions.find(
+      (el) => el.idShort === "MaxPumpPressure"
+    ).embeddedDataSpecifications[0].dataSpecificationContent.value;
+
+    maxHeatingCap = json.conceptDescriptions.find(
+      (el) => el.idShort === "MaxHeatingCapacity"
+    ).embeddedDataSpecifications[0].dataSpecificationContent.value;
+
+    coolant = json.submodels[0].submodelElements[0].value
+      .find((el) => el.idShort === "Channels")
+      .value.find((el) => el.idShort === "Coolant").value[0].text;
+  }
+
   return (
     <>
       <div>
         <p>{machineType === "IMM" && `Max Clamping Force: ${clampingForce}`}</p>
-        <p>{machineType === "Mold" && "Larger Mold Dimension"}: </p>
-        <p>{machineType === "HRD" && "Max Heating Power"}: </p>
-        <p>{machineType === "TCU" && "Max Pump Pressure"}: </p>
+        <p>
+          {machineType === "Mold" && `Larger Mold Dimension: ${largerMoldDim}`}
+        </p>
+        <p>
+          {machineType === "HRD" && `Max Heating Power: ${maxHeatingPower}`}
+        </p>
+        <p>
+          {machineType === "TCU" && `Max Pump Pressure: ${maxPumpPressure}`}{" "}
+        </p>
 
         <button
           className="btn"
@@ -75,9 +140,14 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       </div>
       <div>
         <p>{machineType === "IMM" && `Max Opening Stroke: ${openingStroke}`}</p>
-        <p>{machineType === "Mold" && "Mold Depth"}: </p>
-        <p>{machineType === "HRD" && "Max Operating Temperature"}: </p>
-        <p>{machineType === "TCU" && "Max Heating Capacity"}: </p>
+        <p>{machineType === "Mold" && `Mold Depth: ${moldDepth}`} </p>
+        <p>
+          {machineType === "HRD" &&
+            `Max Operating Temperature: ${maxOperatingTemperature}`}
+        </p>
+        <p>
+          {machineType === "TCU" && `Max Heating Capacity: ${maxHeatingCap}`}
+        </p>
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_3").showModal()}
@@ -111,9 +181,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
         </dialog>
       </div>
       <div>
-        <p>{machineType === "Mold" && "Smaller Mold Dimension"}: </p>
+        <p>
+          {machineType === "Mold" &&
+            `Smaller Mold Dimension: ${smallerMoldDim}`}
+        </p>
 
-        <p>{machineType === "TCU" && "Coolant"}: </p>
+        <p>{machineType === "TCU" && `Coolant: ${coolant}`} </p>
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_4").showModal()}
@@ -142,7 +215,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
         </dialog>
       </div>
       <div>
-        <p>{machineType === "Mold" && "Coolant"}: </p>
+        <p>{machineType === "Mold" && `Coolant: ${coolant1}`} </p>
 
         <button
           className="btn"
@@ -165,7 +238,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
         </dialog>
       </div>
       <div>
-        <p>{machineType === "Mold" && "Shot Volume"}: </p>
+        <p>{machineType === "Mold" && `Shot Volume: ${shotVolume}`} </p>
         <button
           className="btn"
           onClick={() => document.getElementById("my_modal_6").showModal()}
