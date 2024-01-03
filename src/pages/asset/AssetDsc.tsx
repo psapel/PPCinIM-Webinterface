@@ -16,24 +16,27 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
     json = tcuJson;
   }
 
-  // if (machineType === "IMM") {
-  //   const maxClampingForce = json.conceptDescriptions.find(
-  //     (obj) => obj.idShort === "MaxClampingForce"
-  //   )?.displayName[0].text;
+  let clampingForce;
+  let openingStroke;
 
-  //   const maxOpeningStroke = json.conceptDescriptions.find(
-  //     (obj) => obj.idShort === "MaxOpeningStroke"
-  //   )?.displayName[0].text;
-  // } else if (machineType === "Mold") {
-  //   const moldDepth = json.conceptDescriptions.find(
-  //     (obj) => obj.idShort === "MoldDepth"
-  //   )?.displayName[0].text;
-  // }
+  if (machineType === "IMM") {
+    clampingForce = json.submodels[0].submodelElements
+      .find((el) => el.idShort === "TechnicalProperties")
+      .value.find((el) => el.idShort === "ClampingUnitTechnicalProperties")
+      .value.find((el) => el.idShort === "BasicData")
+      .value.find((el) => el.idShort === "MaxClampingForce").value;
+
+    openingStroke = json.submodels[0].submodelElements
+      .find((el) => el.idShort === "TechnicalProperties")
+      .value.find((el) => el.idShort === "ClampingUnitTechnicalProperties")
+      .value.find((el) => el.idShort === "BasicData")
+      .value.find((el) => el.idShort === "MaxOpeningStroke").value;
+  }
 
   return (
     <>
       <div>
-        <p>{machineType === "IMM" && "Max Clamping Force"}: </p>
+        <p>{machineType === "IMM" && `Max Clamping Force: ${clampingForce}`}</p>
         <p>{machineType === "Mold" && "Larger Mold Dimension"}: </p>
         <p>{machineType === "HRD" && "Max Heating Power"}: </p>
         <p>{machineType === "TCU" && "Max Pump Pressure"}: </p>
@@ -71,7 +74,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
         </dialog>
       </div>
       <div>
-        <p>{machineType === "IMM" && "Max Opening Stroke"}: </p>
+        <p>{machineType === "IMM" && `Max Opening Stroke: ${openingStroke}`}</p>
         <p>{machineType === "Mold" && "Mold Depth"}: </p>
         <p>{machineType === "HRD" && "Max Operating Temperature"}: </p>
         <p>{machineType === "TCU" && "Max Heating Capacity"}: </p>

@@ -1,9 +1,29 @@
 import { useNavigate, useParams } from "react-router-dom";
 import AssetDsc from "./AssetDsc";
+import immJson from "./json/InjectionMoldingMachine-v2.json";
+import moldJson from "./json/InjectionMold-v2.json";
+import hrdJson from "./json/HotRunnerDevice-v2.json";
+import tcuJson from "./json/TemperatureControlUnit-v2.json";
 
 const AssetDetails = () => {
   const navigate = useNavigate();
   const { machineType } = useParams();
+
+  let json;
+  if (machineType === "IMM") {
+    json = immJson;
+  } else if (machineType === "Mold") {
+    json = moldJson;
+  } else if (machineType === "HRD") {
+    json = hrdJson;
+  } else if (machineType === "TCU") {
+    json = tcuJson;
+  }
+
+  const manufacturer = json.submodels
+    .find((el) => el.idShort === "Nameplate")
+    ?.submodelElements.find((el) => el.idShort === "ManufacturerName")
+    .value[0].text;
 
   return (
     <div className="flex flex-col items-center m-4">
@@ -28,7 +48,7 @@ const AssetDetails = () => {
       </button>
       <div>
         <p>Name:</p>
-        <p>Manufacturer:</p>
+        <p>Manufacturer:{manufacturer}</p>
         <AssetDsc machineType={machineType as string} />
       </div>
     </div>
