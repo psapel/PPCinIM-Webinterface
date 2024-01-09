@@ -3,6 +3,7 @@ import immJson from "./json/InjectionMoldingMachine-v2.json";
 import moldJson from "./json/InjectionMold-v2.json";
 import hrdJson from "./json/HotRunnerDevice-v2.json";
 import tcuJson from "./json/TemperatureControlUnit-v2.json";
+import { useState } from "react";
 
 const AssetDsc = ({ machineType }: { machineType: string }) => {
   let json;
@@ -92,6 +93,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       .value.find((el) => el.idShort === "Coolant").value[0].text;
   }
 
+  const [showDetails, setShowDetails] = useState(false);
+  const [showDetails2, setShowDetails2] = useState(false);
+  const [showDetails3, setShowDetails3] = useState(false);
+  const [showDetails4, setShowDetails4] = useState(false);
+  const [showDetails5, setShowDetails5] = useState(false);
+
   return (
     <>
       <div>
@@ -106,15 +113,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           {machineType === "TCU" && `Max Pump Pressure: ${maxPumpPressure}`}
         </p>
 
-        <button
-          className="btn"
-          onClick={() => document.getElementById("my_modal_2").showModal()}
-        >
-          more details
+        <button className="btn" onClick={() => setShowDetails(!showDetails)}>
+          {showDetails ? "Close" : "Show Details"}
         </button>
-        <dialog id="my_modal_2" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg"></h3>
+
+        {showDetails && (
+          <div>
             <p className="py-4">
               {machineType === "IMM" && (
                 <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
@@ -133,11 +137,9 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               )}
             </p>
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+        )}
       </div>
+
       <div>
         <p>{machineType === "IMM" && `Max Opening Stroke: ${openingStroke}`}</p>
         <p>{machineType === "Mold" && `Mold Depth: ${moldDepth}`} </p>
@@ -148,15 +150,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
         <p>
           {machineType === "TCU" && `Max Heating Capacity: ${maxHeatingCap}`}
         </p>
-        <button
-          className="btn"
-          onClick={() => document.getElementById("my_modal_3").showModal()}
-        >
-          more details
+        <button className="btn" onClick={() => setShowDetails2(!showDetails2)}>
+          {showDetails2 ? "Close" : "Show Details"}
         </button>
-        <dialog id="my_modal_3" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg"></h3>
+
+        {showDetails2 && (
+          <div>
             <p className="py-4">
               {machineType === "IMM" && (
                 <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
@@ -175,11 +174,9 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               )}
             </p>
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+        )}
       </div>
+
       <div>
         <p>
           {machineType === "Mold" &&
@@ -187,15 +184,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
         </p>
 
         <p>{machineType === "TCU" && `Coolant: ${coolant}`} </p>
-        <button
-          className="btn"
-          onClick={() => document.getElementById("my_modal_4").showModal()}
-        >
-          more details
+        <button className="btn" onClick={() => setShowDetails3(!showDetails3)}>
+          {showDetails3 ? "Close" : "Show Details"}
         </button>
-        <dialog id="my_modal_4" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg"></h3>
+        {showDetails3 && (
+          <div>
             <p className="py-4">
               {machineType === "Mold" && (
                 <MetaDataIMM
@@ -209,55 +202,40 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               )}
             </p>
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+        )}
       </div>
+
       <div>
         <p>{machineType === "Mold" && `Coolant: ${coolant1}`} </p>
 
-        <button
-          className="btn"
-          onClick={() => document.getElementById("my_modal_5").showModal()}
-        >
-          more details
+        <button className="btn" onClick={() => setShowDetails4(!showDetails4)}>
+          {showDetails4 ? "Close" : "Show Details"}
         </button>
-        <dialog id="my_modal_5" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg"></h3>
+        {showDetails4 && (
+          <div>
             <p className="py-4">
               {machineType === "Mold" && (
                 <MetaDataIMM machineType="Mold" dataType="Coolant" />
               )}
             </p>
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+        )}
       </div>
+
       <div>
         <p>{machineType === "Mold" && `Shot Volume: ${shotVolume}`} </p>
-        <button
-          className="btn"
-          onClick={() => document.getElementById("my_modal_6").showModal()}
-        >
-          more details
+        <button className="btn" onClick={() => setShowDetails5(!showDetails5)}>
+          {showDetails5 ? "Close" : "Show Details"}
         </button>
-        <dialog id="my_modal_6" className="modal">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg"></h3>
+        {showDetails5 && (
+          <div>
             <p className="py-4">
               {machineType === "Mold" && (
                 <MetaDataIMM machineType="Mold" dataType="ShotVolume" />
               )}
             </p>
           </div>
-          <form method="dialog" className="modal-backdrop">
-            <button>close</button>
-          </form>
-        </dialog>
+        )}
       </div>
     </>
   );
