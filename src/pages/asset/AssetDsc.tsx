@@ -79,13 +79,13 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
   }
 
   if (machineType === "TCU") {
-    maxPumpPressure = json.conceptDescriptions.find(
+    maxPumpPressure = json.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxPumpPressure"
-    ).embeddedDataSpecifications[0].dataSpecificationContent.value;
+    ).value;
 
-    maxHeatingCap = json.conceptDescriptions.find(
+    maxHeatingCap = json.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxHeatingCapacity"
-    ).embeddedDataSpecifications[0].dataSpecificationContent.value;
+    ).value;
 
     coolant = json.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "Channels")
@@ -103,7 +103,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           {machineType === "HRD" && `Max Heating Power: ${maxHeatingPower}`}
         </p>
         <p>
-          {machineType === "TCU" && `Max Pump Pressure: ${maxPumpPressure}`}{" "}
+          {machineType === "TCU" && `Max Pump Pressure: ${maxPumpPressure}`}
         </p>
 
         <button
