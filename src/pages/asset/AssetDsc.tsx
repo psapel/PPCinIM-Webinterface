@@ -5,17 +5,19 @@ import hrdJson from "./json/HotRunnerDevice-v2.json";
 import tcuJson from "./json/TemperatureControlUnit-v2.json";
 import { useState } from "react";
 
+const ToggleButton = ({ show, setShow, text }) => (
+  <button className="btn" onClick={() => setShow(!show)}>
+    {show ? "Close" : text}
+  </button>
+);
+
 const AssetDsc = ({ machineType }: { machineType: string }) => {
-  let json;
-  if (machineType === "IMM") {
-    json = immJson;
-  } else if (machineType === "Mold") {
-    json = moldJson;
-  } else if (machineType === "HRD") {
-    json = hrdJson;
-  } else if (machineType === "TCU") {
-    json = tcuJson;
-  }
+  const json = {
+    IMM: immJson,
+    Mold: moldJson,
+    HRD: hrdJson,
+    TCU: tcuJson,
+  }[machineType];
 
   let clampingForce;
   let openingStroke;
@@ -102,139 +104,173 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
   return (
     <>
       <div>
-        <p>{machineType === "IMM" && `Max Clamping Force: ${clampingForce}`}</p>
-        <p>
-          {machineType === "Mold" && `Larger Mold Dimension: ${largerMoldDim}`}
-        </p>
-        <p>
-          {machineType === "HRD" && `Max Heating Power: ${maxHeatingPower}`}
-        </p>
-        <p>
-          {machineType === "TCU" && `Max Pump Pressure: ${maxPumpPressure}`}
-        </p>
-
-        <button className="btn" onClick={() => setShowDetails(!showDetails)}>
-          {showDetails ? "Close" : "Show Details"}
-        </button>
-
-        {showDetails && (
-          <div>
-            <p className="py-4">
-              {machineType === "IMM" && (
+        {machineType === "IMM" && (
+          <>
+            <p>Max Clamping Force: {clampingForce}</p>
+            <ToggleButton
+              show={showDetails}
+              setShow={setShowDetails}
+              text="Show Details"
+            />
+            {showDetails && (
+              <div className="py-4">
                 <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
-              )}
-              {machineType === "Mold" && (
-                <MetaDataIMM
-                  machineType="Mold"
-                  dataType="LargerMoldDimension"
-                />
-              )}
-              {machineType === "HRD" && (
-                <MetaDataIMM machineType="HRD" dataType="MaxHeatingPower" />
-              )}
-              {machineType === "TCU" && (
-                <MetaDataIMM machineType="TCU" dataType="MaxPumpPressure" />
-              )}
-            </p>
-          </div>
+              </div>
+            )}
+
+            <p>Max Opening Stroke: {openingStroke}</p>
+            <ToggleButton
+              show={showDetails2}
+              setShow={setShowDetails2}
+              text="Show Details"
+            />
+            {showDetails2 && (
+              <div className="py-4">
+                <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
+              </div>
+            )}
+          </>
         )}
       </div>
 
       <div>
-        <p>{machineType === "IMM" && `Max Opening Stroke: ${openingStroke}`}</p>
-        <p>{machineType === "Mold" && `Mold Depth: ${moldDepth}`} </p>
-        <p>
-          {machineType === "HRD" &&
-            `Max Operating Temperature: ${maxOperatingTemperature}`}
-        </p>
-        <p>
-          {machineType === "TCU" && `Max Heating Capacity: ${maxHeatingCap}`}
-        </p>
-        <button className="btn" onClick={() => setShowDetails2(!showDetails2)}>
-          {showDetails2 ? "Close" : "Show Details"}
-        </button>
+        {machineType === "HRD" && (
+          <>
+            <p>Max Heating Power: {maxHeatingPower}</p>
+            <ToggleButton
+              show={showDetails}
+              setShow={setShowDetails}
+              text="Show Details"
+            />
+            {showDetails && (
+              <div className="py-4">
+                <MetaDataIMM machineType="HRD" dataType="MaxHeatingPower" />
+              </div>
+            )}
 
-        {showDetails2 && (
-          <div>
-            <p className="py-4">
-              {machineType === "IMM" && (
-                <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
-              )}
-              {machineType === "Mold" && (
-                <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
-              )}
-              {machineType === "HRD" && (
+            <p>Max Operating Temperature: {maxOperatingTemperature}</p>
+            <ToggleButton
+              show={showDetails2}
+              setShow={setShowDetails2}
+              text="Show Details"
+            />
+            {showDetails2 && (
+              <div className="py-4">
                 <MetaDataIMM
                   machineType="HRD"
                   dataType="MaxOperatingTemperature"
                 />
-              )}
-              {machineType === "TCU" && (
-                <MetaDataIMM machineType="TCU" dataType="MaxHeatingCapacity" />
-              )}
-            </p>
-          </div>
+              </div>
+            )}
+          </>
         )}
       </div>
 
       <div>
-        <p>
-          {machineType === "Mold" &&
-            `Smaller Mold Dimension: ${smallerMoldDim}`}
-        </p>
-
-        <p>{machineType === "TCU" && `Coolant: ${coolant}`} </p>
-        <button className="btn" onClick={() => setShowDetails3(!showDetails3)}>
-          {showDetails3 ? "Close" : "Show Details"}
-        </button>
-        {showDetails3 && (
-          <div>
-            <p className="py-4">
-              {machineType === "Mold" && (
+        {machineType === "Mold" && (
+          <>
+            <p>Larger Mold Dimension: {largerMoldDim}</p>
+            <ToggleButton
+              show={showDetails}
+              setShow={setShowDetails}
+              text="Show Details"
+            />
+            {showDetails && (
+              <div className="py-4">
+                <MetaDataIMM
+                  machineType="Mold"
+                  dataType="LargerMoldDimension"
+                />
+              </div>
+            )}
+            <p>Mold Depth: {moldDepth}</p>
+            <ToggleButton
+              show={showDetails2}
+              setShow={setShowDetails2}
+              text="Show Details"
+            />
+            {showDetails2 && (
+              <div className="py-4">
+                <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
+              </div>
+            )}
+            <p>Smaller Mold Dimension: {smallerMoldDim}</p>
+            <ToggleButton
+              show={showDetails3}
+              setShow={setShowDetails3}
+              text="Show Details"
+            />
+            {showDetails3 && (
+              <div className="py-4">
                 <MetaDataIMM
                   machineType="Mold"
                   dataType="SmallerMoldDimension"
                 />
-              )}
-
-              {machineType === "TCU" && (
-                <MetaDataIMM machineType="TCU" dataType="Coolant" />
-              )}
-            </p>
-          </div>
-        )}
-      </div>
-
-      <div>
-        <p>{machineType === "Mold" && `Coolant: ${coolant1}`} </p>
-
-        <button className="btn" onClick={() => setShowDetails4(!showDetails4)}>
-          {showDetails4 ? "Close" : "Show Details"}
-        </button>
-        {showDetails4 && (
-          <div>
-            <p className="py-4">
-              {machineType === "Mold" && (
+              </div>
+            )}
+            <p>Coolant: {coolant1}</p>
+            <ToggleButton
+              show={showDetails4}
+              setShow={setShowDetails4}
+              text="Show Details"
+            />
+            {showDetails4 && (
+              <div className="py-4">
                 <MetaDataIMM machineType="Mold" dataType="Coolant" />
-              )}
-            </p>
-          </div>
+              </div>
+            )}
+            <p>Shot Volume: {shotVolume}</p>
+            <ToggleButton
+              show={showDetails5}
+              setShow={setShowDetails5}
+              text="Show Details"
+            />
+            {showDetails5 && (
+              <div className="py-4">
+                <MetaDataIMM machineType="Mold" dataType="ShotVolume" />
+              </div>
+            )}
+          </>
         )}
       </div>
 
       <div>
-        <p>{machineType === "Mold" && `Shot Volume: ${shotVolume}`} </p>
-        <button className="btn" onClick={() => setShowDetails5(!showDetails5)}>
-          {showDetails5 ? "Close" : "Show Details"}
-        </button>
-        {showDetails5 && (
-          <div>
-            <p className="py-4">
-              {machineType === "Mold" && (
-                <MetaDataIMM machineType="Mold" dataType="ShotVolume" />
-              )}
-            </p>
-          </div>
+        {machineType === "TCU" && (
+          <>
+            <p>Max Pump Pressure: {maxPumpPressure}</p>
+            <ToggleButton
+              show={showDetails}
+              setShow={setShowDetails}
+              text="Show Details"
+            />
+            {showDetails && (
+              <div className="py-4">
+                <MetaDataIMM machineType="TCU" dataType="MaxPumpPressure" />
+              </div>
+            )}
+            <p>Max Heating Capacity: {maxHeatingCap}</p>
+            <ToggleButton
+              show={showDetails2}
+              setShow={setShowDetails2}
+              text="Show Details"
+            />
+            {showDetails2 && (
+              <div className="py-4">
+                <MetaDataIMM machineType="TCU" dataType="MaxHeatingCapacity" />
+              </div>
+            )}
+            <p>Coolant: {coolant}</p>
+            <ToggleButton
+              show={showDetails3}
+              setShow={setShowDetails3}
+              text="Show Details"
+            />
+            {showDetails3 && (
+              <div className="py-4">
+                <MetaDataIMM machineType="TCU" dataType="Coolant" />
+              </div>
+            )}
+          </>
         )}
       </div>
     </>
