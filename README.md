@@ -1,7 +1,7 @@
 - Install NodeJS LTS (v20)
 
 ```js
-   cd IOP
+   cd PPCinIM-Webinterface
    npm install
    npm run dev
 ```
