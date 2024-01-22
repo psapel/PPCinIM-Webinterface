@@ -11,7 +11,7 @@ const Datasources = () => {
           className="input input-bordered input-primary w-full max-w-xs ml-auto"
         />
         <button
-          className="btn btn-primary mr-3 ml-auto"
+          className="btn  text-white bg-secondary hover:bg-primary mr-3 ml-auto"
           onClick={() => navigate("/new-data-connector")}
         >
           Create New Data Connector
@@ -25,7 +25,7 @@ const Datasources = () => {
               <img src=""></img>
             </figure>
             <button
-              className="btn btn-primary"
+              className="btn  text-white bg-secondary hover:bg-primary"
               onClick={() => navigate("/data-details")}
             >
               Show Details

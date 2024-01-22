@@ -30,14 +30,14 @@ const Newasset = () => {
           <input
             type="text"
             placeholder="Asset Name"
-            className="input input-bordered input-primary w-full max-w-xs"
+            className="input input-bordered input-secondary w-full max-w-xs"
           />
         </div>
       </div>
       <div className="my-3">
         Asset Type:
         <div>
-          <select className="select select-primary w-full max-w-xs">
+          <select className="select select-secondary w-full max-w-xs">
             <option disabled selected>
               Asset Type
             </option>
@@ -53,12 +53,14 @@ const Newasset = () => {
         <div>
           <input
             type="file"
-            className="file-input file-input-bordered file-input-primary w-full max-w-xs"
+            className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
           />
         </div>
       </div>
       <div>
-        <button className="btn btn-wide my-3">Create</button>
+        <button className="btn btn-wide  text-white bg-secondary hover:bg-primary my-3">
+          Create
+        </button>
       </div>
     </div>
   );

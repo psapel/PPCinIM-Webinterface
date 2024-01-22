@@ -48,7 +48,7 @@ const Decisionsupport = () => {
       </div>
       <div className="flex justify-center">
         <button
-          className="btn btn-wide"
+          className="btn btn-wide  text-white bg-secondary hover:bg-primary"
           onClick={() => navigate("/model-catalogue")}
         >
           Submit

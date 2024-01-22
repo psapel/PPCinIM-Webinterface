@@ -3,10 +3,14 @@ import immJson from "./json/InjectionMoldingMachine-v2.json";
 import moldJson from "./json/InjectionMold-v2.json";
 import hrdJson from "./json/HotRunnerDevice-v2.json";
 import tcuJson from "./json/TemperatureControlUnit-v2.json";
+import "./Asset.css";
 import { useState } from "react";
 
 const ToggleButton = ({ show, setShow, text }) => (
-  <button className="btn" onClick={() => setShow(!show)}>
+  <button
+    className="btn text-white bg-secondary hover:bg-primary"
+    onClick={() => setShow(!show)}
+  >
     {show ? "Close" : text}
   </button>
 );
@@ -102,7 +106,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
   const [showDetails5, setShowDetails5] = useState(false);
 
   return (
-    <>
+    <div className=" flex justify-center items-center ">
       <div>
         {machineType === "IMM" && (
           <>
@@ -113,7 +117,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
               </div>
             )}
@@ -125,7 +129,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails2 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
               </div>
             )}
@@ -143,7 +147,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="HRD" dataType="MaxHeatingPower" />
               </div>
             )}
@@ -155,7 +159,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails2 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM
                   machineType="HRD"
                   dataType="MaxOperatingTemperature"
@@ -176,7 +180,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM
                   machineType="Mold"
                   dataType="LargerMoldDimension"
@@ -190,7 +194,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails2 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
               </div>
             )}
@@ -201,7 +205,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails3 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM
                   machineType="Mold"
                   dataType="SmallerMoldDimension"
@@ -215,7 +219,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails4 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="Mold" dataType="Coolant" />
               </div>
             )}
@@ -226,7 +230,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails5 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="Mold" dataType="ShotVolume" />
               </div>
             )}
@@ -244,7 +248,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="TCU" dataType="MaxPumpPressure" />
               </div>
             )}
@@ -255,7 +259,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails2 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="TCU" dataType="MaxHeatingCapacity" />
               </div>
             )}
@@ -266,14 +270,14 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
               text="Show Details"
             />
             {showDetails3 && (
-              <div className="py-4">
+              <div className="py-4 asset-description">
                 <MetaDataIMM machineType="TCU" dataType="Coolant" />
               </div>
             )}
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -4,6 +4,7 @@ import immJson from "./json/InjectionMoldingMachine-v2.json";
 import moldJson from "./json/InjectionMold-v2.json";
 import hrdJson from "./json/HotRunnerDevice-v2.json";
 import tcuJson from "./json/TemperatureControlUnit-v2.json";
+import "./Asset.css";
 
 const AssetDetails = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const AssetDetails = () => {
     .value[0].text;
 
   return (
-    <div className="flex flex-col items-center m-4">
+    <div className="description-box flex flex-col items-center justify-center ">
       <button
         className="btn btn-circle btn-outline mb-4"
         onClick={() => navigate("/assets")}

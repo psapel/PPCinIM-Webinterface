@@ -35,7 +35,9 @@ const Filteredmodel = () => {
               </div>
             </div>
           </div>
-          <button className="btn btn-primary">Details</button>
+          <button className="btn  text-white bg-secondary hover:bg-primary">
+            Details
+          </button>
         </div>
       </div>
     </div>
