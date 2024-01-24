@@ -1,0 +1,12 @@
+.navbar-logo{
+  display: block;
+  width: auto;
+  height: 100%;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease-in-out;
+}
+
+.navbar-logo:hover {
+  box-shadow: 0 0 10px rgba(16, 58, 103, 0.5); 
+
+}

@@ -1,4 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
+import logo from "./logo.jpg";
+import "./Navbar.css";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -40,11 +42,8 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <a
-          className="btn btn-ghost normal-case text-xl"
-          onClick={() => navigate("/assets")}
-        >
-          PPCIM
+        <a className="" onClick={() => navigate("/assets")}>
+          <img src={logo} alt="Logo" className="navbar-logo" />
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
