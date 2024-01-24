@@ -4,10 +4,10 @@
   background-color: white;
 
   margin: auto;
-  position: absolute; /* Change to absolute */
-  top: 50%; /* Move the box down by 50% of the parent container */
-  left: 50%; /* Move the box right by 50% of the parent container */
-  transform: translate(-50%, -50%); /* Center the box */
+  position: relative; 
+  top: 0; 
+  left:0; 
+  transform: none; /* Center the box */
   overflow: hidden;
   transition: all 0.3s ease-in-out;
   cursor: pointer;
@@ -18,7 +18,7 @@
 
 .asset-description{
   background-color: rgba(128, 128, 128, 0.1);
-  padding-top: 20px;
+  padding: 20px;
   border-radius: 8px; 
   margin: 20px;/* Adjust border-radius as needed */
   display: flex;

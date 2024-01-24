@@ -67,9 +67,7 @@ const Assets = () => {
               <h2 className="card-title">
                 {" "}
                 NAME
-                <div className="badge badge-outline">
-                  Temperature Control Unit
-                </div>
+                <div className="badge badge-outline">TCU</div>
                 <div className="badge badge-outline">Optics</div>
               </h2>
               <figure>
