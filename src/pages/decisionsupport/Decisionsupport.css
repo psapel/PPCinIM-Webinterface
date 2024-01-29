@@ -1,0 +1,25 @@
+/* CSS */
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: lightgray;
+}
+
+.card-title {
+  padding: 10px;
+  border: 2px solid var(--primary-color);
+  color: var(--primary-color); 
+}
+
+.btn {
+  background-color: var(--secondary-color); /* Replace with your secondary color */
+  color: white;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}

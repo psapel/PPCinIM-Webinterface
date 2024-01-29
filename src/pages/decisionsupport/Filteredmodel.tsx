@@ -1,6 +1,10 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
+
 const Filteredmodel = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const filteredModels = location.state.filteredModels;
+
   return (
     <div>
       <button
@@ -23,22 +27,28 @@ const Filteredmodel = () => {
         </svg>
       </button>
       <div className="flex justify-center m-4">
-        <div className="card w-96 bg-base-100 shadow-xl m-4">
-          <div className="card-body">
-            <h2 className="card-title">Model ID - 00</h2>
-            <div className="flex flex-col">
-              <div className="form-control w-52">
-                <label className="cursor-pointer label">
-                  <span className="label-text">Model ID - 00</span>
-                  <input type="checkbox" className="toggle toggle-xs" checked />
-                </label>
+        {filteredModels.map((model, index) => (
+          <div key={index} className="card w-96 bg-base-100 shadow-xl m-4">
+            <div className="card-body">
+              <h2 className="card-title">Model ID - {model.id}</h2>
+              <div className="flex flex-col">
+                <div className="form-control w-52">
+                  <label className="cursor-pointer label">
+                    <span className="label-text">Model ID - {model.id}</span>
+                    <input
+                      type="checkbox"
+                      className="toggle toggle-xs"
+                      checked
+                    />
+                  </label>
+                </div>
               </div>
             </div>
+            <button className="btn  text-white bg-secondary hover:bg-primary">
+              Details
+            </button>
           </div>
-          <button className="btn  text-white bg-secondary hover:bg-primary">
-            Details
-          </button>
-        </div>
+        ))}
       </div>
     </div>
   );
