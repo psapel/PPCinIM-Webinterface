@@ -9,16 +9,20 @@ def create_asset():
     try:
         data = request.get_json()
 
-        # Validate required field - assetType
-        if not data.get('assetType'):
-            return jsonify({"error": "AssetType is required"}), 400
+        # Validate required fields - assetType and assetName
+        if not data.get('assetType') or not data.get('assetName'):
+            return jsonify({"error": "AssetType and AssetName are required"}), 400
+
+        # Retrieve assetType and assetName from the request data
+        asset_type = data['assetType']
+        asset_name = data['assetName']
 
         # Respond with a success message
-        return jsonify({"message": "Asset type selected successfully"}), 200
+        return jsonify({"message": f"Asset '{asset_name}' of type '{asset_type}' created successfully"}), 200
     except Exception as e:
         # Handle exceptions or errors
         print(e)
         return jsonify({"error": "Failed to create asset"}), 500
-
+    
 if __name__ == '__main__':
     app.run(debug=True)
