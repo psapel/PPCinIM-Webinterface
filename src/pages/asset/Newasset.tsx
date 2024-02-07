@@ -17,14 +17,33 @@ const Newasset = () => {
     reader.readAsText(file);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log({
+    
+    const dataToSend = {
       assetName,
       assetType,
       assetData,
-    });
-    navigate("/assets");
+    };
+
+    try {
+      const response = await fetch('http://localhost:5000/api/create_asset', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        console.log('Asset created successfully');
+        navigate("/assets");
+      } else {
+        console.error('Error creating asset');
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
   };
 
   return (
@@ -56,20 +75,26 @@ const Newasset = () => {
               type="text"
               placeholder="Asset Name"
               className="input input-bordered input-secondary w-full max-w-xs"
+              value={assetName}
+              onChange={(e) => setAssetName(e.target.value)}
             />
           </div>
         </div>
         <div className="my-3">
           Asset Type:
           <div>
-            <select className="select select-secondary w-full max-w-xs">
-              <option disabled selected>
+            <select
+              className="select select-secondary w-full max-w-xs"
+              value={assetType}
+              onChange={(e) => setAssetType(e.target.value)}
+            >
+              <option disabled value="">
                 Asset Type
               </option>
-              <option>Injection Molding Machine</option>
-              <option>Mold</option>
-              <option>Temperature Control Unit</option>
-              <option>Hot Runner Device</option>
+              <option value="Injection Molding Machine">Injection Molding Machine</option>
+              <option value="Mold">Mold</option>
+              <option value="Temperature Control Unit">Temperature Control Unit</option>
+              <option value="Hot Runner Device">Hot Runner Device</option>
             </select>
           </div>
         </div>
@@ -84,7 +109,7 @@ const Newasset = () => {
           </div>
         </div>
         <div>
-          <button className="btn btn-wide  text-white bg-secondary hover:bg-primary my-3">
+          <button className="btn btn-wide text-white bg-secondary hover:bg-primary my-3">
             Create
           </button>
         </div>
