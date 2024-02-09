@@ -17,7 +17,7 @@ def create_asset():
 
         if asset_type != derived_from_value:
             print(derived_from_value)
-            return jsonify({"error": "AssetType does not match derivedFrom value"}), 400
+            return jsonify({"error": "Asset Type does not match Asset Administration Shell selection"}), 400
         else:
             # Asset creation logic 
             if models.get('assetName') and models.get('assetType') and models.get('assetData'):

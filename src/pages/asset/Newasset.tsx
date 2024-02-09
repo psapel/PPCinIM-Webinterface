@@ -6,6 +6,7 @@ const Newasset = () => {
   const [assetName, setAssetName] = useState("");
   const [assetType, setAssetType] = useState("");
   const [assetData, setAssetData] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -19,7 +20,7 @@ const Newasset = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+
     const dataToSend = {
       assetName,
       assetType,
@@ -39,10 +40,12 @@ const Newasset = () => {
         console.log('Asset created successfully');
         navigate("/assets");
       } else {
-        console.error('Error creating asset');
+        const errorResponse = await response.json();
+        setError(errorResponse.error || 'Error creating asset');
       }
     } catch (error) {
       console.error('Error:', error);
+      setError('Failed to connect to the server');
     }
   };
 
@@ -113,6 +116,11 @@ const Newasset = () => {
             Create
           </button>
         </div>
+        {error && (
+          <div className="text-red-500">
+            <p>{error}</p>
+          </div>
+        )}
       </div>
     </form>
   );
