@@ -7,22 +7,25 @@ CORS(app)
 @app.route('/api/create_asset', methods=['POST'])
 def create_asset():
     try:
-        data = request.get_json()
+        models = request.get_json()
 
-        # Validate required fields - assetType and assetName
-        if not data.get('assetType') or not data.get('assetName'):
-            return jsonify({"error": "AssetType and AssetName are required"}), 400
+        asset_type = models.get('assetType')
+        asset_data = models.get('assetData')
 
-        # Retrieve assetType and assetName from the request data
-        asset_type = data['assetType']
-        asset_name = data['assetName']
+        # Check if assetType matches derivedFrom value in assetData
+        derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
 
-        # Respond with a success message
-        return jsonify({"message": f"Asset '{asset_name}' of type '{asset_type}' created successfully"}), 200
+        if asset_type != derived_from_value:
+            print(derived_from_value)
+            return jsonify({"error": "AssetType does not match derivedFrom value"}), 400
+        else:
+            # Asset creation logic 
+            if models.get('assetName') and models.get('assetType') and models.get('assetData'):
+                return jsonify({"message": "Asset created successfully"}), 200
+
     except Exception as e:
-        # Handle exceptions or errors
         print(e)
         return jsonify({"error": "Failed to create asset"}), 500
-    
+
 if __name__ == '__main__':
     app.run(debug=True)

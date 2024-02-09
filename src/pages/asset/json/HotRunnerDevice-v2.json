@@ -39,7 +39,7 @@
         "keys": [
           {
             "type": "GlobalReference",
-            "value": "https://iop.rwth-aachen.de/IM/aas/1/1/hotRunnerSystem"
+            "value": "Hot Runner Device"
           }
         ]
       },
