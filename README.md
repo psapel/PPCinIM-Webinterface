@@ -10,5 +10,11 @@
 - Install flask, flask-cors, python-dotenv
 ```js
    cd PPCinIM-Webinterface
-   flask run
+   flask run   or   python -m flask run
+```
+
+
+- Run Webinterface
+```js
+   http://localhost:5173
 ```
