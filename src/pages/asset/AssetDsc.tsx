@@ -8,10 +8,10 @@ import { useState } from "react";
 
 const ToggleButton = ({ show, setShow, text }) => (
   <button
-    className="btn text-white bg-secondary hover:bg-primary"
+    className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
     onClick={() => setShow(!show)}
   >
-    {show ? "Close" : text}
+    {show ? "-" : "+"}
   </button>
 );
 
@@ -106,28 +106,32 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
   const [showDetails5, setShowDetails5] = useState(false);
 
   return (
-    <div className=" flex justify-center items-center ">
+    <div className=" flex flex-col items-start">
       <div>
         {machineType === "IMM" && (
           <>
-            <p>Max Clamping Force: {clampingForce}</p>
-            <ToggleButton
-              show={showDetails}
-              setShow={setShowDetails}
-              text="Show Details"
-            />
+            <p>
+              Max Clamping Force: {clampingForce}
+              <ToggleButton
+                show={showDetails}
+                setShow={setShowDetails}
+                text="Show Details"
+              />
+            </p>
             {showDetails && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
               </div>
             )}
 
-            <p>Max Opening Stroke: {openingStroke}</p>
-            <ToggleButton
-              show={showDetails2}
-              setShow={setShowDetails2}
-              text="Show Details"
-            />
+            <p>
+              Max Opening Stroke: {openingStroke}
+              <ToggleButton
+                show={showDetails2}
+                setShow={setShowDetails2}
+                text="Show Details"
+              />
+            </p>
             {showDetails2 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
@@ -140,24 +144,28 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       <div>
         {machineType === "HRD" && (
           <>
-            <p>Max Heating Power: {maxHeatingPower}</p>
-            <ToggleButton
-              show={showDetails}
-              setShow={setShowDetails}
-              text="Show Details"
-            />
+            <p>
+              Max Heating Power: {maxHeatingPower}
+              <ToggleButton
+                show={showDetails}
+                setShow={setShowDetails}
+                text="Show Details"
+              />
+            </p>
             {showDetails && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="HRD" dataType="MaxHeatingPower" />
               </div>
             )}
 
-            <p>Max Operating Temperature: {maxOperatingTemperature}</p>
-            <ToggleButton
-              show={showDetails2}
-              setShow={setShowDetails2}
-              text="Show Details"
-            />
+            <p>
+              Max Operating Temperature: {maxOperatingTemperature}
+              <ToggleButton
+                show={showDetails2}
+                setShow={setShowDetails2}
+                text="Show Details"
+              />
+            </p>
             {showDetails2 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM
@@ -173,12 +181,14 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       <div>
         {machineType === "Mold" && (
           <>
-            <p>Larger Mold Dimension: {largerMoldDim}</p>
-            <ToggleButton
-              show={showDetails}
-              setShow={setShowDetails}
-              text="Show Details"
-            />
+            <p>
+              Larger Mold Dimension: {largerMoldDim}
+              <ToggleButton
+                show={showDetails}
+                setShow={setShowDetails}
+                text="Show Details"
+              />
+            </p>
             {showDetails && (
               <div className="py-4 asset-description">
                 <MetaDataIMM
@@ -187,12 +197,14 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
                 />
               </div>
             )}
-            <p>Mold Depth: {moldDepth}</p>
-            <ToggleButton
-              show={showDetails2}
-              setShow={setShowDetails2}
-              text="Show Details"
-            />
+            <p>
+              Mold Depth: {moldDepth}
+              <ToggleButton
+                show={showDetails2}
+                setShow={setShowDetails2}
+                text="Show Details"
+              />
+            </p>
             {showDetails2 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
@@ -212,23 +224,27 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
                 />
               </div>
             )}
-            <p>Coolant: {coolant1}</p>
-            <ToggleButton
-              show={showDetails4}
-              setShow={setShowDetails4}
-              text="Show Details"
-            />
+            <p>
+              Coolant: {coolant1}
+              <ToggleButton
+                show={showDetails4}
+                setShow={setShowDetails4}
+                text="Show Details"
+              />
+            </p>
             {showDetails4 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="Mold" dataType="Coolant" />
               </div>
             )}
-            <p>Shot Volume: {shotVolume}</p>
-            <ToggleButton
-              show={showDetails5}
-              setShow={setShowDetails5}
-              text="Show Details"
-            />
+            <p>
+              Shot Volume: {shotVolume}
+              <ToggleButton
+                show={showDetails5}
+                setShow={setShowDetails5}
+                text="Show Details"
+              />
+            </p>
             {showDetails5 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="Mold" dataType="ShotVolume" />
@@ -241,34 +257,40 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
       <div>
         {machineType === "TCU" && (
           <>
-            <p>Max Pump Pressure: {maxPumpPressure}</p>
-            <ToggleButton
-              show={showDetails}
-              setShow={setShowDetails}
-              text="Show Details"
-            />
+            <p>
+              Max Pump Pressure: {maxPumpPressure}
+              <ToggleButton
+                show={showDetails}
+                setShow={setShowDetails}
+                text="Show Details"
+              />
+            </p>
             {showDetails && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="TCU" dataType="MaxPumpPressure" />
               </div>
             )}
-            <p>Max Heating Capacity: {maxHeatingCap}</p>
-            <ToggleButton
-              show={showDetails2}
-              setShow={setShowDetails2}
-              text="Show Details"
-            />
+            <p>
+              Max Heating Capacity: {maxHeatingCap}
+              <ToggleButton
+                show={showDetails2}
+                setShow={setShowDetails2}
+                text="Show Details"
+              />
+            </p>
             {showDetails2 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="TCU" dataType="MaxHeatingCapacity" />
               </div>
             )}
-            <p>Coolant: {coolant}</p>
-            <ToggleButton
-              show={showDetails3}
-              setShow={setShowDetails3}
-              text="Show Details"
-            />
+            <p>
+              Coolant: {coolant}
+              <ToggleButton
+                show={showDetails3}
+                setShow={setShowDetails3}
+                text="Show Details"
+              />
+            </p>
             {showDetails3 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM machineType="TCU" dataType="Coolant" />

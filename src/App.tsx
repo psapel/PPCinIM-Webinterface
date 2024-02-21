@@ -11,6 +11,7 @@ import FilteredModelCatalogue from "./pages/decisionsupport/Filteredmodel";
 import AssetDetails from "./pages/asset/AssetDetails";
 import ModelDetails from "./pages/models/Modeldetails";
 import DataDetails from "./pages/datasources/Datadetails";
+import FilteredModel from "./pages/decisionsupport/Filteredmodel";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           />
           <Route path="/model-details" element={<ModelDetails />} />
           <Route path="/data-details" element={<DataDetails />} />
+          <Route path="/filtered-model" element={<FilteredModel />} />
         </Routes>
       </Router>
     </div>

@@ -10,3 +10,13 @@
   box-shadow: 0 0 10px rgba(16, 58, 103, 0.5); 
 
 }
+
+.navbar-logoiop{
+  display: block;
+  width: 50%;
+  height: 100%;
+  cursor: pointer;
+  transition: box-shadow 0.3s ease-in-out;
+  margin-left: auto;
+}
+

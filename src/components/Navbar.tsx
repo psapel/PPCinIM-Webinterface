@@ -1,5 +1,6 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "./logo.jpg";
+import ioplogo from "./ioplogo.jpg";
 import "./Navbar.css";
 
 const Navbar = () => {
@@ -35,7 +36,7 @@ const Navbar = () => {
               <Link to={`/data-sources`}>Data Sources</Link>
             </li>
             <li>
-              <Link to={`/decision-support`}>Decision Support</Link>
+              <Link to={`/decision-support`}>Production Schedueling</Link>
             </li>
             <li>
               <Link to={`/models`}>Models</Link>
@@ -55,14 +56,18 @@ const Navbar = () => {
             <Link to={`/data-sources`}>Data Sources</Link>
           </li>
           <li>
-            <Link to={`/decision-support`}>Decision Support</Link>
+            <Link to={`/decision-support`}>Production Schedueling</Link>
           </li>
           <li>
             <Link to={`/models`}>Models</Link>
           </li>
         </ul>
       </div>
-      <div className="navbar-end"></div>
+      <div className="navbar-end">
+        <a className="" onClick={() => navigate("/assets")}>
+          <img src={ioplogo} alt="IOP Logo" className="navbar-logoiop" />
+        </a>
+      </div>
     </div>
   );
 };

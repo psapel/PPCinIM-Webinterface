@@ -1,0 +1,14 @@
+{
+  "_id": "64f229ac26c4757f156eb8b6",
+  "GrahamNotation": {
+    "name": "model_51",
+    "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "https://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
+      "https://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility"
+    ],
+    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
+      "https://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime"
+    ],
+    "formula": "Pₘ | Mⱼ, oprtr | Cₘₐₓ"
+  }
+}
