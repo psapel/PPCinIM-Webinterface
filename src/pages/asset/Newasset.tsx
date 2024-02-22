@@ -6,7 +6,26 @@ const Newasset = () => {
   const [assetName, setAssetName] = useState("");
   const [assetType, setAssetType] = useState("");
   const [assetData, setAssetData] = useState(null);
+  const [assetCategories, setAssetCategories] = useState([""]);
   const [error, setError] = useState(null);
+
+  const handleAddCategory = () => {
+    if (assetCategories.length < 4) {
+      setAssetCategories([...assetCategories, ""]);
+    }
+  };
+
+  const handleRemoveCategory = (index) => {
+    const newAssetCategories = [...assetCategories];
+    newAssetCategories.splice(index, 1);
+    setAssetCategories(newAssetCategories);
+  };
+
+  const handleCategoryChange = (index, event) => {
+    const newAssetCategories = [...assetCategories];
+    newAssetCategories[index] = event.target.value;
+    setAssetCategories(newAssetCategories);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -28,24 +47,24 @@ const Newasset = () => {
     };
 
     try {
-      const response = await fetch('http://localhost:5000/api/create_asset', {
-        method: 'POST',
+      const response = await fetch("http://localhost:5000/api/create_asset", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(dataToSend),
       });
 
       if (response.ok) {
-        console.log('Asset created successfully');
+        console.log("Asset created successfully");
         navigate("/assets");
       } else {
         const errorResponse = await response.json();
-        setError(errorResponse.error || 'Error creating asset');
+        setError(errorResponse.error || "Error creating asset");
       }
     } catch (error) {
-      console.error('Error:', error);
-      setError('Failed to connect to the server');
+      console.error("Error:", error);
+      setError("Failed to connect to the server");
     }
   };
 
@@ -94,13 +113,62 @@ const Newasset = () => {
               <option disabled value="">
                 Asset Type
               </option>
-              <option value="Injection Molding Machine">Injection Molding Machine</option>
+              <option value="Injection Molding Machine">
+                Injection Molding Machine
+              </option>
               <option value="Mold">Mold</option>
-              <option value="Temperature Control Unit">Temperature Control Unit</option>
+              <option value="Temperature Control Unit">
+                Temperature Control Unit
+              </option>
               <option value="Hot Runner Device">Hot Runner Device</option>
             </select>
           </div>
         </div>
+
+        <div className="my-3">
+          {assetCategories.map((category, index) => (
+            <div key={index}>
+              Asset Category:
+              <div>
+                <input
+                  type="text"
+                  placeholder="Asset Category"
+                  className="input input-bordered input-secondary w-full max-w-xs"
+                  value={category}
+                  onChange={(event) => handleCategoryChange(index, event)}
+                />
+                {assetCategories.length > 1 && (
+                  <button
+                    className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
+                    onClick={() => handleRemoveCategory(index)}
+                  >
+                    -
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+          {assetCategories.length < 4 && (
+            <button
+              className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
+              onClick={handleAddCategory}
+            >
+              +
+            </button>
+          )}
+        </div>
+
+        <div className="my-3">
+          Image
+          <div>
+            <input
+              type="file"
+              className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
+              //yet to add to backend
+            />
+          </div>
+        </div>
+
         <div className="my-3">
           Asset Administration Shell
           <div>
