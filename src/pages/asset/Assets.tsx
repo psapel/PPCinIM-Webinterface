@@ -42,17 +42,16 @@ const Assets = () => {
             <div className="flex justify-center flex-wrap m-4" key={index}>
               <div className="card w-96 bg-gray-100 shadow-xl">
                 <div className="card-body">
-                  <h2 className="card-title">
-                    {asset.assetName}
-                    <div className="badge badge-outline">{asset.assetType}</div>
-                    <div className="flex flex-col">
-                      {asset.assetCategories.map((category, index) => (
-                        <div key={index} className="badge badge-outline">
-                          {category}
-                        </div>
-                      ))}
-                    </div>
-                  </h2>
+                  <h2 className="card-title">{asset.assetName}</h2>
+                  <div className="badge badge-outline">{asset.assetType}</div>
+                  <div className="flex flex-row space-x-3">
+                    {asset.assetCategories.map((category, index) => (
+                      <div key={index} className="badge badge-outline">
+                        {category}
+                      </div>
+                    ))}
+                  </div>
+
                   <button
                     className="btn  text-white bg-secondary hover:bg-primary rounded"
                     onClick={() =>
