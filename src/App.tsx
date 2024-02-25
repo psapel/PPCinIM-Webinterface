@@ -28,7 +28,7 @@ function App() {
           <Route path="/new-data-connector" element={<NewDataConnector />} />
           <Route path="/model-catalogue" element={<FilteredModelCatalogue />} />
           <Route
-            path="/asset-details/:machineType"
+            path="/asset-details/:machineType/"
             element={<AssetDetails />}
           />
           <Route path="/model-details" element={<ModelDetails />} />
