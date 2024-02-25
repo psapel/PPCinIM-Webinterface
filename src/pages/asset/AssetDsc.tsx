@@ -210,12 +210,14 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
                 <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
               </div>
             )}
-            <p>Smaller Mold Dimension: {smallerMoldDim}</p>
-            <ToggleButton
-              show={showDetails3}
-              setShow={setShowDetails3}
-              text="Show Details"
-            />
+            <p>
+              Smaller Mold Dimension: {smallerMoldDim}
+              <ToggleButton
+                show={showDetails3}
+                setShow={setShowDetails3}
+                text="Show Details"
+              />
+            </p>
             {showDetails3 && (
               <div className="py-4 asset-description">
                 <MetaDataIMM

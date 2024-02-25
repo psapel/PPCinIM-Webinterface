@@ -12,6 +12,8 @@ import AssetDetails from "./pages/asset/AssetDetails";
 import ModelDetails from "./pages/models/Modeldetails";
 import DataDetails from "./pages/datasources/Datadetails";
 import FilteredModel from "./pages/decisionsupport/Filteredmodel";
+import Home from "./pages/Home";
+import AboutPage from "./pages/About";
 
 function App() {
   return (
@@ -34,6 +36,8 @@ function App() {
           <Route path="/model-details" element={<ModelDetails />} />
           <Route path="/data-details" element={<DataDetails />} />
           <Route path="/filtered-model" element={<FilteredModel />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<AboutPage />} />
         </Routes>
       </Router>
     </div>

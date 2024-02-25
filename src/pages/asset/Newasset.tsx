@@ -9,23 +9,23 @@ const Newasset = () => {
   const [assetCategories, setAssetCategories] = useState([""]);
   const [error, setError] = useState(null);
 
-  // const handleAddCategory = () => {
-  //   if (assetCategories.length < 4) {
-  //     setAssetCategories([...assetCategories, ""]);
-  //   }
-  // };
+  const handleAddCategory = () => {
+    if (assetCategories.length < 4) {
+      setAssetCategories([...assetCategories, ""]);
+    }
+  };
 
-  // const handleRemoveCategory = (index) => {
-  //   const newAssetCategories = [...assetCategories];
-  //   newAssetCategories.splice(index, 1);
-  //   setAssetCategories(newAssetCategories);
-  // };
+  const handleRemoveCategory = (index) => {
+    const newAssetCategories = [...assetCategories];
+    newAssetCategories.splice(index, 1);
+    setAssetCategories(newAssetCategories);
+  };
 
-  // const handleCategoryChange = (index, event) => {
-  //   const newAssetCategories = [...assetCategories];
-  //   newAssetCategories[index] = event.target.value;
-  //   setAssetCategories(newAssetCategories);
-  // };
+  const handleCategoryChange = (index, event) => {
+    const newAssetCategories = [...assetCategories];
+    newAssetCategories[index] = event.target.value;
+    setAssetCategories(newAssetCategories);
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -44,6 +44,7 @@ const Newasset = () => {
       assetName,
       assetType,
       assetData,
+      assetCategories,
     };
 
     try {
@@ -125,7 +126,7 @@ const Newasset = () => {
           </div>
         </div>
 
-        {/* <div className="my-3">
+        <div className="my-3">
           {assetCategories.map((category, index) => (
             <div key={index}>
               Asset Category:
@@ -158,7 +159,7 @@ const Newasset = () => {
           )}
         </div>
 
-        <div className="my-3">
+        {/* <div className="my-3">
           Image
           <div>
             <input

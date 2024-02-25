@@ -41,9 +41,12 @@ const Navbar = () => {
             <li>
               <Link to={`/models`}>Models</Link>
             </li>
+            <li>
+              <Link to={`/about`}>About</Link>
+            </li>
           </ul>
         </div>
-        <a className="" onClick={() => navigate("/assets")}>
+        <a className="" onClick={() => navigate("/")}>
           <img src={logo} alt="Logo" className="navbar-logo" />
         </a>
       </div>
@@ -61,10 +64,13 @@ const Navbar = () => {
           <li>
             <Link to={`/models`}>Models</Link>
           </li>
+          <li>
+            <Link to={`/about`}>About</Link>
+          </li>
         </ul>
       </div>
       <div className="navbar-end">
-        <a className="" onClick={() => navigate("/assets")}>
+        <a className="" onClick={() => navigate("/")}>
           <img src={ioplogo} alt="IOP Logo" className="navbar-logoiop" />
         </a>
       </div>

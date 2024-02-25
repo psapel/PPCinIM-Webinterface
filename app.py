@@ -15,6 +15,7 @@ def create_asset():
         asset_name = models.get('assetName')
         asset_type = models.get('assetType')
         asset_data = models.get('assetData')
+        asset_categories = models.get('assetCategories')
 
         # Check if assetType matches derivedFrom value in assetData
         derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
@@ -24,7 +25,8 @@ def create_asset():
             memory_storage.append({
                 'assetType': asset_type,
                 'assetData': asset_data,
-                'assetName': asset_name
+                'assetName': asset_name,
+                'assetCategories': asset_categories
             })
             
             return jsonify({"message": "Asset created successfully"}), 200

@@ -45,6 +45,13 @@ const Assets = () => {
                   <h2 className="card-title">
                     {asset.assetName}
                     <div className="badge badge-outline">{asset.assetType}</div>
+                    <div className="flex flex-col">
+                      {asset.assetCategories.map((category, index) => (
+                        <div key={index} className="badge badge-outline">
+                          {category}
+                        </div>
+                      ))}
+                    </div>
                   </h2>
                   <button
                     className="btn  text-white bg-secondary hover:bg-primary rounded"
