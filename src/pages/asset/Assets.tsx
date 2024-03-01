@@ -9,7 +9,7 @@ const Assets = () => {
   const assetTypeToMachineType = {
     "Hot Runner Device": "HRD",
     "Injection Molding Machine": "IMM",
-    Mold: "Mold",
+    "Mold": "Mold",
     "Temperature Control Unit": "TCU",
   };
 
