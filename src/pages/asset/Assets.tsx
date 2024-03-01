@@ -1,9 +1,10 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const Assets = () => {
   const navigate = useNavigate();
   const [assets, setAssets] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const assetTypeToMachineType = {
     "Hot Runner Device": "HRD",
@@ -12,14 +13,27 @@ const Assets = () => {
     "Temperature Control Unit": "TCU",
   };
 
-  useEffect(() => {
-    const fetchAssets = async () => {
-      const response = await fetch("http://localhost:5000/api/get_assets");
+  const fetchAssets = async () => {
+    const url = searchQuery
+      ? `http://localhost:5000/api/search_assets?q=${searchQuery}`
+      : "http://localhost:5000/api/get_assets";
+
+    try {
+      const response = await fetch(url);
       const data = await response.json();
       setAssets(data);
-    };
+    } catch (error) {
+      console.error("Error fetching assets:", error);
+    }
+  };
+
+  useEffect(() => {
     fetchAssets();
-  }, []);
+  }, [searchQuery]);
+
+  const handleSearchChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
 
   return (
     <div>
@@ -28,6 +42,8 @@ const Assets = () => {
           type="text"
           placeholder="Search"
           className="input input-bordered input-secondary w-full max-w-xs ml-auto"
+          value={searchQuery}
+          onChange={handleSearchChange}
         />
         <button
           className="btn  text-white bg-secondary hover:bg-primary mr-3 ml-auto"
@@ -39,34 +55,40 @@ const Assets = () => {
       <div className="flex justify-center flex-wrap mt-3 rounded-10 w-full mx-auto m-5 p-5">
         {assets && assets.length > 0 ? (
           assets.map((asset, index) => (
-            <div className="flex justify-center flex-wrap m-4" key={index}>
-              <div className="card w-96 bg-gray-100 shadow-xl">
-                <div className="card-body">
-                  <h2 className="card-title">{asset.assetName}</h2>
-                  <div className="badge badge-outline">{asset.assetType}</div>
-                  <div className="flex flex-row space-x-3">
-                    {asset.assetCategories.map((category, index) => (
-                      <div key={index} className="badge badge-outline">
-                        {category}
-                      </div>
-                    ))}
-                  </div>
+            (asset.assetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              asset.assetType.toLowerCase().includes(searchQuery.toLowerCase()) ||
+              asset.assetCategories.some((category) =>
+                category.toLowerCase().includes(searchQuery.toLowerCase())
+              )) && (
+              <div className="flex justify-center flex-wrap m-4" key={index}>
+                <div className="card w-96 bg-gray-100 shadow-xl">
+                  <div className="card-body">
+                    <h2 className="card-title">{asset.assetName}</h2>
+                    <div className="badge badge-outline">{asset.assetType}</div>
+                    <div className="flex flex-row space-x-3">
+                      {asset.assetCategories.map((category, index) => (
+                        <div key={index} className="badge badge-outline">
+                          {category}
+                        </div>
+                      ))}
+                    </div>
 
-                  <button
-                    className="btn  text-white bg-secondary hover:bg-primary rounded"
-                    onClick={() =>
-                      navigate(
-                        `/asset-details/${
-                          assetTypeToMachineType[asset.assetType]
-                        }`
-                      )
-                    }
-                  >
-                    Show Details
-                  </button>
+                    <button
+                      className="btn  text-white bg-secondary hover:bg-primary rounded"
+                      onClick={() =>
+                        navigate(
+                          `/asset-details/${
+                            assetTypeToMachineType[asset.assetType]
+                          }`
+                        )
+                      }
+                    >
+                      Show Details
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )
           ))
         ) : (
           <div>No assets found.</div>

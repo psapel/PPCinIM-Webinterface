@@ -19,11 +19,7 @@ def create_asset():
         # Check if assetType matches derivedFrom value in assetData
         derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
 
-        if asset_type != derived_from_value:
-            print(derived_from_value)
-            return jsonify({"error": "Asset Type does not match model selection"}), 400
-
-        if asset_name and asset_type and asset_data and asset_categories:
+        if asset_name and asset_type and asset_data:
             # Store asset in memory
             memory_storage.append({
                 'assetType': asset_type,
@@ -52,6 +48,25 @@ def get_assets():
     except Exception as e:
         print(e)
         return jsonify({"error": "Failed to retrieve asset"}), 500
+
+
+@app.route('/api/search_assets', methods=['GET'])
+def search_assets():
+    try:
+        search_query = request.args.get('q')
+        
+        if search_query:
+            # Filter assets based on the search query
+            filtered_assets = [asset for asset in memory_storage if 
+                               search_query.lower() in asset['assetName'].lower() or
+                               search_query.lower() in asset['assetType'].lower() or
+                               any(search_query.lower() in category.lower() for category in asset['assetCategories'])]
+            return jsonify(filtered_assets), 200
+        else:
+            return jsonify(memory_storage), 200
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Failed to retrieve assets"}), 500
 
 
 if __name__ == '__main__':
