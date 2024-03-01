@@ -1,4 +1,3 @@
-
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 
@@ -20,7 +19,11 @@ def create_asset():
         # Check if assetType matches derivedFrom value in assetData
         derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
 
-        if asset_name and asset_type and asset_data:
+        if asset_type != derived_from_value:
+            print(derived_from_value)
+            return jsonify({"error": "Asset Type does not match model selection"}), 400
+
+        if asset_name and asset_type and asset_data and asset_categories:
             # Store asset in memory
             memory_storage.append({
                 'assetType': asset_type,
