@@ -62,7 +62,7 @@ def search_assets():
         if search_query:
             # Filter assets based on the search query
             filtered_assets = [asset for asset in memory_storage if
-                               any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) or
+                               any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) 
                                any(word.lower().startswith(search_query.lower()) for word in asset['assetType'].split()) or
                                any(category.lower().startswith(search_query.lower()) for category in asset['assetCategories'])]
             return jsonify(filtered_assets), 200
