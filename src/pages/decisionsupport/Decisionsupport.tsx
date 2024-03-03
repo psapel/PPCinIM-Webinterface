@@ -144,11 +144,21 @@ const categories = [
 const Decisionsupport = () => {
   //const navigate = useNavigate();
   const [selectedCriteria, setSelectedCriteria] = useState({});
+  const [selectedObjectiveCriteria, setSelectedObjectiveCriteria] = useState(
+    {}
+  );
   const [selectedEnvironment, setSelectedEnvironment] = useState("");
 
   const handleCheckboxChange = (event) => {
     setSelectedCriteria({
       ...selectedCriteria,
+      [event.target.value]: event.target.checked,
+    });
+  };
+
+  const handleObjectiveCheckboxChange = (event) => {
+    setSelectedObjectiveCriteria({
+      ...selectedObjectiveCriteria,
       [event.target.value]: event.target.checked,
     });
   };
@@ -163,24 +173,18 @@ const Decisionsupport = () => {
     try {
       const formData = new URLSearchParams();
 
-      const schedulingConstraints = [
-        "https://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup",
-        "https://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility",
-      ];
+      const schedulingConstraints = Object.keys(selectedCriteria);
+      const objectiveFunctionCriteria = Object.keys(selectedObjectiveCriteria);
 
-      formData.append(
-        "machine",
-        "https://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines"
-      );
+      formData.append("machine", selectedEnvironment);
 
       schedulingConstraints.forEach((constraint) => {
         formData.append("checked[]", constraint);
       });
 
-      formData.append(
-        "checking[]",
-        "https://www.iop.rwth-aachen.de/PPC/1/1/sumTardiness"
-      );
+      objectiveFunctionCriteria.forEach((criterion) => {
+        formData.append("checking[]", criterion);
+      });
 
       const response = await fetch("http://localhost:5001", {
         method: "POST",
@@ -197,6 +201,7 @@ const Decisionsupport = () => {
 
     console.log("selected criteria", selectedCriteria);
     console.log("selected environment", selectedEnvironment);
+    console.log("selected objective criteria", selectedObjectiveCriteria);
   };
 
   return (
@@ -222,6 +227,17 @@ const Decisionsupport = () => {
                           className="radio radio-xs"
                           checked={selectedEnvironment === criterion.url}
                           onChange={handleRadioChange}
+                        />
+                      ) : category.title === "γ - Objective Function" ? (
+                        <input
+                          type="checkbox"
+                          name={criterion.name}
+                          value={criterion.url}
+                          className="toggle toggle-xs"
+                          checked={
+                            selectedObjectiveCriteria[criterion.url] || false
+                          }
+                          onChange={handleObjectiveCheckboxChange}
                         />
                       ) : (
                         <input
