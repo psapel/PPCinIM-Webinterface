@@ -99,7 +99,7 @@ index_settings = {
     }
 }
 
-index_name = 'new_search_new_version'
+index_name = 'mapping'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -136,7 +136,6 @@ loaded_models = load_models(es)
 
 
 def find_matching_model(es, url1, url2, url3):
-    print("Received URLs:", url1, url2, url3)
     len_2 = len(url2)
     len_3 = len(url3)
 
@@ -211,15 +210,13 @@ def index():
 
         matching_model = find_matching_model(es, machine_environment, scheduling_constraints,
                                              scheduling_objective_function)
-        print("Matching models:", matching_model)
+        print("Matching Models:", matching_model)
 
         # Extract the relevant information from the hits
         selected_models = []
         for hit in matching_model:
             source = hit.get('_source', {})
             selected_models.append(source)
-
-        print("Matching Models:", selected_models)
         
         if selected_models:
             return render_template('selection.html', selected_models=selected_models)
