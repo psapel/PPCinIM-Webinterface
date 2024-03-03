@@ -150,19 +150,30 @@ const Decisionsupport = () => {
   const [selectedEnvironment, setSelectedEnvironment] = useState("");
 
   const handleCheckboxChange = (event) => {
-    setSelectedCriteria({
-      ...selectedCriteria,
-      [event.target.value]: event.target.checked,
-    });
+    if (event.target.checked) {
+      setSelectedCriteria({
+        ...selectedCriteria,
+        [event.target.value]: event.target.checked,
+      });
+    } else {
+      const newSelectedCriteria = { ...selectedCriteria };
+      delete newSelectedCriteria[event.target.value];
+      setSelectedCriteria(newSelectedCriteria);
+    }
   };
 
   const handleObjectiveCheckboxChange = (event) => {
-    setSelectedObjectiveCriteria({
-      ...selectedObjectiveCriteria,
-      [event.target.value]: event.target.checked,
-    });
+    if (event.target.checked) {
+      setSelectedObjectiveCriteria({
+        ...selectedObjectiveCriteria,
+        [event.target.value]: event.target.checked,
+      });
+    } else {
+      const newSelectedObjectiveCriteria = { ...selectedObjectiveCriteria };
+      delete newSelectedObjectiveCriteria[event.target.value];
+      setSelectedObjectiveCriteria(newSelectedObjectiveCriteria);
+    }
   };
-
   const handleRadioChange = (event) => {
     setSelectedEnvironment(event.target.value);
   };
