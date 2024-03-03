@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+//import { useNavigate } from "react-router-dom";
 import "./Decisionsupport.css";
 
 const categories = [
@@ -142,50 +142,77 @@ const categories = [
 ];
 
 const Decisionsupport = () => {
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
   const [selectedCriteria, setSelectedCriteria] = useState({});
+  const [selectedObjectiveCriteria, setSelectedObjectiveCriteria] = useState(
+    {}
+  );
   const [selectedEnvironment, setSelectedEnvironment] = useState("");
 
   const handleCheckboxChange = (event) => {
-    setSelectedCriteria({
-      ...selectedCriteria,
-      [event.target.value]: event.target.checked,
-    });
+    if (event.target.checked) {
+      setSelectedCriteria({
+        ...selectedCriteria,
+        [event.target.value]: event.target.checked,
+      });
+    } else {
+      const newSelectedCriteria = { ...selectedCriteria };
+      delete newSelectedCriteria[event.target.value];
+      setSelectedCriteria(newSelectedCriteria);
+    }
   };
 
+  const handleObjectiveCheckboxChange = (event) => {
+    if (event.target.checked) {
+      setSelectedObjectiveCriteria({
+        ...selectedObjectiveCriteria,
+        [event.target.value]: event.target.checked,
+      });
+    } else {
+      const newSelectedObjectiveCriteria = { ...selectedObjectiveCriteria };
+      delete newSelectedObjectiveCriteria[event.target.value];
+      setSelectedObjectiveCriteria(newSelectedObjectiveCriteria);
+    }
+  };
   const handleRadioChange = (event) => {
     setSelectedEnvironment(event.target.value);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    try {
+      const formData = new URLSearchParams();
+
+      const schedulingConstraints = Object.keys(selectedCriteria);
+      const objectiveFunctionCriteria = Object.keys(selectedObjectiveCriteria);
+
+      formData.append("machine", selectedEnvironment);
+
+      schedulingConstraints.forEach((constraint) => {
+        formData.append("checked[]", constraint);
+      });
+
+      objectiveFunctionCriteria.forEach((criterion) => {
+        formData.append("checking[]", criterion);
+      });
+
+      const response = await fetch("http://localhost:5001/api/mapping", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: formData,
+      });
+
+      // Handle response here
+    } catch (error) {
+      // Handle error here
+    }
+
     console.log("selected criteria", selectedCriteria);
     console.log("selected environment", selectedEnvironment);
-  
-    try {
-      const response = await fetch('http://localhost:5000/search', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          machine_environment: selectedEnvironment,
-          scheduling_constraints: Object.keys(selectedCriteria),
-          scheduling_objective_function: [],
-        }),
-      });
-  
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Filtered Models from Backend:", data.filteredModels);
-  
-        navigate('/filtered-model', { state: { filteredModels: data.filteredModels } });
-      } else {
-        console.error('Failed to fetch filtered models from the backend');
-      }
-    } catch (error) {
-      console.error('An error occurred:', error.message);
-    }
+    console.log("selected objective criteria", selectedObjectiveCriteria);
   };
 
   return (
@@ -211,6 +238,17 @@ const Decisionsupport = () => {
                           className="radio radio-xs"
                           checked={selectedEnvironment === criterion.url}
                           onChange={handleRadioChange}
+                        />
+                      ) : category.title === "γ - Objective Function" ? (
+                        <input
+                          type="checkbox"
+                          name={criterion.name}
+                          value={criterion.url}
+                          className="toggle toggle-xs"
+                          checked={
+                            selectedObjectiveCriteria[criterion.url] || false
+                          }
+                          onChange={handleObjectiveCheckboxChange}
                         />
                       ) : (
                         <input

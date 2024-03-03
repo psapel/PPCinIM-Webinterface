@@ -22,6 +22,10 @@ def create_asset():
 
         # Check if assetType matches derivedFrom value in assetData
         derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
+        
+        if asset_type != derived_from_value:
+            print(derived_from_value)
+            return jsonify({"error": "Asset Type does not match model selection"}), 400
 
         if asset_name and asset_type and asset_data:
             # Store asset in memory
@@ -87,19 +91,21 @@ index_settings = {
                 "properties": {
                     "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": {"type": "keyword"},
                     "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": {"type": "keyword"},
-                    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": {"type": "keyword"}
+                    "https://wwwmodels_search.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": {
+                        "type": "keyword"}
                 }
             }
         }
     }
 }
 
-index_name = 'new_search'
+index_name = 'new_search_new_version'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
     es.indices.create(index=index_name, body={"settings": index_settings["settings"]},
                       mappings=index_settings["mappings"])
+
 
 def load_models(es):
     model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/jsonModels'))
@@ -128,7 +134,9 @@ def load_models(es):
 # Call the load_models function to start loading the JSON files
 loaded_models = load_models(es)
 
+
 def find_matching_model(es, url1, url2, url3):
+    print("Received URLs:", url1, url2, url3)
     len_2 = len(url2)
     len_3 = len(url3)
 
@@ -189,36 +197,36 @@ def find_matching_model(es, url1, url2, url3):
 
     return hits
 
-# Route to handle the search functionality
-@app.route('/api/search', methods=['POST'])
-def search():
-    data = request.get_json()
 
-    machine_environment = data.get('machine_environment')
-    scheduling_constraints = data.get('scheduling_constraints')
-    scheduling_objective_function = data.get('scheduling_objective_function')
-
-    matching_model = find_matching_model(es, machine_environment, scheduling_constraints,
-                                         scheduling_objective_function)
-
-    selected_models = []
-    for hit in matching_model:
-        source = hit.get('_source', {})
-        selected_models.append(source)
-
-    return jsonify(selected_models)
-
-# Route to handle the main page
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/api/mapping', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        # Handle form submission or redirect as needed
-        # You may want to redirect to another page or render a template
-        pass
-    else:
-        # Render the main page or template
-        pass
+        machine_environment = request.form.get('machine')
+        scheduling_constraints = request.form.getlist('checked[]')
+        scheduling_objective_function = request.form.getlist('checking[]')
+        print("Received values:")
+        print("Machine Environment:", machine_environment)
+        print("Scheduling Constraints:", scheduling_constraints)
+        print("Scheduling Objective Function:", scheduling_objective_function)
 
+        matching_model = find_matching_model(es, machine_environment, scheduling_constraints,
+                                             scheduling_objective_function)
+        print("Matching models:", matching_model)
+
+        # Extract the relevant information from the hits
+        selected_models = []
+        for hit in matching_model:
+            source = hit.get('_source', {})
+            selected_models.append(source)
+
+        print("Matching Models:", selected_models)
+        
+        if selected_models:
+            return render_template('selection.html', selected_models=selected_models)
+        else:
+            return "No matching model found."
+    return jsonify({"message": "Invalid request method"})
+            
 
 if __name__ == '__main__':
     app.run(debug=True)
