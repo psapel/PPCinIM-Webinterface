@@ -9,7 +9,7 @@ const Assets = () => {
   const assetTypeToMachineType = {
     "Hot Runner Device": "HRD",
     "Injection Molding Machine": "IMM",
-    "Mold": "Mold",
+    Mold: "Mold",
     "Temperature Control Unit": "TCU",
   };
 
@@ -54,42 +54,49 @@ const Assets = () => {
       </div>
       <div className="flex justify-center flex-wrap mt-3 rounded-10 w-full mx-auto m-5 p-5">
         {assets && assets.length > 0 ? (
-          assets.map((asset, index) => (
-            (asset.assetName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              asset.assetType.toLowerCase().includes(searchQuery.toLowerCase()) ||
-              asset.assetCategories.some((category) =>
-                category.toLowerCase().includes(searchQuery.toLowerCase())
-              )) && (
-              <div className="flex justify-center flex-wrap m-4" key={index}>
-                <div className="card w-96 bg-gray-100 shadow-xl">
-                  <div className="card-body">
-                    <h2 className="card-title">{asset.assetName}</h2>
-                    <div className="badge badge-outline">{asset.assetType}</div>
-                    <div className="flex flex-row space-x-3">
-                      {asset.assetCategories.map((category, index) => (
-                        <div key={index} className="badge badge-outline">
-                          {category}
-                        </div>
-                      ))}
-                    </div>
+          assets.map(
+            (asset, index) =>
+              (asset.assetName
+                .toLowerCase()
+                .includes(searchQuery.toLowerCase()) ||
+                asset.assetType
+                  .toLowerCase()
+                  .includes(searchQuery.toLowerCase()) ||
+                asset.assetCategories.some((category) =>
+                  category.toLowerCase().includes(searchQuery.toLowerCase())
+                )) && (
+                <div className="flex justify-center flex-wrap m-4" key={index}>
+                  <div className="card w-96 bg-gray-100 shadow-xl">
+                    <div className="card-body">
+                      <h2 className="card-title">{asset.assetName}</h2>
+                      <div className="badge badge-outline">
+                        {asset.assetType}
+                      </div>
+                      <div className="flex flex-row space-x-3">
+                        {asset.assetCategories.map((category, index) => (
+                          <div key={index} className="badge badge-outline">
+                            {category}
+                          </div>
+                        ))}
+                      </div>
 
-                    <button
-                      className="btn  text-white bg-secondary hover:bg-primary rounded"
-                      onClick={() =>
-                        navigate(
-                          `/asset-details/${
-                            assetTypeToMachineType[asset.assetType]
-                          }`
-                        )
-                      }
-                    >
-                      Show Details
-                    </button>
+                      <button
+                        className="btn  text-white bg-secondary hover:bg-primary rounded"
+                        onClick={() =>
+                          navigate(
+                            `/asset-details/${
+                              assetTypeToMachineType[asset.assetType]
+                            }`
+                          )
+                        }
+                      >
+                        Show Details
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-          ))
+              )
+          )
         ) : (
           <div>No assets found.</div>
         )}
