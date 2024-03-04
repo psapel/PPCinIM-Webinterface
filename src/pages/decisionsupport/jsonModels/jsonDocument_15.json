@@ -5,7 +5,7 @@
     "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "https://www.iop.rwth-aachen.de/PPC/1/1/singleMachine",
     "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": "https://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility",
     "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
-      "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTimemaschEligibility"
+      "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
     ],
     "formula": "1 | Mⱼ | ΣwⱼCⱼ"
   }
