@@ -1,5 +1,5 @@
 import { useState } from "react";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./Decisionsupport.css";
 
 const categories = [
@@ -142,7 +142,7 @@ const categories = [
 ];
 
 const Decisionsupport = () => {
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
   const [selectedCriteria, setSelectedCriteria] = useState({});
   const [selectedObjectiveCriteria, setSelectedObjectiveCriteria] = useState(
     {}
@@ -205,10 +205,10 @@ const Decisionsupport = () => {
         },
         body: formData,
       });
-
-      // Handle response here
+      const filteredModels = await response.json();
+      navigate("/filtered-model", { state: { filteredModels } });
     } catch (error) {
-      // Handle error here
+      console.error("Error:", error);
     }
 
     console.log("selected criteria", selectedCriteria);

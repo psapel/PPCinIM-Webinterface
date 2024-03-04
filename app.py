@@ -219,7 +219,7 @@ def index():
             selected_models.append(source)
         
         if selected_models:
-            return render_template('selection.html', selected_models=selected_models)
+            return jsonify(selected_models), 200
         else:
             return "No matching model found."
     return jsonify({"message": "Invalid request method"})
