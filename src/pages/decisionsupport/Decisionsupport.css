@@ -23,3 +23,15 @@
   flex-wrap: wrap;
   justify-content: space-around;
 }
+
+.modelBox {
+  background-color: rgba(128, 128, 128, 0.1);
+  padding: 20px; /* Adjust as needed */
+  border-radius: 8px;
+  margin: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: fit-content;
+}

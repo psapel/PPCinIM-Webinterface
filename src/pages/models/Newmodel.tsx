@@ -37,26 +37,11 @@ const Newmodel = () => {
       <div className="my-3">
         Model Type:
         <div>
-          <select className="select select-secondary w-full max-w-xs">
-            <option disabled selected>
-              Model Type
-            </option>
-            <option disabled selected>
-              Behavioral
-            </option>
-            <option>Optimisation</option>
-            <option>Simulation</option>
-            <option>Random</option>
-            <option>Script</option>
-            <option>User Interface</option>
-            <option>Query Selector</option>
-            <option>Input Provider</option>
-            <option disabled selected>
-              Structural
-            </option>
-            <option>SPARQL</option>
-            <option>Ontology</option>
-          </select>
+          <input
+            type="text"
+            placeholder="Model Type"
+            className="input input-bordered input-secondary w-full max-w-xs"
+          />
         </div>
       </div>
       <div className="my-3">

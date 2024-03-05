@@ -79,7 +79,9 @@ const Assets = () => {
                           </div>
                         ))}
                       </div>
-
+                      {/* <figure>
+                        <img src=""></img>
+                      </figure> */}
                       <button
                         className="btn  text-white bg-secondary hover:bg-primary rounded"
                         onClick={() =>

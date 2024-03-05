@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./Decisionsupport.css";
 
-const categories = [
+export const categories = [
   {
     title: "α - Machine Environments",
     criteria: [

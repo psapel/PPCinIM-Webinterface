@@ -47,9 +47,11 @@ const AssetDetails = () => {
           />
         </svg>
       </button>
-      <div>
+      <div className="textbox">
         <p>Name:</p>
+        <br></br>
         <p>Manufacturer:{manufacturer}</p>
+        <br></br>
         <AssetDsc machineType={machineType as string} />
       </div>
     </div>

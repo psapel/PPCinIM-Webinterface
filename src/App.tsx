@@ -14,6 +14,7 @@ import DataDetails from "./pages/datasources/Datadetails";
 import FilteredModel from "./pages/decisionsupport/Filteredmodel";
 import Home from "./pages/Home";
 import AboutPage from "./pages/About";
+import ProductionPlanning from "./pages/pp/ProductionPlanning";
 
 function App() {
   return (
@@ -33,11 +34,12 @@ function App() {
             path="/asset-details/:machineType/"
             element={<AssetDetails />}
           />
-          <Route path="/model-details" element={<ModelDetails />} />
+          <Route path="/model-details/:id" element={<ModelDetails />} />
           <Route path="/data-details" element={<DataDetails />} />
           <Route path="/filtered-model" element={<FilteredModel />} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/production-planning" element={<ProductionPlanning />} />
         </Routes>
       </Router>
     </div>

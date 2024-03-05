@@ -1,23 +1,21 @@
 .description-box{
-  width: 50%; /* Adjust the width as needed */
-  height: auto; /* Adjust the height as needed */
-  background-color: white;
-
-  margin: auto;
-  position: relative; 
-  top: 0; 
-  left:0; 
-  transform: none; /* Center the box */
+  width: 100%; 
   overflow: hidden;
   transition: all 0.3s ease-in-out;
-  cursor: pointer;
-  text-align: center; /* Center the text horizontally */
   padding: 20px; /* Set padding on all sides */
-  box-sizing: border-box;
+}
+
+.textbox{
+  background-color: rgba(128, 128, 128, 0.1);
+  text-align: left;
+  padding: 3rem;
+  width: 100%;
+  max-width: 60rem;
 }
 
 .asset-description{
-  background-color: rgba(128, 128, 128, 0.1);
+  width: 100%;
+  background-color: rgba(149, 187, 32, 0.7);
   padding: 20px;
   border-radius: 8px; 
   margin: 20px;/* Adjust border-radius as needed */

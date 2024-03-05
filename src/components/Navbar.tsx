@@ -36,10 +36,13 @@ const Navbar = () => {
               <Link to={`/data-sources`}>Data Sources</Link>
             </li>
             <li>
-              <Link to={`/decision-support`}>Production Schedueling</Link>
+              <Link to={`/decision-support`}>Production Scheduling</Link>
             </li>
             <li>
               <Link to={`/models`}>Models</Link>
+            </li>
+            <li>
+              <Link to={`/production-planning`}>Production Planning</Link>
             </li>
             <li>
               <Link to={`/about`}>About</Link>
@@ -59,10 +62,13 @@ const Navbar = () => {
             <Link to={`/data-sources`}>Data Sources</Link>
           </li>
           <li>
-            <Link to={`/decision-support`}>Production Schedueling</Link>
+            <Link to={`/decision-support`}>Production Scheduling</Link>
           </li>
           <li>
             <Link to={`/models`}>Models</Link>
+          </li>
+          <li>
+            <Link to={`/production-planning`}>Production Planning</Link>
           </li>
           <li>
             <Link to={`/about`}>About</Link>
