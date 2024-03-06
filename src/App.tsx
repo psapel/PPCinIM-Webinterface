@@ -15,6 +15,7 @@ import FilteredModel from "./pages/decisionsupport/Filteredmodel";
 import Home from "./pages/Home";
 import AboutPage from "./pages/About";
 import ProductionPlanning from "./pages/pp/ProductionPlanning";
+import Execution from "./pages/decisionsupport/Execution";
 
 function App() {
   return (
@@ -37,6 +38,7 @@ function App() {
           <Route path="/model-details/:id" element={<ModelDetails />} />
           <Route path="/data-details" element={<DataDetails />} />
           <Route path="/filtered-model" element={<FilteredModel />} />
+          <Route path="/execution-model" element={<Execution />} />
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/production-planning" element={<ProductionPlanning />} />
