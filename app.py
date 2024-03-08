@@ -297,5 +297,6 @@ def get_execution_logs(model_name):
 def serve_image(filename):
     return send_from_directory('images', filename)            
 
+    
 if __name__ == '__main__':
     app.run(debug=True)

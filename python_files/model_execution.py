@@ -34,6 +34,9 @@ def total_order(model_name):
     dispmodel = "y"
     solve = "y"
     dispresult = "y"
+    
+    J = range(len(p))
+    K = range(len(J))
 
     m = op.LpProblem("SingleMachineSchedulingWithSequenceDependentSetuptime", op.LpMinimize)
     x = {(i, j): op.LpVariable(f"x{i}{j}", 0, 1, op.LpBinary) for i, j in it.product(range(N), range(N))}

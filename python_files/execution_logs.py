@@ -8,10 +8,12 @@ from python_files.odoo_connect import connect
 
 
 def total_execution(model_name):
-    s = {"order_0": {"order_0": 0, "order_1": 0, "order_2": 0, "order_3": 0, "order_4": 0},
-         "order_1": {"order_0": 0, "order_1": 0, "order_2": 2, "order_3": 5, "order_4": 3},
-         "order_2": {"order_0": 0, "order_1": 2, "order_2": 0, "order_3": 3, "order_4": 2}}
-
+    s = {"order_0": {"order_0": 9999, "order_1": 46, "order_2": 41, "order_3": 65, "order_4": 87, "order_5": 132},
+         "order_1": {"order_0": 79, "order_1": 9999, "order_2": 89, "order_3": 64, "order_4": 135, "order_5": 52},
+         "order_2": {"order_0": 117, "order_1": 94, "order_2": 9999, "order_3": 65, "order_4": 164, "order_5": 49},
+         "order_3": {"order_0": 87, "order_1": 40, "order_2": 97, "order_3": 9999, "order_4": 80, "order_5": 102},
+         "order_4": {"order_0": 192, "order_1": 24, "order_2": 112, "order_3": 181, "order_4": 9999, "order_5": 33},
+         "order_5": {"order_0": 184, "order_1": 147, "order_2": 114, "order_3": 53, "order_4": 89, "order_5": 9999}}
     response = connect(model_name)
     p = []  # Processing time of each job
     job_names = []
