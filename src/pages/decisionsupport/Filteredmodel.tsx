@@ -1,76 +1,41 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Decisionsupport.css";
+import { urlToNameMapping } from "./decisionsupport.tsx";
 
 function FilteredModel() {
-  //   const [showDetails, setShowDetails] = useState(false);
   const { filteredModels } = useLocation().state;
-  const [isChecked, setIsChecked] = useState(false);
-  const [modelData, setModelData] = useState([]);
+  const [isChecked, setIsChecked] = useState({});
   const [tableData, setTableData] = useState([]);
 
   const navigate = useNavigate();
 
-  const handleCheckboxChange = (event) => {
-    setIsChecked(event.target.checked);
+  const handleCheckboxChange = (event, modelName) => {
+    setIsChecked((prevState) => ({
+      ...prevState,
+      [modelName]: event.target.checked,
+    }));
   };
 
   useEffect(() => {
-    if (isChecked && filteredModels.length > 0 && filteredModels[0].name) {
-      const fetchAsset = async () => {
+    setTableData([]); // Clear the table data before fetching new data
+    Object.keys(isChecked).forEach(async (modelName) => {
+      if (isChecked[modelName]) {
         try {
           const response = await fetch(
-            `http://localhost:5000/underlying-asset/${filteredModels[0].name}`
+            `http://localhost:5000/underlying-asset/${modelName}`
           );
-          console.log("response", response);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          console.log("Fetched data:", data); // Log the fetched data
-          setTableData(data);
+          setTableData((prevData) => [...prevData, ...data]);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
-      };
-
-      fetchAsset();
-    }
-  }, [isChecked, filteredModels]);
-
-  useEffect(() => {
-    if (isChecked && modelData) {
-      const fetchAsset = async () => {
-        try {
-          const response = await fetch(
-            `http://localhost:5000/underlying-asset/${modelData.GrahamNotation.name}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          setTableData(data);
-        } catch (error) {
-          console.error("Error fetching asset data:", error);
-        }
-      };
-
-      fetchAsset();
-    }
-  }, [isChecked, modelData]);
-
-  console.log("hiiiiiiiii", filteredModels);
-  console.log("tableData", tableData);
-  console.log("modelData", modelData);
-  //   const displaySelectedModel = async (selectedModelName) => {
-  //     try {
-  //       const modelResponse = await fetch(`/model/${selectedModelName}`);
-  //       const modelData = await modelResponse.text();
-  //       setShowDetails(JSON.stringify(JSON.parse(modelData), null, 4));
-  //     } catch (error) {
-  //       console.error("Error fetching data:", error);
-  //     }
-  //   };
+      }
+    });
+  }, [isChecked]);
 
   return (
     <div>
@@ -78,16 +43,19 @@ function FilteredModel() {
         Scheduling Models for the Injection Molding domain
       </h1>
       <div style={{ display: "flex", justifyContent: "center" }}>
-        <div className="modelBox">
-          <input
-            type="checkbox"
-            onChange={handleCheckboxChange}
-            style={{ marginRight: "10px" }}
-          />
-          <h1>{filteredModels[0].name}</h1>
-        </div>
+        {filteredModels.map((model, index) => (
+          <div className="modelBox" key={index}>
+            <input
+              type="checkbox"
+              checked={isChecked[model.name] || false}
+              onChange={(event) => handleCheckboxChange(event, model.name)}
+              style={{ marginRight: "10px" }}
+            />
+            <h1>{model.name}</h1>
+          </div>
+        ))}
       </div>
-      {isChecked && (
+      {Object.values(isChecked).some((value) => value) && (
         <div
           style={{
             display: "flex",
@@ -96,40 +64,73 @@ function FilteredModel() {
           }}
         >
           <div className="modelBox">
-            {filteredModels.map((model, index) => (
-              <div key={index} style={{ textAlign: "center" }}>
-                <p>Name: {model.name}</p>
-                <br></br>
-                <p>Formula: {model.formula}</p>
-                <br></br>
-                <p>
-                  Machine Environment:{""}
-                  {
-                    model[
-                      "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
-                    ]
-                  }
-                </p>
-                <br></br>
-                <p>
-                  Scheduling Constraints:{" "}
-                  {
-                    model[
-                      "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
-                    ]
-                  }
-                </p>
-                <br></br>
-                <p>
-                  Scheduling Objective Function:{" "}
-                  {
-                    model[
-                      "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
-                    ]
-                  }
-                </p>
-              </div>
-            ))}
+            {filteredModels.map((model, index) => {
+              if (isChecked[model.name]) {
+                return (
+                  <div key={index} style={{ textAlign: "center" }}>
+                    <p>Name: {model.name}</p>
+                    <br></br>
+                    <p>Formula: {model.formula}</p>
+                    <br></br>
+                    <p>
+                      Machine Environment:{""}
+                      {urlToNameMapping[
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                        ]
+                      ] ||
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                        ]}
+                    </p>
+                    <br></br>
+                    <p>
+                      Scheduling Constraints:{" "}
+                      {Array.isArray(
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                        ]
+                      )
+                        ? model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                          ]
+                            .map((url) => urlToNameMapping[url] || url)
+                            .join(", ")
+                        : urlToNameMapping[
+                            model[
+                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                            ]
+                          ] ||
+                          model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                          ]}
+                    </p>
+                    <br></br>
+                    <p>
+                      Scheduling Objective Function:{" "}
+                      {Array.isArray(
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                        ]
+                      )
+                        ? model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                          ]
+                            .map((url) => urlToNameMapping[url] || url)
+                            .join(", ")
+                        : urlToNameMapping[
+                            model[
+                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                            ]
+                          ] ||
+                          model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                          ]}
+                    </p>
+                  </div>
+                );
+              }
+            })}
           </div>
           <div className="overflow-x-auto">
             {tableData.length > 0 && (
@@ -161,11 +162,13 @@ function FilteredModel() {
           </div>
         </div>
       )}
-      {isChecked && (
+      {Object.values(isChecked).some((value) => value) && (
         <div className="button">
           <button
             className="btn text-white bg-secondary hover:bg-primary rounded"
-            onClick={() => navigate("/execution-model")}
+            onClick={() =>
+              navigate("/execution-model", { state: { isChecked } })
+            }
           >
             Execute Model
           </button>

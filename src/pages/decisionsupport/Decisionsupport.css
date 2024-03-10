@@ -42,3 +42,14 @@
  margin: 50px;
 }
 
+.execution-logs{
+  background-color: 	lightgray;
+  margin: 20px; /* Adjust as needed */
+  padding: 20px; /* Adjust as needed */
+  overflow: auto;
+}
+
+.execution-logs-title {
+  font-weight: bold;
+  text-align: center;
+}

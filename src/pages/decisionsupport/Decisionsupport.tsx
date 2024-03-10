@@ -141,6 +141,13 @@ export const categories = [
   },
 ];
 
+export const urlToNameMapping = categories.reduce((acc, category) => {
+  category.criteria.forEach((item) => {
+    acc[item.url] = item.name;
+  });
+  return acc;
+}, {});
+
 const Decisionsupport = () => {
   const navigate = useNavigate();
   const [selectedCriteria, setSelectedCriteria] = useState({});
@@ -178,6 +185,8 @@ const Decisionsupport = () => {
     setSelectedEnvironment(event.target.value);
   };
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -205,7 +214,11 @@ const Decisionsupport = () => {
         body: formData,
       });
       const filteredModels = await response.json();
-      navigate("/filtered-model", { state: { filteredModels } });
+      if (filteredModels.length === 0) {
+        setErrorMessage("No matching models found");
+      } else {
+        navigate("/filtered-model", { state: { filteredModels } });
+      }
     } catch (error) {
       console.error("Error:", error);
     }
@@ -217,6 +230,7 @@ const Decisionsupport = () => {
 
   return (
     <div>
+      {/* <div>{errorMessage && <p>{errorMessage}</p>}</div> */}
       <div className="flex flex-wrap justify-center">
         {categories.map((category) => (
           <div
