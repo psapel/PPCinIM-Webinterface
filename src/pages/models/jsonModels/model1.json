@@ -6,18 +6,18 @@
       "https://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
       "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
     ],
-    "formula": "Pₘ | sᵢⱼ  | Cₘₐₓ, ΣwⱼCⱼ"
+    "formula": "Pₘ | sᵢⱼ  | Cₘₐₓ, ΣwⱼWⱼ"
   },
   "input_data": [
     {
       "job_name": {
-        "id": "0173 1#02-XXX999#991",
+        "id": "0173-1#02-XXX999#991",
         "db": "odoo"
       }
     },
     {
       "job_duration": {
-        "id": "0173 1#02 ABF201#001",
+        "id": "0173-1#02-ABF201#001",
         "db": "odoo"
       }
     }
