@@ -1,43 +1,62 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
-
-// const location = useLocation();
-// const filteredModels = location.state ? location.state.filteredModels : [];
+import "./Decisionsupport.css";
 
 const Execution = () => {
-  const { filteredModels } = useLocation().state;
   const [tableData, setTableData] = useState([]);
-  // const [executionData, setExecutionData] = useState("");
+  const [executionData, setExecutionData] = useState("");
   // const [logs, setLogs] = useState([]);
 
+  const location = useLocation();
+  // const filteredModels = location.state.filteredModels;
+  const { isChecked } = location.state;
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response1 = await fetch(
-          `http://localhost:5000/underlying-asset/${filteredModels[0].name}`
-        );
-        const data1 = await response1.json();
-        setTableData(data1);
+    // Clear the state before fetching new data
+    setTableData([]);
+    setExecutionData([]);
 
-        // const response2 = await fetch(
-        //   `http://localhost:5000/execution/${filteredModels[0].name}`
-        // );
-        // const data2 = await response2.text();
-        // setExecutionData(data2);
+    // Find the first checked model
+    const modelName = Object.keys(isChecked).find(
+      (modelName) => isChecked[modelName]
+    );
 
-        // const response3 = await fetch(
-        //   `http://localhost:5000/execution_logs/${filteredModels[0].name}`
-        // );
-        // const data3 = await response3.json();
-        // setLogs(data3);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+    if (modelName) {
+      // Define an async function inside the hook
+      const fetchData = async () => {
+        try {
+          const response = await fetch(
+            `http://localhost:5000/underlying-asset/${modelName}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setTableData(data);
+          console.log("Fetched data:", data); // Log the fetched data
+        } catch (error) {
+          console.error("Error fetching asset data:", error);
+        }
 
-    fetchData();
-  }, [filteredModels]);
+        try {
+          const response = await fetch(
+            `http://localhost:5000/execution_logs/${modelName}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setExecutionData(data);
+        } catch (error) {
+          console.error("Error fetching execution data:", error);
+        }
+      };
 
+      // Call the async function
+      fetchData();
+    }
+  }, [isChecked]);
+  console.log("isChecked", isChecked);
   return (
     <div>
       <h1 style={{ fontSize: "1em", fontWeight: "bold", textAlign: "center" }}>
@@ -57,7 +76,7 @@ const Execution = () => {
             </thead>
             <tbody>
               {tableData.map((row, index) => (
-                <tr key={row.Reference}>
+                <tr key={index}>
                   <td>{row.Reference}</td>
                   <td>{row.Duration}</td>
                   <td>{row.Quantity}</td>
@@ -67,6 +86,10 @@ const Execution = () => {
             </tbody>
           </table>
         )}
+      </div>
+      <div className="execution-logs">
+        <div className="execution-logs-title">Execution logs</div>
+        <pre>{JSON.stringify(executionData, null, 2)}</pre>
       </div>
     </div>
   );
