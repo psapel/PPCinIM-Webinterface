@@ -10,6 +10,7 @@ const Execution = () => {
   const location = useLocation();
   // const filteredModels = location.state.filteredModels;
   const { isChecked } = location.state;
+  const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     // Clear the state before fetching new data
@@ -50,6 +51,19 @@ const Execution = () => {
         } catch (error) {
           console.error("Error fetching execution data:", error);
         }
+
+        try {
+          const response = await fetch(
+            `http://localhost:5000/execution/${modelName}`
+          );
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const data = await response.json();
+          setExecutionData(data);
+        } catch (error) {
+          console.error("Error fetching execution data:", error);
+        }
       };
 
       // Call the async function
@@ -57,6 +71,7 @@ const Execution = () => {
     }
   }, [isChecked]);
   console.log("isChecked", isChecked);
+
   return (
     <div>
       <h1 style={{ fontSize: "1em", fontWeight: "bold", textAlign: "center" }}>
@@ -87,9 +102,28 @@ const Execution = () => {
           </table>
         )}
       </div>
-      <div className="execution-logs">
-        <div className="execution-logs-title">Execution logs</div>
-        <pre>{JSON.stringify(executionData, null, 2)}</pre>
+      <div className="execution-logs" style={{ textAlign: "center" }}>
+        {executionData ? (
+          <div>
+            <strong> {executionData["146"]}</strong>
+          </div>
+        ) : (
+          <p>Loading...</p>
+        )}
+      </div>
+      <div>
+        <button
+          className="btn text-white bg-secondary hover:bg-primary mr-3 ml-auto"
+          style={{ marginRight: "50px", float: "right" }}
+          onClick={() => {
+            const newWindow = window.open("", "_blank");
+            newWindow.document.write(
+              `<pre>${JSON.stringify(executionData, null, 2)}</pre>`
+            );
+          }}
+        >
+          Detailed Execution Steps
+        </button>
       </div>
     </div>
   );
