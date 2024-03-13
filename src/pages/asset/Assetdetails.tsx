@@ -1,47 +1,20 @@
-import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+
 import AssetDsc from "./AssetDsc";
-import immJson from "./json/InjectionMoldingMachine-v2.json";
-import moldJson from "./json/InjectionMold-v2.json";
-import hrdJson from "./json/HotRunnerDevice-v2.json";
-import tcuJson from "./json/TemperatureControlUnit-v2.json";
+
 import "./Asset.css";
 
 const AssetDetails = () => {
   const navigate = useNavigate();
-  const { machineType } = useParams();
+  const { asset } = useLocation().state;
+  const machineType = asset.assetType;
 
-  let json;
-  if (machineType === "IMM") {
-    json = immJson;
-  } else if (machineType === "Mold") {
-    json = moldJson;
-  } else if (machineType === "HRD") {
-    json = hrdJson;
-  } else if (machineType === "TCU") {
-    json = tcuJson;
-  }
-
-  const manufacturer = json.submodels
+  const manufacturer = asset.assetData.submodels
     .find((el) => el.idShort === "Nameplate")
     ?.submodelElements.find((el) => el.idShort === "ManufacturerName")
     .value[0].text;
 
-  const fetchAssets = async () => {
-    const url = "http://localhost:5000/api/get_assets";
-
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      console.log("Fetched assets:", data);
-    } catch (error) {
-      console.error("Error fetching assets:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchAssets();
-  }, []);
+  console.log("AssetDetails", asset);
 
   return (
     <div className="description-box flex flex-col items-center justify-center ">
@@ -69,7 +42,10 @@ const AssetDetails = () => {
         <br></br>
         <p>Manufacturer:{manufacturer}</p>
         <br></br>
-        <AssetDsc machineType={machineType as string} />
+        <AssetDsc
+          machineType={machineType as string}
+          assetData={asset.assetData}
+        />
       </div>
     </div>
   );

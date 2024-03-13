@@ -6,12 +6,12 @@ const Assets = () => {
   const [assets, setAssets] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const assetTypeToMachineType = {
-    "Hot Runner Device": "HRD",
-    "Injection Molding Machine": "IMM",
-    Mold: "Mold",
-    "Temperature Control Unit": "TCU",
-  };
+  // const assetTypeToMachineType = {
+  //   "Hot Runner Device": "Hot Runner Device",
+  //   "Injection Molding Machine": "Injection Molding Machine",
+  //   Mold: "Mold",
+  //   "Temperature Control Unit": "Temperature Control Unit",
+  // };
 
   const fetchAssets = async () => {
     const url = searchQuery
@@ -85,11 +85,9 @@ const Assets = () => {
                       <button
                         className="btn  text-white bg-secondary hover:bg-primary rounded"
                         onClick={() =>
-                          navigate(
-                            `/asset-details/${
-                              assetTypeToMachineType[asset.assetType]
-                            }`
-                          )
+                          navigate(`/asset-details/${asset.assetType}`, {
+                            state: { asset },
+                          })
                         }
                       >
                         Show Details

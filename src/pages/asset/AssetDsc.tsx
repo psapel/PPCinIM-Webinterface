@@ -1,12 +1,8 @@
 import MetaDataIMM from "./MetaDataIMM";
-import immJson from "./json/InjectionMoldingMachine-v2.json";
-import moldJson from "./json/InjectionMold-v2.json";
-import hrdJson from "./json/HotRunnerDevice-v2.json";
-import tcuJson from "./json/TemperatureControlUnit-v2.json";
 import "./Asset.css";
 import { useState } from "react";
 
-const ToggleButton = ({ show, setShow, text }) => (
+const ToggleButton = ({ show, setShow }) => (
   <button
     className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
     onClick={() => setShow(!show)}
@@ -15,14 +11,21 @@ const ToggleButton = ({ show, setShow, text }) => (
   </button>
 );
 
-const AssetDsc = ({ machineType }: { machineType: string }) => {
-  const json = {
-    IMM: immJson,
-    Mold: moldJson,
-    HRD: hrdJson,
-    TCU: tcuJson,
-  }[machineType];
-
+const AssetDsc = ({
+  machineType,
+  assetData,
+}: {
+  machineType: string;
+  assetData: {
+    submodels: {
+      submodelElements: {
+        idShort: string;
+        value: any[];
+      }[];
+    }[];
+    conceptDescriptions: any[];
+  };
+}) => {
   let clampingForce;
   let openingStroke;
   let maxHeatingPower;
@@ -36,65 +39,65 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
   let maxHeatingCap;
   let coolant;
 
-  if (machineType === "IMM") {
-    clampingForce = json.submodels[0].submodelElements
+  if (machineType === "Injection Molding Machine") {
+    clampingForce = assetData.submodels[0].submodelElements
       .find((el) => el.idShort === "TechnicalProperties")
       .value.find((el) => el.idShort === "ClampingUnitTechnicalProperties")
       .value.find((el) => el.idShort === "BasicData")
       .value.find((el) => el.idShort === "MaxClampingForce").value;
 
-    openingStroke = json.submodels[0].submodelElements
+    openingStroke = assetData.submodels[0].submodelElements
       .find((el) => el.idShort === "TechnicalProperties")
       .value.find((el) => el.idShort === "ClampingUnitTechnicalProperties")
       .value.find((el) => el.idShort === "BasicData")
       .value.find((el) => el.idShort === "MaxOpeningStroke").value;
   }
 
-  if (machineType === "HRD") {
-    maxHeatingPower = json.submodels[0].submodelElements[0].value.find(
+  if (machineType === "Hot Runner Device") {
+    maxHeatingPower = assetData.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxHeatingPower"
     ).value;
 
-    maxOperatingTemperature = json.conceptDescriptions.find(
+    maxOperatingTemperature = assetData.conceptDescriptions.find(
       (el) => el.idShort === "MaxOperatingTemperature"
     ).value;
   }
 
   if (machineType === "Mold") {
-    largerMoldDim = json.submodels[0].submodelElements[0].value
+    largerMoldDim = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "DimAndWeight")
       .value.find((el) => el.idShort === "InjectionMold")
       .value.find((el) => el.idShort === "LargerMoldDimension").value;
 
-    moldDepth = json.submodels[0].submodelElements[0].value
+    moldDepth = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "DimAndWeight")
       .value.find((el) => el.idShort === "InjectionMold")
       .value.find((el) => el.idShort === "MoldDepth").value;
 
-    smallerMoldDim = json.submodels[0].submodelElements[0].value
+    smallerMoldDim = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "DimAndWeight")
       .value.find((el) => el.idShort === "InjectionMold")
       .value.find((el) => el.idShort === "SmallerMoldDimension").value;
 
-    coolant1 = json.submodels[0].submodelElements[0].value
+    coolant1 = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "TemperingSystem")
       .value.find((el) => el.idShort === "Coolant").value[0].text;
 
-    shotVolume = json.submodels[0].submodelElements[0].value
+    shotVolume = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "Cavity")
       .value.find((el) => el.idShort === "ShotVolume").value;
   }
 
-  if (machineType === "TCU") {
-    maxPumpPressure = json.submodels[0].submodelElements[0].value.find(
+  if (machineType === "Temperature Control Unit") {
+    maxPumpPressure = assetData.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxPumpPressure"
     ).value;
 
-    maxHeatingCap = json.submodels[0].submodelElements[0].value.find(
+    maxHeatingCap = assetData.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxHeatingCapacity"
     ).value;
 
-    coolant = json.submodels[0].submodelElements[0].value
+    coolant = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "Channels")
       .value.find((el) => el.idShort === "Coolant").value[0].text;
   }
@@ -107,7 +110,7 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
 
   return (
     <div className=" flex flex-col items-start">
-      {machineType === "IMM" && (
+      {machineType === "Injection Molding Machine" && (
         <div>
           <p>
             Max Clamping Force: {clampingForce}
@@ -119,7 +122,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="IMM" dataType="MaxClampingForce" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Injection Molding Machine"
+                dataType="MaxClampingForce"
+                assetData={assetData}
+              />
             </div>
           )}
           <br></br>
@@ -133,13 +141,18 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails2 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="IMM" dataType="MaxOpeningStroke" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Injection Molding Machine"
+                dataType="MaxOpeningStroke"
+                assetData={assetData}
+              />
             </div>
           )}
         </div>
       )}
 
-      {machineType === "HRD" && (
+      {machineType === "Hot Runner Device" && (
         <div>
           <p>
             Max Heating Power: {maxHeatingPower}
@@ -151,7 +164,12 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="HRD" dataType="MaxHeatingPower" />
+              <MetaDataIMM
+                assetData={assetData}
+                assetData={assetData}
+                machineType="Hot Runner Device"
+                dataType="MaxHeatingPower"
+              />
             </div>
           )}
           <br></br>
@@ -166,7 +184,8 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           {showDetails2 && (
             <div className="py-4 asset-description">
               <MetaDataIMM
-                machineType="HRD"
+                assetData={assetData}
+                machineType="Hot Runner Device"
                 dataType="MaxOperatingTemperature"
               />
             </div>
@@ -186,7 +205,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="Mold" dataType="LargerMoldDimension" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Mold"
+                dataType="LargerMoldDimension"
+              />
             </div>
           )}
           <br></br>
@@ -200,7 +223,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails2 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="Mold" dataType="MoldDepth" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Mold"
+                dataType="MoldDepth"
+              />
             </div>
           )}
           <br></br>
@@ -214,7 +241,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails3 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="Mold" dataType="SmallerMoldDimension" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Mold"
+                dataType="SmallerMoldDimension"
+              />
             </div>
           )}
           <br></br>
@@ -228,7 +259,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails4 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="Mold" dataType="Coolant" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Mold"
+                dataType="Coolant"
+              />
             </div>
           )}
           <br></br>
@@ -242,13 +277,17 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails5 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="Mold" dataType="ShotVolume" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Mold"
+                dataType="ShotVolume"
+              />
             </div>
           )}
         </div>
       )}
 
-      {machineType === "TCU" && (
+      {machineType === "Temperature Control Unit" && (
         <div>
           <p>
             Max Pump Pressure: {maxPumpPressure}
@@ -260,7 +299,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="TCU" dataType="MaxPumpPressure" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Temperature Control Unit"
+                dataType="MaxPumpPressure"
+              />
             </div>
           )}
           <br></br>
@@ -274,7 +317,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails2 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="TCU" dataType="MaxHeatingCapacity" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Temperature Control Unit"
+                dataType="MaxHeatingCapacity"
+              />
             </div>
           )}
           <br></br>
@@ -288,7 +335,11 @@ const AssetDsc = ({ machineType }: { machineType: string }) => {
           </p>
           {showDetails3 && (
             <div className="py-4 asset-description">
-              <MetaDataIMM machineType="TCU" dataType="Coolant" />
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="Temperature Control Unit"
+                dataType="Coolant"
+              />
             </div>
           )}
         </div>

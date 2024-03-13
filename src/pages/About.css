@@ -2,27 +2,27 @@
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 5px;
-  margin: 20px;
+  margin: 50px;
 }
 
 .title {
   color: #95BB20;
   font-size: 24px;
   margin-bottom: 20px;
-  margin: 20px;
+  margin: 50px;
 }
 
 .content {
   color: #666;
   line-height: 1.6;
-  margin: 20px; 
+  margin: 50px; 
   font-style: italic;
 }
 
 .content1 {
   color: #666;
   line-height: 1.6;
-  margin: 20px; 
+  margin: 50px; 
 }
 
 .greentext {

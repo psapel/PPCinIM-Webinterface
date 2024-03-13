@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import "./Decisionsupport.css";
-import { urlToNameMapping } from "./decisionsupport.tsx";
+import { urlToNameMapping } from "./Decisionsupport.tsx";
 
 function FilteredModel() {
   const { filteredModels } = useLocation().state;
