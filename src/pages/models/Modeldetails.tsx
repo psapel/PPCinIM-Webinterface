@@ -1,6 +1,7 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Models.css";
 import { categories } from "../decisionsupport/Decisionsupport";
+import { urlToNameMapping } from "../decisionsupport/Decisionsupport";
 
 const Modeldetails = () => {
   const navigate = useNavigate();
@@ -36,28 +37,40 @@ const Modeldetails = () => {
         <p>
           <strong>Machine Environment: </strong>
           {
-            modelData.purpose_properties[
-              "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+            urlToNameMapping[
+              modelData.purpose_properties[
+                "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+              ] as keyof typeof urlToNameMapping
             ]
           }
         </p>
         <br></br>
         <p>
           <strong>Scheduling Constraints: </strong>
-          {
+          {Array.isArray(
             modelData.purpose_properties[
               "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
             ]
-          }
+          )
+            ? modelData.purpose_properties[
+                "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+              ]
+                .map((url) => urlToNameMapping[url])
+                .join(", ")
+            : urlToNameMapping[
+                modelData.purpose_properties[
+                  "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                ]
+              ]}
         </p>
         <br></br>
         <p>
           <strong>Scheduling Objective Function: </strong>
-          {
-            modelData.purpose_properties[
-              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
-            ]
-          }
+          {modelData.purpose_properties[
+            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+          ]
+            .map((url) => urlToNameMapping[url])
+            .join(", ")}
         </p>
         <br></br>
         <p>
@@ -83,6 +96,10 @@ const Modeldetails = () => {
         <p>
           <strong>Job Duration DB: </strong>
           {modelData.input_data[1].job_duration.db}
+        </p>
+        <br></br>
+        <p>
+          <strong>Configuration File:</strong> model_execution.py{" "}
         </p>
       </div>
     </div>
