@@ -38,7 +38,7 @@ const AssetDetails = () => {
         </svg>
       </button>
       <div className="textbox">
-        <p>Name:</p>
+        <p>Name: {asset.assetName} </p>
         <br></br>
         <p>Manufacturer:{manufacturer}</p>
         <br></br>
