@@ -113,7 +113,8 @@ const AssetDsc = ({
       {machineType === "Injection Molding Machine" && (
         <div>
           <p>
-            Max Clamping Force: {clampingForce}
+            <strong>Max Clamping Force: </strong>
+            {clampingForce}
             <ToggleButton
               show={showDetails}
               setShow={setShowDetails}
@@ -132,7 +133,8 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Max Opening Stroke: {openingStroke}
+            <strong>Max Opening Stroke: </strong>
+            {openingStroke}
             <ToggleButton
               show={showDetails2}
               setShow={setShowDetails2}
@@ -155,7 +157,8 @@ const AssetDsc = ({
       {machineType === "Hot Runner Device" && (
         <div>
           <p>
-            Max Heating Power: {maxHeatingPower}
+            <strong>Max Heating Power: </strong>
+            {maxHeatingPower}
             <ToggleButton
               show={showDetails}
               setShow={setShowDetails}
@@ -174,7 +177,8 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Max Operating Temperature: {maxOperatingTemperature}
+            <strong> Max Operating Temperature: </strong>
+            {maxOperatingTemperature}
             <ToggleButton
               show={showDetails2}
               setShow={setShowDetails2}
@@ -196,7 +200,7 @@ const AssetDsc = ({
       {machineType === "Mold" && (
         <div>
           <p>
-            Larger Mold Dimension: {largerMoldDim}
+            <strong> Larger Mold Dimension:</strong> {largerMoldDim}
             <ToggleButton
               show={showDetails}
               setShow={setShowDetails}
@@ -214,7 +218,8 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Mold Depth: {moldDepth}
+            <strong> Mold Depth: </strong>
+            {moldDepth}
             <ToggleButton
               show={showDetails2}
               setShow={setShowDetails2}
@@ -232,7 +237,7 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Smaller Mold Dimension: {smallerMoldDim}
+            <strong> Smaller Mold Dimension:</strong> {smallerMoldDim}
             <ToggleButton
               show={showDetails3}
               setShow={setShowDetails3}
@@ -250,7 +255,8 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Coolant: {coolant1}
+            <strong> Coolant: </strong>
+            {coolant1}
             <ToggleButton
               show={showDetails4}
               setShow={setShowDetails4}
@@ -268,7 +274,7 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Shot Volume: {shotVolume}
+            <strong> Shot Volume:</strong> {shotVolume}
             <ToggleButton
               show={showDetails5}
               setShow={setShowDetails5}
@@ -290,7 +296,7 @@ const AssetDsc = ({
       {machineType === "Temperature Control Unit" && (
         <div>
           <p>
-            Max Pump Pressure: {maxPumpPressure}
+            <strong> Max Pump Pressure:</strong> {maxPumpPressure}
             <ToggleButton
               show={showDetails}
               setShow={setShowDetails}
@@ -308,7 +314,7 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Max Heating Capacity: {maxHeatingCap}
+            <strong> Max Heating Capacity:</strong> {maxHeatingCap}
             <ToggleButton
               show={showDetails2}
               setShow={setShowDetails2}
@@ -326,7 +332,7 @@ const AssetDsc = ({
           )}
           <br></br>
           <p>
-            Coolant: {coolant}
+            <strong> Coolant: </strong> {coolant}
             <ToggleButton
               show={showDetails3}
               setShow={setShowDetails3}
