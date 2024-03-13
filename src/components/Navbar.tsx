@@ -30,6 +30,9 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
           >
             <li>
+              <Link to={`/`}>About</Link>
+            </li>
+            <li>
               <Link to={`/assets`}>Assets</Link>
             </li>
             <li>
@@ -44,9 +47,6 @@ const Navbar = () => {
             <li>
               <Link to={`/production-planning`}>Production Planning</Link>
             </li>
-            <li>
-              <Link to={`/about`}>About</Link>
-            </li>
           </ul>
         </div>
         <a className="" onClick={() => navigate("/")}>
@@ -55,6 +55,9 @@ const Navbar = () => {
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
+          <li>
+            <Link to={`/`}>About</Link>
+          </li>
           <li>
             <Link to={`/assets`}>Assets</Link>
           </li>
@@ -69,9 +72,6 @@ const Navbar = () => {
           </li>
           <li>
             <Link to={`/production-planning`}>Production Planning</Link>
-          </li>
-          <li>
-            <Link to={`/about`}>About</Link>
           </li>
         </ul>
       </div>

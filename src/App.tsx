@@ -12,7 +12,6 @@ import AssetDetails from "./pages/asset/AssetDetails";
 import ModelDetails from "./pages/models/Modeldetails";
 import DataDetails from "./pages/datasources/Datadetails";
 import FilteredModel from "./pages/decisionsupport/Filteredmodel";
-import Home from "./pages/Home";
 import AboutPage from "./pages/About";
 import ProductionPlanning from "./pages/pp/ProductionPlanning";
 import Execution from "./pages/decisionsupport/Execution";
@@ -39,8 +38,7 @@ function App() {
           <Route path="/data-details" element={<DataDetails />} />
           <Route path="/filtered-model" element={<FilteredModel />} />
           <Route path="/execution-model" element={<Execution />} />
-          <Route path="/" element={<Home />} />
-          <Route path="/about" element={<AboutPage />} />
+          <Route path="/" element={<AboutPage />} />
           <Route path="/production-planning" element={<ProductionPlanning />} />
         </Routes>
       </Router>
