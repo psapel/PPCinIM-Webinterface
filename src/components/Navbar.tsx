@@ -38,12 +38,14 @@ const Navbar = () => {
             {/* <li>
               <Link to={`/data-sources`}>Data Sources</Link>
             </li> */}
-            <li>
-              <Link to={`/data-sources`}>Data Sources</Link>
-            </li>
+
             <li>
               <Link to={`/processing`}>Processing</Link>
             </li>
+            {/* <li>
+              <Link to={`/models`}>Models</Link>
+            </li> */}
+
             <li>
               <Link to={`/production-planning`}>Production Planning</Link>
             </li>
@@ -52,14 +54,11 @@ const Navbar = () => {
             </li>
           </ul>
         </div>
-        <a className="" onClick={() => navigate("/")}>
-          <img
-            src={logo}
-            alt="Logo"
-            className="navbar-logo"
-            style={{ height: "80%" }}
-          />
-        </a>
+        <div className="navbar-start">
+          <a className="" onClick={() => navigate("/")}>
+            <img src={logo} alt="Logo" className="navbar-logo" />
+          </a>
+        </div>
       </div>
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1">
@@ -69,15 +68,16 @@ const Navbar = () => {
           <li>
             <Link to={`/assets`}>Assets</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to={`/data-sources`}>Data Sources</Link>
-          </li>
-          <li>
-            <Link to={`/data-sources`}>Data Sources</Link>
-          </li>
+          </li> */}
+
           <li>
             <Link to={`/processing`}>Processing</Link>
           </li>
+          {/* <li>
+            <Link to={`/models`}>Models</Link>
+          </li> */}
           <li>
             <Link to={`/production-planning`}>Production Planning</Link>
           </li>

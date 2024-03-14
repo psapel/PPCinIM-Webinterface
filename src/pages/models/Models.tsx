@@ -59,29 +59,28 @@ const Models = () => {
       </div>
 
       <div className="flex justify-center flex-wrap m-4">
-        {models.map((model, index) => (
-          <div className="card w-96 bg-base-100 shadow-xl m-4">
-            <div className="card-body">
-              <h2 className="card-title"> Model {index + 1} </h2>
-              <p>Formula: {model.purpose_properties.formula}</p>
-              {/* <div className="badge badge-outline">Behavioral</div>
-            <div className="badge badge-outline">User Interface</div> */}
-              {/* <figure>
-              <img src=""></img>
-            </figure> */}
-              <button
-                className="btn  text-white bg-secondary hover:bg-primary"
-                onClick={() =>
-                  navigate(`/model-details/${index + 1}`, {
-                    state: { modelData: model },
-                  })
-                }
-              >
-                Show Details
-              </button>
+        {models.map((model, index) => {
+          const name = `Model ${index + 1}`;
+
+          return (
+            <div className="card w-96 bg-base-100 shadow-xl m-4">
+              <div className="card-body">
+                <h2 className="card-title">{name}</h2>
+                <p>Formula: {model.purpose_properties.formula}</p>
+                <button
+                  className="btn  text-white bg-secondary hover:bg-primary"
+                  onClick={() =>
+                    navigate(`/model-details/${index + 1}`, {
+                      state: { modelData: model, modelName: name },
+                    })
+                  }
+                >
+                  Go to Model Details
+                </button>
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </div>
   );
