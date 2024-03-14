@@ -27,7 +27,7 @@ const Execution = () => {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5000/underlying-asset/${modelName}`
+            `http://localhost:5000/api/underlying_asset/${modelName}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -41,7 +41,7 @@ const Execution = () => {
 
         try {
           const response = await fetch(
-            `http://localhost:5000/execution_logs/${modelName}`
+            `http://localhost:5000/api/execution_logs/${modelName}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -54,7 +54,7 @@ const Execution = () => {
 
         try {
           const response = await fetch(
-            `http://localhost:5000/execution/${modelName}`
+            `http://localhost:5000/api/execution/${modelName}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
