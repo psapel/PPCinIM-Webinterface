@@ -23,7 +23,7 @@ function FilteredModel() {
       if (isChecked[modelName]) {
         try {
           const response = await fetch(
-            `http://localhost:5000/underlying-asset/${modelName}`
+            `http://localhost:5000/api/underlying_asset/${modelName}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

@@ -12,6 +12,7 @@ from python_files.execution_logs import total_execution
 from python_files.model_execution import total_order
 from python_files.odoo_connect import connect
 
+
 new_minio = Minio(
     "137.226.188.114:32763",
     secure=False,
@@ -238,35 +239,8 @@ def index():
             return "No matching model found."
     return jsonify({"message": "Invalid request method"})
 
-@app.route('/model-execution/', methods=['GET', 'POST'])
-def selection():
-    x = 0
-    models_list = request.form.getlist('selected_model')
-    print(models_list)
-    return render_template('execution.html', models_list=models_list)
 
-
-@app.route('/model/<model_name>')
-def display_model(model_name):
-    # Load all models from the 'jsonModels' folder
-    models = load_models(es)
-
-    # Find the matching model based on the model name from the URL
-    matching_model = None
-    for model in models:
-        if model["GrahamNotation"]["name"] == model_name:
-            matching_model = model
-            break
-
-    if matching_model:
-        show = jsonify(matching_model)
-        print(show)
-        return jsonify(matching_model)
-    else:
-        return "Model not found."
-
-
-@app.route('/underlying-asset/<model_name>')
+@app.route('/api/underlying_asset/<model_name>')
 def get_asset(model_name):
     model = model_name.replace(" ID ", "-")
     new_model = model.lower()
@@ -277,7 +251,7 @@ def get_asset(model_name):
     return asset
 
 
-@app.route('/execution/<model_name>')
+@app.route('/api/execution/<model_name>')
 def get_execution(model_name):
     model = model_name.replace(" ID ", "-")
     new_model = model.lower()
@@ -285,7 +259,7 @@ def get_execution(model_name):
     job_order = total_order(new_model)
     return job_order
 
-@app.route('/execution_logs/<model_name>')
+@app.route('/api/execution_logs/<model_name>')
 def get_execution_logs(model_name):
     model = model_name.replace(" ID ", "-")
     new_model = model.lower()
@@ -293,10 +267,6 @@ def get_execution_logs(model_name):
     logs = total_execution(new_model)
     return logs
 
-@app.route('/images/<filename>')
-def serve_image(filename):
-    return send_from_directory('images', filename)            
 
-    
 if __name__ == '__main__':
     app.run(debug=True)

@@ -35,8 +35,6 @@ def total_order(model_name):
     solve = "y"
     dispresult = "y"
     
-    J = range(len(p))
-    K = range(len(J))
 
     m = op.LpProblem("SingleMachineSchedulingWithSequenceDependentSetuptime", op.LpMinimize)
     x = {(i, j): op.LpVariable(f"x{i}{j}", 0, 1, op.LpBinary) for i, j in it.product(range(N), range(N))}
@@ -55,7 +53,6 @@ def total_order(model_name):
     var1 = 0
     m += objs[0]
     
-    '''
     # It seem like that the following calculation was wrongly inserted here... 
     M = 1000  # BigM constraint
     # Here we need the number of weights according to the number of jobs, instad an error will occur  
@@ -78,7 +75,6 @@ def total_order(model_name):
             6: {j: (C[j] >= 0, f"eq7_{j}") for j in J}  # (4.11)
             }
     m += objs[0]
-    '''
     
     for keys1 in cons:
         for keys2 in cons[keys1]: m += cons[keys1][keys2]
@@ -103,6 +99,7 @@ def total_order(model_name):
     result_temp = result_temp + "Decision -- " + str(
         [(variables.name, variables.varValue) for variables in m.variables() if variables.varValue != 0]) + "\n\n"
 
+
     seq = []
     for k in K:
         for j in J:
@@ -113,8 +110,8 @@ def total_order(model_name):
     job_dict = []
     for item in seq:
         indv_job = []
-        indv_job.append("u" + str(item))
-        indv_job.append(job_names[item - 1])
+        indv_job.append("u" + str(item ))  # Correcting the index here
+        indv_job.append(job_names[item-1])  # Using item directly as the index
         job_dict.append(indv_job)
     result_temp = result_temp + "Optimal Job Order: "
     result_temp = result_temp + str(job_dict)
