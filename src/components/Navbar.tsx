@@ -35,9 +35,9 @@ const Navbar = () => {
             <li>
               <Link to={`/assets`}>Assets</Link>
             </li>
-            <li>
+            {/* <li>
               <Link to={`/data-sources`}>Data Sources</Link>
-            </li>
+            </li> */}
             <li>
               <Link to={`/decision-support`}>Production Scheduling</Link>
             </li>
@@ -61,9 +61,9 @@ const Navbar = () => {
           <li>
             <Link to={`/assets`}>Assets</Link>
           </li>
-          <li>
+          {/* <li>
             <Link to={`/data-sources`}>Data Sources</Link>
-          </li>
+          </li> */}
           <li>
             <Link to={`/decision-support`}>Production Scheduling</Link>
           </li>
