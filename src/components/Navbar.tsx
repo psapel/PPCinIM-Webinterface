@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "./logo.jpg";
+import logo from "./logo_en.jpg";
 import ioplogo from "./ioplogo.jpg";
 import "./Navbar.css";
 
@@ -36,21 +36,24 @@ const Navbar = () => {
               <Link to={`/assets`}>Assets</Link>
             </li>
             <li>
+              <Link to={`/models`}>Models</Link>
+            </li>
+            <li>
               <Link to={`/data-sources`}>Data Sources</Link>
             </li>
             <li>
-              <Link to={`/decision-support`}>Production Scheduling</Link>
-            </li>
-            <li>
-              <Link to={`/models`}>Models</Link>
+              <Link to={`/processing`}>Processing</Link>
             </li>
             <li>
               <Link to={`/production-planning`}>Production Planning</Link>
             </li>
+            <li>
+              <Link to={`/decision-support`}>Production Scheduling</Link>
+            </li>
           </ul>
         </div>
         <a className="" onClick={() => navigate("/")}>
-          <img src={logo} alt="Logo" className="navbar-logo" />
+          <img src={logo} alt="Logo" className="navbar-logo" style={{ height: '80%' }}/>
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
@@ -62,16 +65,19 @@ const Navbar = () => {
             <Link to={`/assets`}>Assets</Link>
           </li>
           <li>
-            <Link to={`/data-sources`}>Data Sources</Link>
-          </li>
-          <li>
-            <Link to={`/decision-support`}>Production Scheduling</Link>
-          </li>
-          <li>
             <Link to={`/models`}>Models</Link>
           </li>
           <li>
+            <Link to={`/data-sources`}>Data Sources</Link>
+          </li>
+          <li>
+              <Link to={`/processing`}>Processing</Link>
+            </li>
+          <li>
             <Link to={`/production-planning`}>Production Planning</Link>
+          </li>
+          <li>
+            <Link to={`/decision-support`}>Production Scheduling</Link>
           </li>
         </ul>
       </div>
