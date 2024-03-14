@@ -37,24 +37,15 @@ const Newmodel = () => {
       <div className="my-3">
         Model Type:
         <div>
-          <input
-            type="text"
-            placeholder="Model Type"
-            className="input input-bordered input-secondary w-full max-w-xs"
-          />
-        </div>
-      </div>
-      <div className="my-3">
-        Model Data Source (Optional):
-        <div>
           <select className="select select-secondary w-full max-w-xs">
             <option disabled selected>
-              Model Data Source
+              Model Type
             </option>
-            <option>localhost</option>
-            <option>GraphDB</option>
-            <option>Test SQL</option>
-            <option>Odoo - IKV</option>
+            <option>Production Scheduling</option>
+            <option>Engineering</option>
+            <option>Simulation</option>
+            <option>Behavior</option>
+            <option>Other</option>
           </select>
         </div>
       </div>
