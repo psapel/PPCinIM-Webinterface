@@ -53,7 +53,7 @@ const Navbar = () => {
           </ul>
         </div>
         <a className="" onClick={() => navigate("/")}>
-          <img src={logo} alt="Logo" className="navbar-logo" />
+          <img src={logo} alt="Logo" className="navbar-logo" width="80%"/>
         </a>
       </div>
       <div className="navbar-center hidden lg:flex">
