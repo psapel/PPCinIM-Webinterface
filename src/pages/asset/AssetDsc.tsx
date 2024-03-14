@@ -58,9 +58,10 @@ const AssetDsc = ({
       (el) => el.idShort === "MaxHeatingPower"
     ).value;
 
-    maxOperatingTemperature = assetData.conceptDescriptions.find(
-      (el) => el.idShort === "MaxOperatingTemperature"
-    ).value;
+    maxOperatingTemperature =
+      assetData.submodels[0].submodelElements[0].value.find(
+        (el) => el.idShort === "MaxOperatingTemperature"
+      ).value;
   }
 
   if (machineType === "Mold") {
