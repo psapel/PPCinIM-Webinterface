@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import logo from "./logo.jpg";
+import logo from "./logo_en.jpg";
 import ioplogo from "./ioplogo.jpg";
 import "./Navbar.css";
 
