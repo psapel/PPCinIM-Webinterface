@@ -2,7 +2,6 @@ import pulp as op
 import itertools as it
 from datetime import datetime
 
-
 from python_files.odoo_connect import connect
 
 
