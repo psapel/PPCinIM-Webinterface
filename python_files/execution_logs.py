@@ -1,10 +1,9 @@
-import json
-import time
 import pulp as op
 import itertools as it
 from datetime import datetime
-from python_files.odoo_connect import connect
 
+
+from python_files.odoo_connect import connect
 
 
 def total_execution(model_name):
