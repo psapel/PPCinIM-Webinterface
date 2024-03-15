@@ -140,6 +140,7 @@ const Newasset = () => {
                 />
                 {assetCategories.length > 1 && (
                   <button
+                    type="button"
                     className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
                     onClick={() => handleRemoveCategory(index)}
                   >
@@ -151,6 +152,7 @@ const Newasset = () => {
           ))}
           {assetCategories.length < 4 && (
             <button
+              type="button"
               className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
               onClick={handleAddCategory}
             >

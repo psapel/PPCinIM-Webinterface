@@ -35,16 +35,16 @@ const Navbar = () => {
             <li>
               <Link to={`/assets`}>Assets</Link>
             </li>
-            {/* <li>
+            <li>
+              <Link to={`/models`}>Models</Link>
+            </li>
+            <li>
               <Link to={`/data-sources`}>Data Sources</Link>
-            </li> */}
+            </li>
 
             <li>
               <Link to={`/processing`}>Processing</Link>
             </li>
-            {/* <li>
-              <Link to={`/models`}>Models</Link>
-            </li> */}
 
             <li>
               <Link to={`/production-planning`}>Production Planning</Link>
@@ -68,16 +68,17 @@ const Navbar = () => {
           <li>
             <Link to={`/assets`}>Assets</Link>
           </li>
-          {/* <li>
+          <li>
+            <Link to={`/models`}>Models</Link>
+          </li>
+          <li>
             <Link to={`/data-sources`}>Data Sources</Link>
-          </li> */}
+          </li>
 
           <li>
             <Link to={`/processing`}>Processing</Link>
           </li>
-          {/* <li>
-            <Link to={`/models`}>Models</Link>
-          </li> */}
+
           <li>
             <Link to={`/production-planning`}>Production Planning</Link>
           </li>
