@@ -8,17 +8,33 @@ from elasticsearch import Elasticsearch
 from prettytable import PrettyTable
 from minio import Minio
 
-from python_files.execution_logs import total_execution
-from python_files.model_execution import total_order
-from python_files.odoo_connect import connect
-
-
 new_minio = Minio(
     "137.226.188.114:32763",
     secure=False,
     access_key="databatt",
     secret_key="databatt",
 )
+
+from python_files.execution_logs import total_execution
+from python_files.model_execution import total_order
+from python_files.odoo_connect import connect
+
+from py2neo import Graph
+
+# Neo4j configuration
+neo4j_uri = "bolt://localhost:7687"
+neo4j_username = "neo4j"
+neo4j_password = "engx1494"
+
+graph = Graph(neo4j_uri, auth=(neo4j_username, neo4j_password))
+
+# Import queries from the local folder
+from queries.coolant_query import get_coolant_data
+from queries.handling_device_query import get_handling_device_data
+from queries.injection_molding_machine_query import run_injection_molding_machine_query
+
+
+es = Elasticsearch(hosts=['http://localhost:9200'])
 
 app = Flask(__name__)
 CORS(app)
@@ -91,8 +107,6 @@ def search_assets():
         print(e)
         return jsonify({"error": "Failed to retrieve assets"}), 500
 
-
-es = Elasticsearch(hosts=['http://localhost:9200'])
 
 index_settings = {
     "settings": {
@@ -266,6 +280,27 @@ def get_execution_logs(model_name):
     print(new_model)
     logs = total_execution(new_model)
     return logs
+
+
+@app.route('/')
+def neo4j():
+    return render_template('neo4j.html')
+
+@app.route('/query1', methods=['POST'])
+def run_query1():
+    coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)
+    return render_template('result.html', data=coolant_data, query_type='Temperature Control Unit Query')
+
+@app.route('/query2', methods=['POST'])
+def run_query2():
+    handling_device_data = get_handling_device_data(neo4j_uri, neo4j_username, neo4j_password)
+    return render_template('result.html', data=handling_device_data, query_type='Handling Device Query')
+
+@app.route('/query3', methods=['POST'])
+def run_query3():
+    result = run_injection_molding_machine_query(graph)
+    return render_template('result.html', data=result, query_type='Injection Molding Machine Query')
+
 
 
 if __name__ == '__main__':
