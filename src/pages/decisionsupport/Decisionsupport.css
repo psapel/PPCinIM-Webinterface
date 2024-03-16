@@ -1,4 +1,4 @@
-/* CSS */
+
 
 .card {
   display: flex;
@@ -14,7 +14,7 @@
 }
 
 .btn {
-  background-color: var(--secondary-color); /* Replace with your secondary color */
+  background-color: var(--secondary-color); 
   color: white;
 }
 
@@ -44,8 +44,8 @@
 
 .execution-logs{
   background-color: 	lightgray;
-  margin: 20px; /* Adjust as needed */
-  padding: 20px; /* Adjust as needed */
+  margin: 20px;
+  padding: 20px; 
   overflow: auto;
 }
 

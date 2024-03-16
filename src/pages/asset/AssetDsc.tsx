@@ -128,7 +128,6 @@ const AssetDsc = ({
                 assetData={assetData}
                 machineType="Injection Molding Machine"
                 dataType="MaxClampingForce"
-                assetData={assetData}
               />
             </div>
           )}
@@ -148,7 +147,6 @@ const AssetDsc = ({
                 assetData={assetData}
                 machineType="Injection Molding Machine"
                 dataType="MaxOpeningStroke"
-                assetData={assetData}
               />
             </div>
           )}
@@ -169,7 +167,6 @@ const AssetDsc = ({
           {showDetails && (
             <div className="py-4 asset-description">
               <MetaDataIMM
-                assetData={assetData}
                 assetData={assetData}
                 machineType="Hot Runner Device"
                 dataType="MaxHeatingPower"

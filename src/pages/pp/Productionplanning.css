@@ -1,0 +1,32 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* background-color: rgba(128, 128, 128, 0.1);  */
+  padding: 20px;
+  margin: 50px auto;
+  width: 100%;
+  /* max-width: 40rem;  */
+  /* border-radius: 8px; */
+}
+
+.resultsfont{
+  text-align: center;
+  margin: 20px auto;
+  font-weight: bold;
+  background-color: rgba(149, 187, 32, 0.7);
+  padding: 30px;
+  width: 50%;
+  box-sizing: border-box;
+}
+
+.results{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.table td, .table th {
+  text-align: center;
+  vertical-align: middle;
+}

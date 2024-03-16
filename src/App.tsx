@@ -8,13 +8,14 @@ import NewAsset from "./pages/asset/Newasset";
 import NewModel from "./pages/models/Newmodel";
 import NewDataConnector from "./pages/datasources/Newdataconnector";
 import FilteredModelCatalogue from "./pages/decisionsupport/Filteredmodel";
-import AssetDetails from "./pages/asset/AssetDetails";
+import AssetDetails from "./pages/asset/Assetdetails";
 import ModelDetails from "./pages/models/Modeldetails";
 import DataDetails from "./pages/datasources/Datadetails";
 import FilteredModel from "./pages/decisionsupport/Filteredmodel";
 import AboutPage from "./pages/About";
 import ProductionPlanning from "./pages/pp/ProductionPlanning";
 import Execution from "./pages/decisionsupport/Execution";
+import ResultsPage from "./pages/pp/Results";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
           <Route path="/execution-model" element={<Execution />} />
           <Route path="/" element={<AboutPage />} />
           <Route path="/production-planning" element={<ProductionPlanning />} />
+          <Route path="/results/:queryType" element={<ResultsPage />} />
         </Routes>
       </Router>
     </div>
