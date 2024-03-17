@@ -10,7 +10,7 @@
 - Install flask, flask-cors, python-dotenv
 ```js
    cd PPCinIM-Webinterface
-   flask run   or   python -m flask run
+   flask run  
 ```
 
 
@@ -18,3 +18,13 @@
 ```js
    http://localhost:5173
 ```
+
+- Start neo4j
+```js
+   username: neo4j
+   password: 12345678
+```
+
+
+
+
