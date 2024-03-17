@@ -8,6 +8,17 @@ const Newasset = () => {
   const [assetData, setAssetData] = useState(null);
   const [assetCategories, setAssetCategories] = useState([""]);
   const [error, setError] = useState(null);
+  const [selectedImage, setSelectedImage] = useState("");
+
+  const availableImage = [
+    "images/imagetest.jpg",
+    "images/imagetest2.jpg",
+    "images/imagetest3.jpg",
+  ];
+
+  // const handleImageChange = (event) => {
+  //   setSelectedImage(event.target.value);
+  // };
 
   const handleAddCategory = () => {
     if (assetCategories.length < 4) {
@@ -45,6 +56,7 @@ const Newasset = () => {
       assetType,
       assetData,
       assetCategories,
+      assetImage: selectedImage,
     };
 
     try {
@@ -161,16 +173,25 @@ const Newasset = () => {
           )}
         </div>
 
-        {/* <div className="my-3">
-          Image
+        <div className="my-3">
+          Image:
           <div>
-            <input
-              type="file"
-              className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-              //yet to add to backend
-            />
+            <select
+              className="select select-secondary w-full max-w-xs"
+              value={selectedImage}
+              onChange={(e) => setSelectedImage(e.target.value)}
+            >
+              <option disabled value="">
+                Select an image
+              </option>
+              {availableImage.map((image, index) => (
+                <option key={index} value={image}>
+                  {image}
+                </option>
+              ))}
+            </select>
           </div>
-        </div> */}
+        </div>
 
         <div className="my-3">
           Asset Administration Shell

@@ -11,16 +11,31 @@
   padding: 3rem;
   width: 100%;
   max-width: 60rem;
+  display: flex;
+  justify-content: space-between;
+ 
 }
 
 .asset-description{
-  width: 100%;
+  width: 80%;
   background-color: rgba(149, 187, 32, 0.7);
   padding: 20px;
   border-radius: 8px; 
-  margin: 20px;/* Adjust border-radius as needed */
+  margin: 20px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
 }
 
+/* .asset-details-title {
+  display: flex;
+  justify-content: space-between;
+} */
+
+.column1{
+  float: left;
+}
+
+.column2{
+ flex-shrink:0;
+}

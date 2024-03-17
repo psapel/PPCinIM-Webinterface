@@ -15,6 +15,7 @@ const AssetDetails = () => {
     .value[0].text;
 
   console.log("AssetDetails", asset);
+  console.log("AssetImage", asset.assetImage);
 
   return (
     <div className="description-box flex flex-col items-center justify-center ">
@@ -38,19 +39,35 @@ const AssetDetails = () => {
         </svg>
       </button>
       <div className="textbox">
-        <p>
-          <strong>Name:</strong> {asset.assetName}{" "}
-        </p>
-        <br></br>
-        <p>
-          <strong>Manufacturer: </strong>
-          {manufacturer}
-        </p>
-        <br></br>
-        <AssetDsc
-          machineType={machineType as string}
-          assetData={asset.assetData}
-        />
+        <div className="column1">
+          <p>
+            <strong>Name:</strong> {asset.assetName}{" "}
+          </p>
+          <br></br>
+          <p>
+            <strong>Manufacturer: </strong>
+            {manufacturer}
+          </p>
+
+          <br></br>
+          <AssetDsc
+            machineType={machineType as string}
+            assetData={asset.assetData}
+          />
+        </div>
+        <div className="column2">
+          <figure>
+            {
+              (console.log(asset.assetImage),
+              asset.assetImage && (
+                <img
+                  className="asset-image w-64"
+                  src={import.meta.env.BASE_URL + asset.assetImage}
+                />
+              ))
+            }
+          </figure>
+        </div>
       </div>
     </div>
   );

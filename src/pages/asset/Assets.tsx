@@ -68,6 +68,20 @@ const Assets = () => {
                 <div className="flex justify-center flex-wrap m-4" key={index}>
                   <div className="card w-96 bg-gray-100 shadow-xl">
                     <div className="card-body">
+                      <figure>
+                        {
+                          (console.log(asset.assetImage),
+                          asset.assetImage && (
+                            <img
+                              // src={
+                              //   import.meta.env.BASE_URL +
+                              //   "images/imagetest3.jpg"
+                              // }
+                              src={import.meta.env.BASE_URL + asset.assetImage}
+                            />
+                          ))
+                        }
+                      </figure>
                       <h2 className="card-title">{asset.assetName}</h2>
                       <div className="badge badge-outline">
                         {asset.assetType}
@@ -79,9 +93,7 @@ const Assets = () => {
                           </div>
                         ))}
                       </div>
-                      {/* <figure>
-                        <img src=""></img>
-                      </figure> */}
+
                       <button
                         className="btn  text-white bg-secondary hover:bg-primary rounded"
                         onClick={() =>

@@ -21,9 +21,9 @@ const Datasources = () => {
         <div className="card w-96 bg-base-100 shadow-xl">
           <div className="card-body">
             <h2 className="card-title"> Local Host</h2>
-            <figure>
+            {/* <figure>
               <img src=""></img>
-            </figure>
+            </figure> */}
             <button
               className="btn  text-white bg-secondary hover:bg-primary"
               onClick={() => navigate("/data-details")}

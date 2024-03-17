@@ -19,10 +19,19 @@ const MetaDataIMM = ({
 
   return (
     <>
-      <p>Description: {descriptionClamp}</p>
-      <p>Unit: {unitClamp} </p>
-      <p>Symbol: {unitSym} </p>
-      <p>Value Format: {valueFormat} </p>
+      <p>
+        <strong>Description:</strong> {descriptionClamp}
+      </p>
+      <p>
+        <strong>Unit: </strong>
+        {unitClamp}{" "}
+      </p>
+      <p>
+        <strong>Symbol:</strong> {unitSym}{" "}
+      </p>
+      <p>
+        <strong>Value Format:</strong> {valueFormat}{" "}
+      </p>
     </>
   );
 };
