@@ -284,10 +284,6 @@ def get_execution_logs(model_name):
     return logs
 
 
-@app.route('/')
-def neo4j():
-    return render_template('neo4j.html')
-
 @app.route('/query1', methods=['POST'])
 def run_query1():
     coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)

@@ -15,8 +15,8 @@ const Assets = () => {
 
   const fetchAssets = async () => {
     const url = searchQuery
-      ? `http://localhost:5002/api/search_assets?q=${searchQuery}`
-      : "http://localhost:5002/api/get_assets";
+      ? `http://localhost:5005/api/search_assets?q=${searchQuery}`
+      : "http://localhost:5005/api/get_assets";
 
     try {
       const response = await fetch(url);
