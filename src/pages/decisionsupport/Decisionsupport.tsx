@@ -213,24 +213,41 @@ const Decisionsupport = () => {
         },
         body: formData,
       });
-      const filteredModels = await response.json();
-      if (filteredModels.length === 0) {
-        setErrorMessage("No matching models found");
+
+      if (response.ok) {
+        const text = await response.text();
+        try {
+          const filteredModels = JSON.parse(text);
+          if (
+            filteredModels === "No matching model found." ||
+            filteredModels.length === 0
+          ) {
+            setErrorMessage("No matching models found");
+          } else {
+            navigate("/filtered-model", { state: { filteredModels } });
+          }
+        } catch {
+          if (text === "No matching model found.") {
+            setErrorMessage("No matching models found");
+            console.log(errorMessage);
+          }
+        }
       } else {
-        navigate("/filtered-model", { state: { filteredModels } });
+        throw new Error(`Request failed: ${response.status}`);
       }
     } catch (error) {
       console.error("Error:", error);
+      setErrorMessage(error.message || "An error occurred");
     }
 
     console.log("selected criteria", selectedCriteria);
     console.log("selected environment", selectedEnvironment);
     console.log("selected objective criteria", selectedObjectiveCriteria);
+    console.log(errorMessage);
   };
 
   return (
     <div>
-      {/* <div>{errorMessage && <p>{errorMessage}</p>}</div> */}
       <div className="flex flex-wrap justify-center">
         {categories.map((category) => (
           <div
@@ -282,13 +299,18 @@ const Decisionsupport = () => {
           </div>
         ))}
       </div>
-      <div className="flex justify-center">
+      <div className="flex flex-col gap-3 justify-center items-center">
         <button
           className="btn btn-wide  text-white bg-secondary hover:bg-primary"
           onClick={handleSubmit}
         >
           Submit
         </button>
+        {errorMessage && (
+          <div className="text-xl text-red-500">
+            <p>{errorMessage}</p>
+          </div>
+        )}
       </div>
     </div>
   );
