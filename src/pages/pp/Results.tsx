@@ -14,7 +14,7 @@ const Results = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(`http://localhost:5000/${queryType}`, {
+      const response = await fetch(`http://localhost:5005/${queryType}`, {
         method: "POST",
       });
       const data = await response.json();
