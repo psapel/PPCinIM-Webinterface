@@ -35,8 +35,8 @@ function App() {
             path="/asset-details/:machineType/"
             element={<AssetDetails />}
           />
-          <Route path="/model-details/:id" element={<ModelDetails />} />
-          <Route path="/data-details" element={<DataDetails />} />
+          <Route path="/model-details/:name" element={<ModelDetails />} />
+          <Route path="/data-details/:name" element={<DataDetails />} />
           <Route path="/filtered-model" element={<FilteredModel />} />
           <Route path="/execution-model" element={<Execution />} />
           <Route path="/" element={<AboutPage />} />
