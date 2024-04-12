@@ -2,17 +2,30 @@ import { useNavigate, useLocation } from "react-router-dom";
 import "./Models.css";
 import { useState } from "react";
 import { categories } from "../decisionsupport/Decisionsupport";
-import { urlToNameMapping } from "../decisionsupport/Decisionsupport";
 
 const Modeldetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { modelData, modelName } = location.state;
+  const { modelData, modelName, formula } = location.state;
   const [showDetails, setShowDetails] = useState(false);
   const [showJobDetails, setShowJobDetails] = useState(false);
 
   console.log("modelData", modelData);
   console.log("components", categories);
+  const modelType =
+    modelData.assetAdministrationShells[0].assetInformation.assetType;
+
+  const purposeProperties1 = modelData.submodels[0].submodelElements
+    .find((el) => el.idShort === "PurposeProperties")
+    .value.find((el) => el.idShort === "MachineEnvironment").value;
+
+  const purposeProperties2 = modelData.submodels[0].submodelElements
+    .find((el) => el.idShort === "PurposeProperties")
+    .value.find((el) => el.idShort === "SchedulingConstraints").value;
+
+  const purposeProperties3 = modelData.submodels[0].submodelElements
+    .find((el) => el.idShort === "PurposeProperties")
+    .value.find((el) => el.idShort === "SchedulingObjectiveFunction").value;
 
   return (
     <div className="page">
@@ -43,10 +56,11 @@ const Modeldetails = () => {
         </p>
         <p>
           <strong>Model Type: </strong>
+          {modelType}
         </p>
         <p>
           <strong>Formula: </strong>
-          {modelData.purpose_properties.formula}
+          {formula}
         </p>
         <br></br>
         <br></br>
@@ -63,41 +77,17 @@ const Modeldetails = () => {
         />
         <p>
           <strong>Machine Environment: </strong>
-          {
-            urlToNameMapping[
-              modelData.purpose_properties[
-                "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
-              ] as keyof typeof urlToNameMapping
-            ]
-          }
+          {purposeProperties1}
         </p>
         <br></br>
         <p>
           <strong>Scheduling Constraints: </strong>
-          {Array.isArray(
-            modelData.purpose_properties[
-              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
-            ]
-          )
-            ? modelData.purpose_properties[
-                "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
-              ]
-                .map((url) => urlToNameMapping[url])
-                .join(", ")
-            : urlToNameMapping[
-                modelData.purpose_properties[
-                  "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
-                ]
-              ]}
+          {purposeProperties2}
         </p>
         <br></br>
         <p>
           <strong>Scheduling Objective Function: </strong>
-          {modelData.purpose_properties[
-            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
-          ]
-            .map((url) => urlToNameMapping[url])
-            .join(", ")}
+          {purposeProperties3}
         </p>
         <br></br>
         <br></br>
@@ -126,11 +116,19 @@ const Modeldetails = () => {
               <br></br>
               <p>
                 <strong>Identifier: </strong>
-                {modelData.input_data[0].job_name.id}
+                {
+                  modelData.submodels[0].submodelElements.find(
+                    (el) => el.idShort === "InputData"
+                  ).value[0].value.keys[1].value
+                }
               </p>
               <p>
                 <strong>Source: </strong>
-                {modelData.input_data[0].job_name.db}
+                {
+                  modelData.submodels[0].submodelElements.find(
+                    (el) => el.idShort === "InputData"
+                  ).value[0].value.keys[0].value
+                }
               </p>
               <br></br>
             </div>
@@ -150,11 +148,19 @@ const Modeldetails = () => {
               <br></br>
               <p>
                 <strong>Identifier: </strong>
-                {modelData.input_data[1].job_duration.id}
+                {
+                  modelData.submodels[0].submodelElements.find(
+                    (el) => el.idShort === "InputData"
+                  ).value[1].value.keys[1].value
+                }
               </p>
               <p>
                 <strong>Source: </strong>
-                {modelData.input_data[1].job_duration.db}
+                {
+                  modelData.submodels[0].submodelElements.find(
+                    (el) => el.idShort === "InputData"
+                  ).value[1].value.keys[0].value
+                }
               </p>
               <br></br>
             </div>
@@ -175,11 +181,21 @@ const Modeldetails = () => {
         />
         <p>
           <p>
-            <strong>Preprocessing:</strong> {modelData.preprocess}
+            <strong>Preprocessing:</strong>{" "}
+            {
+              modelData.submodels[0].submodelElements.find(
+                (el) => el.idShort === "Preprocessing"
+              ).value[0].value
+            }
           </p>
           <br></br>
           <p>
-            <strong>Postprocessing:</strong> {modelData.postprocess}
+            <strong>Postprocessing:</strong>{" "}
+            {
+              modelData.submodels[0].submodelElements.find(
+                (el) => el.idShort === "Postprocessing"
+              ).value[0].value
+            }
           </p>
         </p>
       </div>

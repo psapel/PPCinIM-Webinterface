@@ -1,11 +1,11 @@
 {
   "assetAdministrationShells": [
     {
-      "idShort": "ProductionSchedulingModel_2",
+      "idShort": "ProductionSchedulingModel_1a",
       "displayName": [
         {
           "language": "en",
-          "text": "Production Scheduling Model 2"
+          "text": "Production Scheduling Model 1a"
         }
       ],
       "description": [],
@@ -13,10 +13,10 @@
         "version": "1",
         "revision": "1"
       },
-      "id": "https://iop.rwth-aachen.de/IM/aas/1/1/ProductionSchedulingModel_2",
+      "id": "https://iop.rwth-aachen.de/IM/aas/1/1/ProductionSchedulingModel_1a",
       "assetInformation": {
         "assetKind": "Instance",
-        "globalAssetId": "https://iop.rwth-aachen.de/IM/asset/1/1/ProductionSchedulingModel_2",
+        "globalAssetId": "https://iop.rwth-aachen.de/IM/asset/1/1/ProductionSchedulingModel_1a",
         "assetType": "ProductionSchedulingModel"
       },
       "submodels": [
@@ -25,7 +25,7 @@
           "keys": [
             {
               "type": "Submodel",
-              "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/ModelSignature/Model2"
+              "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/ModelSignature/Model1a"
             }
           ]
         }
@@ -42,7 +42,7 @@
           "text": "Model Signature"
         }
       ],
-      "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/modelSignature/Model2",
+      "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/modelSignature/Model1a",
       "kind": "Instance",
       "submodelElements": [
         {
@@ -159,14 +159,6 @@
                   {
                     "type": "GlobalReference",
                     "value": "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup"
-                  },
-                  {
-                    "type": "GlobalReference",
-                    "value": "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility"
-                  },
-                  {
-                    "type": "GlobalReference",
-                    "value": "http://www.iop.rwth-aachen.de/PPC/1/1/jobFamilies"
                   }
                 ]
               },
@@ -219,11 +211,11 @@
                 "keys": [
                   {
                     "type": "GlobalReference",
-                    "value": "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumTardiness"
+                    "value": "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime"
                   },
                   {
                     "type": "GlobalReference",
-                    "value": "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
+                    "value": "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime"
                   }
                 ]
               },
@@ -470,7 +462,7 @@
           ],
           "embeddedDataSpecifications": [],
           "valueType": "xs:string",
-          "value": "Pₘ | sᵢⱼ, Mⱼ, fmls | ΣwⱼTⱼ, ΣwⱼCⱼ",
+          "value": "Pₘ | sᵢⱼ  | Cₘₐₓ, ΣwⱼWⱼ",
           "modelType": "Property"
         },
         {

@@ -49,6 +49,7 @@ def create_asset():
         asset_name = models.get('assetName')
         asset_type = models.get('assetType')
         asset_data = models.get('assetData')
+        asset_aasx_data = models.get('assetAasxData')
         asset_categories = models.get('assetCategories')
         asset_image = models.get('assetImage')
 
@@ -64,6 +65,7 @@ def create_asset():
             memory_storage.append({
                 'assetType': asset_type,
                 'assetData': asset_data,
+                'assetAasxData': asset_aasx_data,
                 'assetName': asset_name,
                 'assetCategories': asset_categories,
                 'assetImage': asset_image

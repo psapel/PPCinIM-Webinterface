@@ -38,7 +38,16 @@ const Newasset = () => {
     setAssetCategories(newAssetCategories);
   };
 
-  const handleFileChange = (event) => {
+  const handleJsonFileChange = (event) => {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const data = JSON.parse(event.target.result);
+      setAssetData(data);
+    };
+    reader.readAsText(file);
+  };
+  const handleAasxFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
@@ -194,12 +203,22 @@ const Newasset = () => {
         </div>
 
         <div className="my-3">
-          Asset Administration Shell
+          Asset Administration Shell Json
           <div>
             <input
               type="file"
               className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-              onChange={handleFileChange}
+              onChange={handleJsonFileChange}
+            />
+          </div>
+        </div>
+        <div className="my-3">
+          Asset Administration Shell Aasx
+          <div>
+            <input
+              type="file"
+              className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
+              onChange={handleAasxFileChange}
             />
           </div>
         </div>

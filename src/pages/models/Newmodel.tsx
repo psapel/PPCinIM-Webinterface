@@ -68,7 +68,7 @@ const Newmodel = () => {
         </div>
       </div>
       <div className="my-3">
-        Configuration File (Optional):
+        Asset Administration Shell (AASX):
         <div>
           <input
             type="file"
