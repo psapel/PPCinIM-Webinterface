@@ -41,8 +41,14 @@ const Datadetails = () => {
             <h3>Submodels:</h3>
             {shell.submodels.map((submodel, submodelIndex) => (
               <div key={submodelIndex}>
-                <p>Type: {submodel.type}</p>
-                <p>Value: {submodel.keys[0]?.value}</p>
+                {submodel.idShort === "SoftwareNameplateType" &&
+                  submodel.value.map((value, valueIndex) => (
+                    <div key={valueIndex}>
+                      <p>
+                        {value.idShort}: {value.value}
+                      </p>
+                    </div>
+                  ))}
               </div>
             ))}
           </div>
