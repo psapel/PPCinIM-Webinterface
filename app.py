@@ -5,16 +5,6 @@ import os
 
 from elasticsearch import Elasticsearch
 
-from prettytable import PrettyTable
-from minio import Minio
-
-new_minio = Minio(
-    "137.226.188.114:32763",
-    secure=False,
-    access_key="databatt",
-    secret_key="databatt",
-)
-
 from python_files.execution_logs import total_execution
 from python_files.model_execution import total_order
 from python_files.odoo_connect import connect

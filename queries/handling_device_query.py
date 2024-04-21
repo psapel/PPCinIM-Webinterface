@@ -5,7 +5,7 @@ def get_handling_device_data(uri, username, password):
         with driver.session() as session:
             query = """
             MATCH (i:Inquiry_1)
-            WITH i.HandlingDevice AS InquiryHandlingDevice
+            WITH i.RequiredHandlingType AS InquiryHandlingDevice
             MATCH (tcu)
             WHERE tcu.ManufacturerProductRoot = 'HandlingDevice'
             AND tcu.HandlingDevice = InquiryHandlingDevice
