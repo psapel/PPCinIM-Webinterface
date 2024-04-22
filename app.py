@@ -1,3 +1,9 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String
+
+
 from flask import Flask, request, render_template, url_for, send_from_directory, jsonify
 from flask_cors import CORS
 import json
@@ -31,6 +37,55 @@ CORS(app)
 
 memory_storage = []
 
+#Database starts here
+class Base(DeclarativeBase):
+  pass
+
+db = SQLAlchemy(model_class=Base)
+
+# configure the SQLite database, relative to the app instance folder
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ppcim.db"
+
+# initialize the app with the extension
+db.init_app(app)
+
+class User(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    username: Mapped[str] = mapped_column(unique=True)
+    email: Mapped[str]
+
+with app.app_context():
+    db.create_all() 
+
+#test routes for sqlalchemy
+@app.route('/test', methods=['GET'])
+def create_user():
+    try:
+        user = User(
+            username="fgddfdfs",
+            email="testbedsdsdfsfsdgin",
+        )
+        db.session.add(user)
+        db.session.commit()
+        return "user"
+            
+    except Exception as e:
+        print(e)  
+
+@app.route('/test2', methods=['GET'])
+def get_user():
+    try:
+        # Retrieve all users ordered by username
+        users = User.query.order_by(User.username).all()
+        # Convert the query results to a list of dictionaries
+        user_dicts = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+        # Return the JSON response
+        return jsonify(user_dicts)
+  
+    except Exception as e:
+        print(e)  
+
+#ppcim python script starts here
 @app.route('/api/create_asset', methods=['POST'])
 def create_asset():
     try:
