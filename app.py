@@ -169,15 +169,28 @@ def search_assets():
     try:
         search_query = request.args.get('q')
 
+        # Retrieve all assets ordered by id
+        assets = Asset.query.order_by(Asset.id).all()
+        # Convert the query results to a list of dictionaries
+        asset_dicts = [{
+            "assetId": asset.id,
+            "assetName": asset.asset_name,
+            "assetType": asset.asset_type,
+            "assetData": json.loads(asset.asset_data),
+            "assetAasx": asset.asset_aasx_data,
+            "assetCategories": json.loads(asset.asset_categories),
+            "assetImage": asset.asset_image
+            } for asset in assets]
+
         if search_query:
             # Filter assets based on the search query
-            filtered_assets = [asset for asset in memory_storage if
+            filtered_assets = [asset for asset in asset_dicts if
                                any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) or
                                any(word.lower().startswith(search_query.lower()) for word in asset['assetType'].split()) or
                                any(category.lower().startswith(search_query.lower()) for category in asset['assetCategories'])]
             return jsonify(filtered_assets), 200
         else:
-            return jsonify(memory_storage), 200
+            return jsonify(asset_dicts), 200
     except Exception as e:
         print(e)
         return jsonify({"error": "Failed to retrieve assets"}), 500
