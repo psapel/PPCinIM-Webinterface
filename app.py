@@ -63,24 +63,32 @@ with app.app_context():
     db.create_all() 
 
 #test routes for sqlalchemy
-@app.route('/test', methods=['GET'])
+@app.route('/test', methods=['POST'])
 def create_testasset():
     try:
-        asset = Asset(
-            asset_name="hahahaha",
-            asset_type="hahahsddssda",
-            asset_data="{\"idShort\": \"TechnicalDatasdsd\"}",
-            asset_aasx_data="hashdsdsdhsd",
-            asset_categories="hashddddddddddddddhsd",
-            asset_image="image.jpg"
+        models = request.get_json()
 
+        asset_name = models.get('assetName')
+        asset_type = models.get('assetType')
+        asset_data = models.get('assetData')
+        asset_aasx_data = models.get('assetAasxData')
+        asset_categories = models.get('assetCategories')
+        asset_image = models.get('assetImage')
+
+        asset = Asset(
+            asset_name=asset_name,
+            asset_type=asset_type,
+            asset_data=json.dumps(asset_data),
+            asset_aasx_data="hashdsdsdhsd",
+            asset_categories=json.dumps(asset_categories),
+            asset_image=asset_image
         )
         db.session.add(asset)
         db.session.commit()
         return "asset created"
             
     except Exception as e:
-        print(e)  
+        print(e)
 
 @app.route('/test2', methods=['GET'])
 def get_testasset():
@@ -89,13 +97,13 @@ def get_testasset():
         assets = Asset.query.order_by(Asset.id).all()
         # Convert the query results to a list of dictionaries
         asset_dicts = [{
-            "id": asset.id,
-            "name": asset.asset_name,
-            "type": asset.asset_type,
-            "aasx": asset.asset_aasx_data,
-            "categories": asset.asset_categories,
-            "data": json.loads(asset.asset_data),
-            "image": asset.asset_image
+            "assetId": asset.id,
+            "assetName": asset.asset_name,
+            "assetType": asset.asset_type,
+            "assetData": json.loads(asset.asset_data),
+            "assetAasx": asset.asset_aasx_data,
+            "assetCategories": json.loads(asset.asset_categories),
+            "assetImage": asset.asset_image
             } for asset in assets]
         # Return the JSON response
         return jsonify(asset_dicts)

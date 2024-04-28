@@ -75,7 +75,7 @@ const Newasset = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5005/api/create_asset", {
+      const response = await fetch("http://localhost:5005/test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
