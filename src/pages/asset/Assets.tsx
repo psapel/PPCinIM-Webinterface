@@ -22,6 +22,7 @@ const Assets = () => {
       const response = await fetch(url);
       const data = await response.json();
       setAssets(data);
+      console.log(data);
     } catch (error) {
       console.error("Error fetching assets:", error);
     }

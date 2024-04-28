@@ -49,38 +49,56 @@ app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ppcim.db"
 # initialize the app with the extension
 db.init_app(app)
 
-class User(db.Model):
+class Asset(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    username: Mapped[str] = mapped_column(unique=True)
-    email: Mapped[str]
+    asset_name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_type: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_data: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_aasx_data: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_categories: Mapped[str] = mapped_column(nullable=False)
+    asset_image: Mapped[str] = mapped_column(nullable=False)
+    
 
 with app.app_context():
     db.create_all() 
 
 #test routes for sqlalchemy
 @app.route('/test', methods=['GET'])
-def create_user():
+def create_testasset():
     try:
-        user = User(
-            username="fgddfdfs",
-            email="testbedsdsdfsfsdgin",
+        asset = Asset(
+            asset_name="hahahaha",
+            asset_type="hahahsddssda",
+            asset_data="{\"idShort\": \"TechnicalDatasdsd\"}",
+            asset_aasx_data="hashdsdsdhsd",
+            asset_categories="hashddddddddddddddhsd",
+            asset_image="image.jpg"
+
         )
-        db.session.add(user)
+        db.session.add(asset)
         db.session.commit()
-        return "user"
+        return "asset created"
             
     except Exception as e:
         print(e)  
 
 @app.route('/test2', methods=['GET'])
-def get_user():
+def get_testasset():
     try:
-        # Retrieve all users ordered by username
-        users = User.query.order_by(User.username).all()
+        # Retrieve all assets ordered by id
+        assets = Asset.query.order_by(Asset.id).all()
         # Convert the query results to a list of dictionaries
-        user_dicts = [{"id": user.id, "username": user.username, "email": user.email} for user in users]
+        asset_dicts = [{
+            "id": asset.id,
+            "name": asset.asset_name,
+            "type": asset.asset_type,
+            "aasx": asset.asset_aasx_data,
+            "categories": asset.asset_categories,
+            "data": json.loads(asset.asset_data),
+            "image": asset.asset_image
+            } for asset in assets]
         # Return the JSON response
-        return jsonify(user_dicts)
+        return jsonify(asset_dicts)
   
     except Exception as e:
         print(e)  
