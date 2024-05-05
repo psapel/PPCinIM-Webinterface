@@ -54,9 +54,15 @@ class Asset(db.Model):
     asset_name: Mapped[str] = mapped_column(unique=True, nullable=False)
     asset_type: Mapped[str] = mapped_column(unique=True, nullable=False)
     asset_data: Mapped[str] = mapped_column(unique=True, nullable=False)
-    asset_aasx_data: Mapped[str] = mapped_column(unique=True, nullable=False)
     asset_categories: Mapped[str] = mapped_column(nullable=False)
     asset_image: Mapped[str] = mapped_column(nullable=False)
+
+class Model(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    model_name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    model_type: Mapped[str] = mapped_column(unique=True, nullable=False)
+    model_data: Mapped[str] = mapped_column(unique=True, nullable=False)
+    model_image: Mapped[str]= mapped_column(nullable=True)
     
 
 with app.app_context():
@@ -66,20 +72,18 @@ with app.app_context():
 @app.route('/test', methods=['POST'])
 def create_testasset():
     try:
-        models = request.get_json()
+        assets = request.get_json()
 
-        asset_name = models.get('assetName')
-        asset_type = models.get('assetType')
-        asset_data = models.get('assetData')
-        asset_aasx_data = models.get('assetAasxData')
-        asset_categories = models.get('assetCategories')
-        asset_image = models.get('assetImage')
+        asset_name = assets.get('assetName')
+        asset_type = assets.get('assetType')
+        asset_data = assets.get('assetData')
+        asset_categories = assets.get('assetCategories')
+        asset_image = assets.get('assetImage')
 
         asset = Asset(
             asset_name=asset_name,
             asset_type=asset_type,
             asset_data=json.dumps(asset_data),
-            asset_aasx_data="hashdsdsdhsd",
             asset_categories=json.dumps(asset_categories),
             asset_image=asset_image
         )
@@ -101,7 +105,6 @@ def get_testasset():
             "assetName": asset.asset_name,
             "assetType": asset.asset_type,
             "assetData": json.loads(asset.asset_data),
-            "assetAasx": asset.asset_aasx_data,
             "assetCategories": json.loads(asset.asset_categories),
             "assetImage": asset.asset_image
             } for asset in assets]
@@ -109,7 +112,49 @@ def get_testasset():
         return jsonify(asset_dicts)
   
     except Exception as e:
+        print(e)
+
+@app.route('/testmodel', methods=['POST'])
+def create_testmodel():
+    try:
+        models = request.get_json()
+
+        model_name = models.get('modelName')
+        model_type = models.get('modelType')
+        model_data = models.get('modelData')
+        model_image = "models.get('modelImage')"
+
+        model = Model(
+            model_name=model_name,
+            model_type=model_type,
+            model_data=json.dumps(model_data),
+            model_image=model_image
+        )
+        db.session.add(model)
+        db.session.commit()
+        return "model created"
+            
+    except Exception as e:
         print(e)  
+
+@app.route('/testmodel2', methods=['GET'])
+def get_testmodel():
+    try:
+        # Retrieve all assets ordered by id
+        models = Model.query.order_by(Model.id).all()
+        # Convert the query results to a list of dictionaries
+        model_dicts = [{
+            "modelId": model.id,
+            "modelName": model.model_name,
+            "modelType": model.model_type,
+            "modelData": json.loads(model.model_data),
+            "modelImage": model.model_image
+            } for model in models]
+        # Return the JSON response
+        return jsonify(model_dicts)
+  
+    except Exception as e:
+        print(e)                
 
 #ppcim python script starts here
 @app.route('/api/create_asset', methods=['POST'])
@@ -120,7 +165,6 @@ def create_asset():
         asset_name = models.get('assetName')
         asset_type = models.get('assetType')
         asset_data = models.get('assetData')
-        asset_aasx_data = models.get('assetAasxData')
         asset_categories = models.get('assetCategories')
         asset_image = models.get('assetImage')
 
@@ -136,7 +180,6 @@ def create_asset():
             memory_storage.append({
                 'assetType': asset_type,
                 'assetData': asset_data,
-                'assetAasxData': asset_aasx_data,
                 'assetName': asset_name,
                 'assetCategories': asset_categories,
                 'assetImage': asset_image
@@ -177,7 +220,6 @@ def search_assets():
             "assetName": asset.asset_name,
             "assetType": asset.asset_type,
             "assetData": json.loads(asset.asset_data),
-            "assetAasx": asset.asset_aasx_data,
             "assetCategories": json.loads(asset.asset_categories),
             "assetImage": asset.asset_image
             } for asset in assets]

@@ -1,7 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Models.css";
 import { useState } from "react";
-import { categories } from "../decisionsupport/Decisionsupport";
 
 const Modeldetails = () => {
   const navigate = useNavigate();
@@ -11,7 +10,10 @@ const Modeldetails = () => {
   const [showJobDetails, setShowJobDetails] = useState(false);
 
   console.log("modelData", modelData);
-  console.log("components", categories);
+  console.log("modelName", modelName);
+
+  console.log("formula", formula);
+
   const modelType =
     modelData.assetAdministrationShells[0].assetInformation.assetType;
 
@@ -134,6 +136,7 @@ const Modeldetails = () => {
             </div>
           )}
         </p>
+
         <br></br>
         <p>
           <strong>Job Duration </strong>
