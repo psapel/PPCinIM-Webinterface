@@ -109,6 +109,8 @@ const AssetDsc = ({
   const [showDetails4, setShowDetails4] = useState(false);
   const [showDetails5, setShowDetails5] = useState(false);
 
+  console.log("assetData", assetData);
+
   return (
     <div className=" flex flex-col items-start">
       {machineType === "Injection Molding Machine" && (

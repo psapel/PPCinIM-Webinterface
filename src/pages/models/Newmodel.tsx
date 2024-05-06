@@ -107,16 +107,6 @@ const Newmodel = () => {
           </div>
         </div>
         <div className="my-3">
-          Model Image:
-          <div>
-            <input
-              type="file"
-              className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-              onChange={(event) => handleFileChange(event, setSelectedImage)}
-            />
-          </div>
-        </div>
-        <div className="my-3">
           Model File:
           <div>
             <input

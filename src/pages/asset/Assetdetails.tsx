@@ -9,6 +9,22 @@ const AssetDetails = () => {
   const { asset } = useLocation().state;
   const machineType = asset.assetType;
 
+  const handleDelete = async () => {
+    const response = await fetch(
+      `http://localhost:5005/delete_asset/${asset.assetId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (response.ok) {
+      console.log("Asset deleted");
+      navigate("/assets");
+    } else {
+      console.log("Error deleting asset");
+    }
+  };
+
   const manufacturer = asset.assetData.submodels
     .find((el) => el.idShort === "Nameplate")
     ?.submodelElements.find((el) => el.idShort === "ManufacturerName")
@@ -16,6 +32,7 @@ const AssetDetails = () => {
 
   console.log("AssetDetails", asset);
   console.log("AssetImage", asset.assetImage);
+  console.log("AssetId", asset.assetId);
 
   return (
     <div className="description-box flex flex-col items-center justify-center ">
@@ -67,6 +84,9 @@ const AssetDetails = () => {
               ))
             }
           </figure>
+          <button className="btn-delete" onClick={handleDelete}>
+            <span>&#128465;</span>
+          </button>
         </div>
       </div>
     </div>

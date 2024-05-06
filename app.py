@@ -53,7 +53,7 @@ class Asset(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     asset_name: Mapped[str] = mapped_column(unique=True, nullable=False)
     asset_type: Mapped[str] = mapped_column(unique=True, nullable=False)
-    asset_data: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_data: Mapped[str] = mapped_column(nullable=False)
     asset_categories: Mapped[str] = mapped_column(nullable=False)
     asset_image: Mapped[str] = mapped_column(nullable=False)
 
@@ -155,6 +155,18 @@ def get_testmodel():
   
     except Exception as e:
         print(e)                
+
+@app.route('/delete_asset/<int:asset_id>', methods=['DELETE'])
+def delete_asset(asset_id):
+    asset = Asset.query.get(asset_id)
+    if asset is None:
+        return jsonify({'message': 'Asset not found'}), 404
+
+    db.session.delete(asset)
+    db.session.commit()
+
+    return jsonify({'message': 'Asset deleted'}), 200
+
 
 #ppcim python script starts here
 @app.route('/api/create_asset', methods=['POST'])
