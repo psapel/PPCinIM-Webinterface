@@ -5,12 +5,29 @@ import { useState } from "react";
 const Modeldetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { modelData, modelName, formula } = location.state;
+  const { modelData, modelName, modelId, formula } = location.state;
   const [showDetails, setShowDetails] = useState(false);
   const [showJobDetails, setShowJobDetails] = useState(false);
 
+  const handleDelete = async () => {
+    const response = await fetch(
+      `http://localhost:5005/delete_model/${modelId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (response.ok) {
+      console.log("Model deleted");
+      navigate("/models");
+    } else {
+      console.log("Error deleting asset");
+    }
+  };
+
   console.log("modelData", modelData);
   console.log("modelName", modelName);
+  console.log("modelId", modelId);
 
   console.log("formula", formula);
 
@@ -201,6 +218,9 @@ const Modeldetails = () => {
             }
           </p>
         </p>
+        <button className="btn-delete" onClick={handleDelete}>
+          <span>&#128465;</span>
+        </button>
       </div>
     </div>
   );

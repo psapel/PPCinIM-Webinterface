@@ -44,6 +44,8 @@ const Models = () => {
             (el) => el.idShort === "ScopeOfModel"
           ).value;
 
+          console.log(model.modelId);
+
           return (
             <div className="card w-96 bg-base-100 shadow-xl m-4">
               <div className="card-body">
@@ -58,6 +60,7 @@ const Models = () => {
                         state: {
                           modelData: model.modelData,
                           modelName: model.modelName,
+                          modelId: model.modelId,
                           formula: formula,
                         },
                       }

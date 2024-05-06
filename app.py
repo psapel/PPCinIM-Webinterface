@@ -61,7 +61,7 @@ class Model(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     model_name: Mapped[str] = mapped_column(unique=True, nullable=False)
     model_type: Mapped[str] = mapped_column(unique=True, nullable=False)
-    model_data: Mapped[str] = mapped_column(unique=True, nullable=False)
+    model_data: Mapped[str] = mapped_column(nullable=False)
     model_image: Mapped[str]= mapped_column(nullable=True)
     
 
@@ -166,6 +166,17 @@ def delete_asset(asset_id):
     db.session.commit()
 
     return jsonify({'message': 'Asset deleted'}), 200
+
+@app.route('/delete_model/<int:model_id>', methods=['DELETE'])
+def delete_model(model_id):
+    model = Model.query.get(model_id)
+    if model is None:  
+        return jsonify({'message': 'Model not found'}), 404
+
+    db.session.delete(model)
+    db.session.commit()
+
+    return jsonify({'message': 'Model deleted'}), 200
 
 
 #ppcim python script starts here
