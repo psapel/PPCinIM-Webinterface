@@ -12,6 +12,7 @@ minio = "*"
 pulp = "*"
 py2neo = "*"
 neo4j = "*"
+flask-sqlalchemy = "*"
 
 [dev-packages]
 

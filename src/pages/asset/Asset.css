@@ -6,6 +6,7 @@
 }
 
 .textbox{
+  position: relative;
   background-color: rgba(128, 128, 128, 0.1);
   text-align: left;
   padding: 3rem;
@@ -13,6 +14,7 @@
   max-width: 60rem;
   display: flex;
   justify-content: space-between;
+  border-radius: 8px;
  
 }
 
@@ -38,4 +40,23 @@
 
 .column2{
  flex-shrink:0;
+}
+
+.btn-delete {
+  font-size: 30px;
+  font-weight: bold;
+  color: red;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  padding: 5px;
+  transition: 0.3s; 
+}
+
+.btn-delete span {
+  display: inline-block;
+}
+
+.btn-delete span:hover {
+  box-shadow: 0 0 10px red, 0 0 20px red; 
 }
