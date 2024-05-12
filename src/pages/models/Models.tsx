@@ -39,40 +39,44 @@ const Models = () => {
       </div>
 
       <div className="flex justify-center flex-wrap m-4">
-        {models.map((model) => {
-          const formula = model.modelData.submodels[0].submodelElements.find(
-            (el) => el.idShort === "ScopeOfModel"
-          ).value;
+        {models.length > 0 ? (
+          models.map((model) => {
+            const formula = model.modelData.submodels[0].submodelElements.find(
+              (el) => el.idShort === "ScopeOfModel"
+            ).value;
 
-          console.log(model.modelId);
+            console.log(model.modelId);
 
-          return (
-            <div className="card w-96 bg-base-100 shadow-xl m-4">
-              <div className="card-body">
-                <h2 className="card-title">{model.modelName}</h2>
-                <p>Formula: {formula}</p>
-                <button
-                  className="btn  text-white bg-secondary hover:bg-primary"
-                  onClick={() =>
-                    navigate(
-                      `/model-details/${encodeURIComponent(model.modelId)}`,
-                      {
-                        state: {
-                          modelData: model.modelData,
-                          modelName: model.modelName,
-                          modelId: model.modelId,
-                          formula: formula,
-                        },
-                      }
-                    )
-                  }
-                >
-                  Go to Model Details
-                </button>
+            return (
+              <div className="card w-96 bg-base-100 shadow-xl m-4">
+                <div className="card-body">
+                  <h2 className="card-title">{model.modelName}</h2>
+                  <p>Formula: {formula}</p>
+                  <button
+                    className="btn  text-white bg-secondary hover:bg-primary"
+                    onClick={() =>
+                      navigate(
+                        `/model-details/${encodeURIComponent(model.modelId)}`,
+                        {
+                          state: {
+                            modelData: model.modelData,
+                            modelName: model.modelName,
+                            modelId: model.modelId,
+                            formula: formula,
+                          },
+                        }
+                      )
+                    }
+                  >
+                    Go to Model Details
+                  </button>
+                </div>
               </div>
-            </div>
-          );
-        })}
+            );
+          })
+        ) : (
+          <p>No models found.</p>
+        )}
       </div>
     </div>
   );
