@@ -1,17 +1,36 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Models.css";
 import { useState } from "react";
-import { categories } from "../decisionsupport/Decisionsupport";
 
 const Modeldetails = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { modelData, modelName, formula } = location.state;
+  const { modelData, modelName, modelId, formula } = location.state;
   const [showDetails, setShowDetails] = useState(false);
   const [showJobDetails, setShowJobDetails] = useState(false);
 
+  const handleDelete = async () => {
+    const response = await fetch(
+      `http://localhost:5005/delete_model/${modelId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (response.ok) {
+      console.log("Model deleted");
+      navigate("/models");
+    } else {
+      console.log("Error deleting asset");
+    }
+  };
+
   console.log("modelData", modelData);
-  console.log("components", categories);
+  console.log("modelName", modelName);
+  console.log("modelId", modelId);
+
+  console.log("formula", formula);
+
   const modelType =
     modelData.assetAdministrationShells[0].assetInformation.assetType;
 
@@ -134,6 +153,7 @@ const Modeldetails = () => {
             </div>
           )}
         </p>
+
         <br></br>
         <p>
           <strong>Job Duration </strong>
@@ -198,6 +218,9 @@ const Modeldetails = () => {
             }
           </p>
         </p>
+        <button className="btn-delete" onClick={handleDelete}>
+          <span>&#128465;</span>
+        </button>
       </div>
     </div>
   );

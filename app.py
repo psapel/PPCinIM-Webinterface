@@ -1,3 +1,9 @@
+from flask import Flask
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String
+
+
 from flask import Flask, request, render_template, url_for, send_from_directory, jsonify
 from flask_cors import CORS
 import json
@@ -31,6 +37,149 @@ CORS(app)
 
 memory_storage = []
 
+#Database starts here
+class Base(DeclarativeBase):
+  pass
+
+db = SQLAlchemy(model_class=Base)
+
+# configure the SQLite database, relative to the app instance folder
+app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///ppcim.db"
+
+# initialize the app with the extension
+db.init_app(app)
+
+class Asset(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    asset_name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_type: Mapped[str] = mapped_column(nullable=False)
+    asset_data: Mapped[str] = mapped_column(nullable=False)
+    asset_categories: Mapped[str] = mapped_column(nullable=False)
+    asset_image: Mapped[str] = mapped_column(nullable=False)
+
+class Model(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    model_name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    model_type: Mapped[str] = mapped_column(nullable=False)
+    model_data: Mapped[str] = mapped_column(nullable=False)
+    model_image: Mapped[str]= mapped_column(nullable=True)
+    
+
+with app.app_context():
+    db.create_all() 
+
+#test routes for sqlalchemy
+@app.route('/test', methods=['POST'])
+def create_testasset():
+    try:
+        assets = request.get_json()
+
+        asset_name = assets.get('assetName')
+        asset_type = assets.get('assetType')
+        asset_data = assets.get('assetData')
+        asset_categories = assets.get('assetCategories')
+        asset_image = assets.get('assetImage')
+
+        asset = Asset(
+            asset_name=asset_name,
+            asset_type=asset_type,
+            asset_data=json.dumps(asset_data),
+            asset_categories=json.dumps(asset_categories),
+            asset_image=asset_image
+        )
+        db.session.add(asset)
+        db.session.commit()
+        return "asset created"
+            
+    except Exception as e:
+        print(e)
+
+@app.route('/test2', methods=['GET'])
+def get_testasset():
+    try:
+        # Retrieve all assets ordered by id
+        assets = Asset.query.order_by(Asset.id).all()
+        # Convert the query results to a list of dictionaries
+        asset_dicts = [{
+            "assetId": asset.id,
+            "assetName": asset.asset_name,
+            "assetType": asset.asset_type,
+            "assetData": json.loads(asset.asset_data),
+            "assetCategories": json.loads(asset.asset_categories),
+            "assetImage": asset.asset_image
+            } for asset in assets]
+        # Return the JSON response
+        return jsonify(asset_dicts)
+  
+    except Exception as e:
+        print(e)
+
+@app.route('/testmodel', methods=['POST'])
+def create_testmodel():
+    try:
+        models = request.get_json()
+
+        model_name = models.get('modelName')
+        model_type = models.get('modelType')
+        model_data = models.get('modelData')
+        model_image = "models.get('modelImage')"
+
+        model = Model(
+            model_name=model_name,
+            model_type=model_type,
+            model_data=json.dumps(model_data),
+            model_image=model_image
+        )
+        db.session.add(model)
+        db.session.commit()
+        return "model created"
+            
+    except Exception as e:
+        print(e)  
+
+@app.route('/testmodel2', methods=['GET'])
+def get_testmodel():
+    try:
+        # Retrieve all assets ordered by id
+        models = Model.query.order_by(Model.id).all()
+        # Convert the query results to a list of dictionaries
+        model_dicts = [{
+            "modelId": model.id,
+            "modelName": model.model_name,
+            "modelType": model.model_type,
+            "modelData": json.loads(model.model_data),
+            "modelImage": model.model_image
+            } for model in models]
+        # Return the JSON response
+        return jsonify(model_dicts)
+  
+    except Exception as e:
+        print(e)                
+
+@app.route('/delete_asset/<int:asset_id>', methods=['DELETE'])
+def delete_asset(asset_id):
+    asset = Asset.query.get(asset_id)
+    if asset is None:
+        return jsonify({'message': 'Asset not found'}), 404
+
+    db.session.delete(asset)
+    db.session.commit()
+
+    return jsonify({'message': 'Asset deleted'}), 200
+
+@app.route('/delete_model/<int:model_id>', methods=['DELETE'])
+def delete_model(model_id):
+    model = Model.query.get(model_id)
+    if model is None:  
+        return jsonify({'message': 'Model not found'}), 404
+
+    db.session.delete(model)
+    db.session.commit()
+
+    return jsonify({'message': 'Model deleted'}), 200
+
+
+#ppcim python script starts here
 @app.route('/api/create_asset', methods=['POST'])
 def create_asset():
     try:
@@ -39,7 +188,6 @@ def create_asset():
         asset_name = models.get('assetName')
         asset_type = models.get('assetType')
         asset_data = models.get('assetData')
-        asset_aasx_data = models.get('assetAasxData')
         asset_categories = models.get('assetCategories')
         asset_image = models.get('assetImage')
 
@@ -55,7 +203,6 @@ def create_asset():
             memory_storage.append({
                 'assetType': asset_type,
                 'assetData': asset_data,
-                'assetAasxData': asset_aasx_data,
                 'assetName': asset_name,
                 'assetCategories': asset_categories,
                 'assetImage': asset_image
@@ -88,15 +235,27 @@ def search_assets():
     try:
         search_query = request.args.get('q')
 
+        # Retrieve all assets ordered by id
+        assets = Asset.query.order_by(Asset.id).all()
+        # Convert the query results to a list of dictionaries
+        asset_dicts = [{
+            "assetId": asset.id,
+            "assetName": asset.asset_name,
+            "assetType": asset.asset_type,
+            "assetData": json.loads(asset.asset_data),
+            "assetCategories": json.loads(asset.asset_categories),
+            "assetImage": asset.asset_image
+            } for asset in assets]
+
         if search_query:
             # Filter assets based on the search query
-            filtered_assets = [asset for asset in memory_storage if
+            filtered_assets = [asset for asset in asset_dicts if
                                any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) or
                                any(word.lower().startswith(search_query.lower()) for word in asset['assetType'].split()) or
                                any(category.lower().startswith(search_query.lower()) for category in asset['assetCategories'])]
             return jsonify(filtered_assets), 200
         else:
-            return jsonify(memory_storage), 200
+            return jsonify(asset_dicts), 200
     except Exception as e:
         print(e)
         return jsonify({"error": "Failed to retrieve assets"}), 500
