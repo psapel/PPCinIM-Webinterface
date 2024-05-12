@@ -52,7 +52,7 @@ db.init_app(app)
 class Asset(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     asset_name: Mapped[str] = mapped_column(unique=True, nullable=False)
-    asset_type: Mapped[str] = mapped_column(unique=True, nullable=False)
+    asset_type: Mapped[str] = mapped_column(nullable=False)
     asset_data: Mapped[str] = mapped_column(nullable=False)
     asset_categories: Mapped[str] = mapped_column(nullable=False)
     asset_image: Mapped[str] = mapped_column(nullable=False)
@@ -60,7 +60,7 @@ class Asset(db.Model):
 class Model(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
     model_name: Mapped[str] = mapped_column(unique=True, nullable=False)
-    model_type: Mapped[str] = mapped_column(unique=True, nullable=False)
+    model_type: Mapped[str] = mapped_column(nullable=False)
     model_data: Mapped[str] = mapped_column(nullable=False)
     model_image: Mapped[str]= mapped_column(nullable=True)
     

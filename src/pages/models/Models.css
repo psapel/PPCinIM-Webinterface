@@ -23,16 +23,19 @@
 .btn-delete {
   font-size: 30px;
   font-weight: bold;
-  color: red;
+  background-color: red; 
+  color: white; 
   position: absolute;
   bottom: 5px;
   right: 5px;
   padding: 5px;
   transition: 0.3s; 
+  border: none; 
 }
 
 .btn-delete span {
   display: inline-block;
+  color: white; 
 }
 
 .btn-delete span:hover {
