@@ -8,39 +8,39 @@ export const categories = [
     criteria: [
       {
         name: "Single machine (1)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/singleMachine",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/singleMachine",
       },
       {
         name: "Identical machines in parallel (Pm)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
       },
       {
         name: "Machines in parallel with different speeds (Qm)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/uniformMachines",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/uniformMachines",
       },
       {
         name: "Unrelated machines in parallel (Rm)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
       },
       {
         name: "Flow shop (Fm)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/flowShop",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/flowShop",
       },
       {
         name: "Flexible flow shop (FFc)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/flexibleFlowShop",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/flexibleFlowShop",
       },
       {
         name: "Job shop (Jm)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/jobShop",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/jobShop",
       },
       {
         name: "Flexible job shop (FJc)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/flexibleJobShop",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/flexibleJobShop",
       },
       {
         name: "Open shop (Om)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/openShop",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/openShop",
       },
     ],
     isRadio: true,
@@ -50,59 +50,59 @@ export const categories = [
     criteria: [
       {
         name: "Release dates (rj)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/releaseDates",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/releaseDates",
       },
       {
         name: "Preemptions (prmp)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/preemptions",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/preemptions",
       },
       {
         name: "Precedence constraints (prec)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/precedence",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/precedence",
       },
       {
         name: "Sequence dependent setup times (si,j)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup",
       },
       {
         name: "Job families (fmls)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/jobFamilies",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/jobFamilies",
       },
       {
         name: "Batch processing (batch(b))",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/batch",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/batch",
       },
       {
         name: "Breakdown (brkdwn)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/breakdown",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/breakdown",
       },
       {
         name: "Machine eligibility restrictions (Mj)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility",
       },
       {
         name: "Permutation (prmu)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/permutation",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/permutation",
       },
       {
         name: "Blocking (block)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/blocking",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/blocking",
       },
       {
         name: "No-wait (nwt)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/noWait",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/noWait",
       },
       {
         name: "Recirculation (rcrc)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/recirculation",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/recirculation",
       },
       {
         name: "oprtr (oprtr)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/oprtr",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/oprtr",
       },
       {
         name: "Tardiness Penalty (LCj)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/tardinessPenalty",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/tardinessPenalty",
       },
     ],
   },
@@ -111,15 +111,15 @@ export const categories = [
     criteria: [
       {
         name: "Makespan (Cmax)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
       },
       {
         name: "Maximum Lateness (Lmax)",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/maxLateness",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxLateness",
       },
       {
         name: "Total weighted completion time (Σ(wjCj))",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime",
       },
       {
         name: "Total completion time (ΣCj)",
@@ -127,15 +127,15 @@ export const categories = [
       },
       {
         name: "Total tardiness (Σ(Tj))",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/sumTardiness",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumTardiness",
       },
       {
         name: "Total weighted tardiness (Σ(wjTj))",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumTardiness",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumTardiness",
       },
       {
         name: "Total earliness for each job (Σ(Ej))",
-        url: "https://www.iop.rwth-aachen.de/PPC/1/1/sumEarliness",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumEarliness",
       },
     ],
   },

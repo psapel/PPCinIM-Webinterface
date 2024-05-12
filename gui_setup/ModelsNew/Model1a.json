@@ -1,0 +1,15 @@
+{
+    "_id": "517af36e-a1a0-4ecd-98d6-f08ba3fc4faf",
+    "GrahamNotation": {
+        "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+        "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
+            "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup"
+        ],
+        "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
+            "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
+            "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime"
+        ],
+        "jobName": "0173-1#02-XXX999#999",
+        "jobDuration": "0173-1#02-ABF201#002"
+    }
+}

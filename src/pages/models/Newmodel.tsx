@@ -1,7 +1,28 @@
 import { useNavigate } from "react-router-dom";
+import React from 'react';
 
 const Newmodel = () => {
-  const navigate = useNavigate();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = e.target;
+    const formData = new FormData(form);
+
+    try {
+      await axios.post('http://localhost:5005/api/create_model', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      // Redirect or show success message after successful submission
+      // Example: navigate('/models'); // Assuming navigate is available from React Router
+    } catch (error) {
+      console.error('Error creating model:', error);
+      // Handle error
+    }
+  };
+
 
   return (
     <div className="m-4 flex-col flex items-center">

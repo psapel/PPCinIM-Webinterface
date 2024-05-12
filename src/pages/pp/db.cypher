@@ -334,7 +334,6 @@ WITH n
 SET n = apoc.map.clean(n, ['de', 'en'], [])
 
 
-
 // Mold
 
 CALL apoc.load.json('http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9tb2xkRXhhbXBsZQ?format=json') YIELD value
@@ -820,6 +819,8 @@ CREATE (n)-[:IsA]->(b)
 
 WITH n
 SET n = apoc.map.clean(n, ['de', 'en'], [])
+
+
 
 
 

@@ -112,9 +112,9 @@ index_settings = {
         "properties": {
             "GrahamNotation": {
                 "properties": {
-                    "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": {"type": "keyword"},
-                    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": {"type": "keyword"},
-                    "https://wwwmodels_search.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": {
+                    "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": {"type": "keyword"},
+                    "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": {"type": "keyword"},
+                    "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": {
                         "type": "keyword"}
                 }
             }
@@ -122,7 +122,7 @@ index_settings = {
     }
 }
 
-index_name = 'mapping'
+index_name = 'final_implementation'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -131,8 +131,12 @@ if not es.indices.exists(index=index_name):
 
 
 def load_models(es):
-    model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/jsonModels'))
+    import os
+    import json
+
+    model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/ModelsNew'))
     models = []
+    
     for filename in os.listdir(model_folder):
         if filename.endswith('.json'):
             model_path = os.path.join(model_folder, filename)
@@ -140,23 +144,17 @@ def load_models(es):
                 with open(model_path, 'r', encoding='utf-8') as f:
                     model_data = json.load(f)
                     model_id = model_data.get('_id')
-                    if model_id:
-                        print(f"Original Model ID: {model_id}")
-                        es.index(index=index_name, id=model_id, document=model_data["GrahamNotation"])
-                        print(f"Model data: {model_data}")
-                        print(f"Indexed model with ID: {model_id}")
-                        models.append(model_data)
-                    else:
-                        print(f"Model ID not found in JSON: {model_path}")
+                    del model_data['_id']
+                    es.index(index=index_name, id=model_id, body=model_data['purpose_properties'])
+                    print(f"Model data: {model_data}")
+                    models.append(model_data)   
             except FileNotFoundError:
                 print(f"Failed to load model: {model_path}")
 
     return models
 
 
-# Call the load_models function to start loading the JSON files
 loaded_models = load_models(es)
-
 
 def find_matching_model(es, url1, url2, url3):
     len_2 = len(url2)
@@ -207,7 +205,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index='new_search', size=16, body=query)
+    result = es.search(index=new_search, size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -263,8 +261,8 @@ def get_asset(model_name):
 def get_execution(model_name):
     model = model_name.replace(" ID ", "-")
     new_model = model.lower()
-    print(new_model)
-    job_order = total_order(new_model)
+    print("New model:", new_model)
+    job_order = total_order(model)
     return job_order
 
 @app.route('/api/execution_logs/<model_name>')
@@ -290,6 +288,28 @@ def run_query2():
 def run_query3():
     result = run_injection_molding_machine_query(graph)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
+
+@app.route('/api/create_model', methods=['POST'])
+def create_model():
+    # Assuming you're receiving form data
+    model_name = request.form.get('modelName')
+    model_type = request.form.get('modelType')
+    model_image = request.files['modelImage']
+    model_file = request.files['modelFile']
+    aasx_file = request.files['aasxFile']
+
+    # Process the files as needed (e.g., save to disk, database, etc.)
+    # For demonstration, let's print some info
+    print(f"Model Name: {model_name}")
+    print(f"Model Type: {model_type}")
+    print(f"Model Image File Name: {model_image.filename}")
+    print(f"Model File Name: {model_file.filename}")
+    print(f"AASX File Name: {aasx_file.filename}")
+
+    # Here you can perform further operations like saving files, database operations, etc.
+
+    # Return a response to the frontend
+    return jsonify({'message': 'Model created successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

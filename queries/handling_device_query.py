@@ -1,3 +1,4 @@
+
 from neo4j import GraphDatabase
 
 def get_handling_device_data(uri, username, password):
