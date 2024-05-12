@@ -134,7 +134,7 @@ def load_models(es):
     import os
     import json
 
-    model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/ModelsNew'))
+    model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/ModelsNewd'))
     models = []
     
     for filename in os.listdir(model_folder):
@@ -145,7 +145,7 @@ def load_models(es):
                     model_data = json.load(f)
                     model_id = model_data.get('_id')
                     del model_data['_id']
-                    es.index(index=index_name, id=model_id, body=model_data['purpose_properties'])
+                    es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'])
                     print(f"Model data: {model_data}")
                     models.append(model_data)   
             except FileNotFoundError:
