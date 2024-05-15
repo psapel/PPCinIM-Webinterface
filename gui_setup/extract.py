@@ -25,11 +25,14 @@ for filename in os.listdir(models_folder):
             data = json.load(file)
         
         # Extract the "Machine Environment", "Scheduling Constraints",
-        # "Objective Functions" and "Input Data" parts
+        # "Objective Functions", "Input Data",
+        # "Preprocessing" and "Postprocessing" parts
         machine_environment = None
         scheduling_constraints = []
         objective_functions = []
         input_data = None
+        preprocessing = None
+        post_processing = None
         
         for submodel in data["submodels"]:
             if submodel["idShort"] == "ModelSignature":
@@ -45,6 +48,10 @@ for filename in os.listdir(models_folder):
                         input_data = element
                     elif element["idShort"] == "InputData":
                         input_data = element
+                    elif element["idShort"] == "Preprocessing":
+                        preprocessing = element
+                    elif element["idShort"] == "Postprocessing":
+                        postprocessing = element
         
         # Create a dictionary to store extracted data
         required_data = {}
@@ -77,6 +84,17 @@ for filename in os.listdir(models_folder):
             for item in input_data["value"]:
                 required_data[item['idShort']] = item['value']['keys'][1]['value']
         
+        # Extract "Preprocessing"
+        if preprocessing:
+            for item in preprocessing["value"]:
+                id_short = preprocessing['idShort']
+                required_data[id_short] = item['value']
+        
+        # Extract "Postprocessing"
+        if postprocessing:
+            for item in postprocessing["value"]:
+                id_short = postprocessing['idShort']
+                required_data[id_short] = item['value']
         
         # Create a new dictionary with the extracted data under "GrahamNotation" key
         graham_notation_data = {"_id": file_id, "GrahamNotation": required_data}

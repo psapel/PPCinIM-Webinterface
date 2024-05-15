@@ -1,0 +1,17 @@
+{
+  "_id": "64f229ac26c4757f156eb8a7",
+  "GrahamNotation": {
+    "name": "model_36",
+    "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "https://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
+      "https://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup",
+      "https://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility",
+      "https://www.iop.rwth-aachen.de/PPC/1/1/jobFamilies"
+    ],
+    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
+      "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumTardiness",
+      "https://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
+    ],
+    "formula": "Pₘ | sᵢⱼ, Mⱼ, fmls | ΣwⱼTⱼ, ΣwⱼCⱼ"
+  }
+}

@@ -51,6 +51,7 @@ const Newmodel = () => {
       console.error("Error:", error);
       setError("Failed to connect to the server");
     }
+    
   };
 
   return (

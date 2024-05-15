@@ -1,0 +1,4 @@
+matching_model = {'_index': 'final_version', '_id': '1741278b-301d-452b-9027-9b142a8feb54', '_score': 4.988838, '_source': {'http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment': 'http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines', 'http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints': ['http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup', 'http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility', 'http://www.iop.rwth-aachen.de/PPC/1/1/jobFamilies'], 'http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction': ['http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumTardiness', 'http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime'], 'jobName': '0173-1#02-XXX999#999', 'jobDuration': '0173-1#02-ABF201#002', 'Preprocessing': 'preprocessing.py', 'Postprocessing': 'postprocessing.py'}}
+
+desired_part = matching_model['_source']
+print(desired_part)

@@ -1,0 +1,30 @@
+{
+  "purpose_properties": {
+    "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "https://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
+      "https://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup",
+      "https://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility"
+    ],
+    "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
+      "https://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
+      "https://www.iop.rwth-aachen.de/PPC/1/1/sumTardiness"
+    ],
+    "formula": "Pₘ | sᵢⱼ, Mⱼ | Cₘₐₓ, ΣTⱼ"
+  },
+  "input_data": [
+    {
+      "job_name": {
+        "id": "0173-1#02-XXX999#997",
+        "db": "odoo"
+      }
+    },
+    {
+      "job_duration": {
+        "id": "0173-1#02-ABF201#007",
+        "db": "odoo"
+      }
+    }
+  ],
+  "preprocess": "jobnames_to_numbers.py",
+  "postprocess": "numbers_to_jobnames.py"
+}

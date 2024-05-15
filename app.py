@@ -11,9 +11,18 @@ import os
 
 from elasticsearch import Elasticsearch
 
+from gui_setup.db_login import get_odoo_credentials
+from gui_setup.translator import translate_identifiers
+from gui_setup.connector import connect_and_fetch_data
+from gui_setup.mappings import id_to_name_mapping, id_to_duration_mapping
+from gui_setup.preprocessing import extract_data
+from gui_setup.model import optimization_model
+from gui_setup.postprocessing import process_results
+
 from python_files.execution_logs import total_execution
 from python_files.model_execution import total_order
 from python_files.odoo_connect import connect
+
 
 from py2neo import Graph
 
@@ -281,7 +290,7 @@ index_settings = {
     }
 }
 
-index_name = 'final_implementation'
+index_name = 'final_version'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -323,15 +332,15 @@ def find_matching_model(es, url1, url2, url3):
         "query": {
             "bool": {
                 "must":
-                    [{"match_phrase": {"https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": url1}},
+                    [{"match_phrase": {"http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": url1}},
                      {"terms": {
-                         "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword": url2}},
+                         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword": url2}},
                      {
                          "script":
                              {
                                  "script":
                                      {
-                                         "source": "doc['https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword'].length == params.fixed_array_length",
+                                         "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword'].length == params.fixed_array_length",
                                          "params": {
                                              "fixed_array_length": len_2
                                          }
@@ -340,16 +349,17 @@ def find_matching_model(es, url1, url2, url3):
                      },
                      {
                          "terms": {
-                             "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword": url3}},
+                             "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword": url3}},
 
                      {
                          "script":
                              {
                                  "script":
                                      {
-                                         "source": "doc['https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword'].length == params.fixed_array_length",
+                                         "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword'].length == params.fixed_array_length",
                                          "params": {
                                              "fixed_array_length": len_3
+                                             
                                          }
                                      }
                              }
@@ -364,7 +374,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index=new_search, size=16, body=query)
+    result = es.search(index= 'final_version', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -405,7 +415,28 @@ def index():
     return jsonify({"message": "Invalid request method"})
 
 
-@app.route('/api/underlying_asset/<model_name>')
+@app.route('/api/create_model', methods=['POST'])
+def create_model():
+    # Assuming you're receiving form data
+    model_name = request.form.get('modelName')
+    model_type = request.form.get('modelType')
+    model_image = request.files['modelImage']
+    model_file = request.files['modelFile']
+    aasx_file = request.files['aasxFile']
+
+    # Process the files as needed (e.g., save to disk, database, etc.)
+    # For demonstration, let's print some info
+    print(f"Model Name: {model_name}")
+    print(f"Model Type: {model_type}")
+    print(f"Model Image File Name: {model_image.filename}")
+    print(f"Model File Name: {model_file.filename}")
+    print(f"AASX File Name: {aasx_file.filename}")
+
+    # Return a response to the frontend
+    return jsonify({'message': 'Model created successfully'}), 200
+
+
+@app.route('/underlying-asset/<model_name>')
 def get_asset(model_name):
     model = model_name.replace(" ID ", "-")
     new_model = model.lower()
@@ -416,12 +447,12 @@ def get_asset(model_name):
     return asset
 
 
-@app.route('/api/execution/<model_name>')
+@app.route('/execution/<model_name>')
 def get_execution(model_name):
     model = model_name.replace(" ID ", "-")
     new_model = model.lower()
-    print("New model:", new_model)
-    job_order = total_order(model)
+    print(new_model)
+    job_order = total_order(new_model)
     return job_order
 
 @app.route('/api/execution_logs/<model_name>')
@@ -447,28 +478,6 @@ def run_query2():
 def run_query3():
     result = run_injection_molding_machine_query(graph)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
-
-@app.route('/api/create_model', methods=['POST'])
-def create_model():
-    # Assuming you're receiving form data
-    model_name = request.form.get('modelName')
-    model_type = request.form.get('modelType')
-    model_image = request.files['modelImage']
-    model_file = request.files['modelFile']
-    aasx_file = request.files['aasxFile']
-
-    # Process the files as needed (e.g., save to disk, database, etc.)
-    # For demonstration, let's print some info
-    print(f"Model Name: {model_name}")
-    print(f"Model Type: {model_type}")
-    print(f"Model Image File Name: {model_image.filename}")
-    print(f"Model File Name: {model_file.filename}")
-    print(f"AASX File Name: {aasx_file.filename}")
-
-    # Here you can perform further operations like saving files, database operations, etc.
-
-    # Return a response to the frontend
-    return jsonify({'message': 'Model created successfully'}), 200
 
 if __name__ == '__main__':
     app.run(debug=True)

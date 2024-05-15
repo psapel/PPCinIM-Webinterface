@@ -1,5 +1,5 @@
 {
-    "_id": "5c493dc9-c728-4e55-960d-2018022dab71",
+    "_id": "0c65c6d9-8e29-454c-967a-e891c36ff5ae",
     "GrahamNotation": {
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
@@ -10,6 +10,8 @@
             "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
         ],
         "jobName": "0173-1#02-XXX999#999",
-        "jobDuration": "0173-1#02-ABF201#002"
+        "jobDuration": "0173-1#02-ABF201#002",
+        "Preprocessing": "preprocessing.py",
+        "Postprocessing": "postprocessing.py"
     }
 }
