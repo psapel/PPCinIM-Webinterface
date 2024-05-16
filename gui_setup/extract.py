@@ -15,6 +15,8 @@ for filename in os.listdir(models_folder):
     if filename.endswith(".json"):
         # Generate a unique ID for the JSON file
         file_id = str(uuid.uuid4())
+        # Extract name from filename
+        name = os.path.splitext(filename)[0].replace(" ", "_")
         
         # Create the full file paths
         src_path = os.path.join(models_folder, filename)
@@ -26,13 +28,14 @@ for filename in os.listdir(models_folder):
         
         # Extract the "Machine Environment", "Scheduling Constraints",
         # "Objective Functions", "Input Data",
-        # "Preprocessing" and "Postprocessing" parts
+        # "Preprocessing", "Postprocessing" and "Scope of Model" parts
         machine_environment = None
         scheduling_constraints = []
         objective_functions = []
         input_data = None
         preprocessing = None
         post_processing = None
+        scope_of_model = None
         
         for submodel in data["submodels"]:
             if submodel["idShort"] == "ModelSignature":
@@ -52,10 +55,17 @@ for filename in os.listdir(models_folder):
                         preprocessing = element
                     elif element["idShort"] == "Postprocessing":
                         postprocessing = element
+                    elif element["idShort"] == "ScopeOfModel":
+                        scope_of_model = element    
         
         # Create a dictionary to store extracted data
         required_data = {}
-     
+        
+        # Add a 'name' attribute based on the filename
+        required_data['name'] = os.path.splitext(filename)[0].replace("Model", "model_").replace(" ", "_").lower()
+
+        
+        
         # Extract "Machine Environment"
         if machine_environment:
             extracted_data = {
@@ -95,6 +105,10 @@ for filename in os.listdir(models_folder):
             for item in postprocessing["value"]:
                 id_short = postprocessing['idShort']
                 required_data[id_short] = item['value']
+        
+        # Extract "Scope of Model" 
+        if scope_of_model:
+            required_data['formula'] = scope_of_model.get('value', None)
         
         # Create a new dictionary with the extracted data under "GrahamNotation" key
         graham_notation_data = {"_id": file_id, "GrahamNotation": required_data}

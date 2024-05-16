@@ -290,7 +290,7 @@ index_settings = {
     }
 }
 
-index_name = 'final_version'
+index_name = 'new_version'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -374,7 +374,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index= 'final_version', size=16, body=query)
+    result = es.search(index= 'new_version', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -406,14 +406,62 @@ def index():
         selected_models = []
         for hit in matching_model:
             source = hit.get('_source', {})
+            print(source)
             selected_models.append(source)
         
         if selected_models:
+            print("selcted_models:", selected_models)
             return jsonify(selected_models), 200
         else:
             return "No matching model found."
     return jsonify({"message": "Invalid request method"})
 
+
+@app.route('/api/underlying_asset/<source>')
+def get_asset(source):
+    url, db, username, password = get_odoo_credentials()
+    
+    # Translate identifiers
+    db_prop_names  = translate_identifiers(source, id_to_name_mapping, id_to_duration_mapping)
+    
+    # Connect to odoo and fetch data
+    db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
+    
+    # Extract 'name' and 'production_duration_expected'
+    names, durations = extract_data(db_values)
+    return names, duratiosn
+
+
+@app.route('/api/execution/<name>, <durations>')
+def get_execution(names, duration):
+   
+    # Optimization model
+    result= optimization_model(durations)
+
+    # Optimal job order
+    post_result = process_results(result, names)
+    return post_result
+
+@app.route('/api/execution_logs/<model_name>')
+def get_execution_logs(model_name):
+    logs = total_execution(model_name)
+    return logs
+
+
+@app.route('/query1', methods=['POST'])
+def run_query1():
+    coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)
+    return jsonify(data=coolant_data, query_type='Temperature Control Unit Query')
+
+@app.route('/query2', methods=['POST'])
+def run_query2():
+    handling_device_data = get_handling_device_data(neo4j_uri, neo4j_username, neo4j_password)
+    return jsonify(data=handling_device_data, query_type='Handling Device Query')
+
+@app.route('/query3', methods=['POST'])
+def run_query3():
+    result = run_injection_molding_machine_query(graph)
+    return jsonify(data=result, query_type='Injection Molding Machine Query')
 
 @app.route('/api/create_model', methods=['POST'])
 def create_model():
@@ -436,48 +484,6 @@ def create_model():
     return jsonify({'message': 'Model created successfully'}), 200
 
 
-@app.route('/underlying-asset/<model_name>')
-def get_asset(model_name):
-    model = model_name.replace(" ID ", "-")
-    new_model = model.lower()
-    print(new_model)
-    asset = connect(new_model)
-    # asset = asset.decode("utf-8")
-    asset_json = json.dumps(asset, indent=4)
-    return asset
-
-
-@app.route('/execution/<model_name>')
-def get_execution(model_name):
-    model = model_name.replace(" ID ", "-")
-    new_model = model.lower()
-    print(new_model)
-    job_order = total_order(new_model)
-    return job_order
-
-@app.route('/api/execution_logs/<model_name>')
-def get_execution_logs(model_name):
-    model = model_name.replace(" ID ", "-")
-    new_model = model.lower()
-    print(new_model)
-    logs = total_execution(new_model)
-    return logs
-
-
-@app.route('/query1', methods=['POST'])
-def run_query1():
-    coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)
-    return jsonify(data=coolant_data, query_type='Temperature Control Unit Query')
-
-@app.route('/query2', methods=['POST'])
-def run_query2():
-    handling_device_data = get_handling_device_data(neo4j_uri, neo4j_username, neo4j_password)
-    return jsonify(data=handling_device_data, query_type='Handling Device Query')
-
-@app.route('/query3', methods=['POST'])
-def run_query3():
-    result = run_injection_molding_machine_query(graph)
-    return jsonify(data=result, query_type='Injection Molding Machine Query')
 
 if __name__ == '__main__':
     app.run(debug=True)

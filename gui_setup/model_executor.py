@@ -9,7 +9,7 @@ from model import optimization_model
 from postprocessing import process_results
 
 # Specify the folder path where your JSON files are located
-json_folder_path = 'jsonModels'
+json_folder_path = 'ModelsNew'
 
 # Load JSON files using the imported function
 json_models = load_json_files(json_folder_path)
