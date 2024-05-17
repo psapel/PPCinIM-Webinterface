@@ -131,13 +131,12 @@ def create_testmodel():
         model_name = models.get('modelName')
         model_type = models.get('modelType')
         model_data = models.get('modelData')
-        model_image = "models.get('modelImage')"
+     
 
         model = Model(
             model_name=model_name,
             model_type=model_type,
             model_data=json.dumps(model_data),
-            model_image=model_image
         )
         db.session.add(model)
         db.session.commit()
@@ -406,7 +405,7 @@ def index():
         selected_models = []
         for hit in matching_model:
             source = hit.get('_source', {})
-            print(source)
+            print("hiiiiiiiiiiiiiiiiiiiiiiiii" , source)
             selected_models.append(source)
         
         if selected_models:
@@ -429,10 +428,10 @@ def get_asset(source):
     
     # Extract 'name' and 'production_duration_expected'
     names, durations = extract_data(db_values)
-    return names, duratiosn
+    return names, durations
 
 
-@app.route('/api/execution/<name>, <durations>')
+@app.route('/api/execution/<names>, <durations>')
 def get_execution(names, duration):
    
     # Optimization model

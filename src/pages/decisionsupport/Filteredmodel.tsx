@@ -22,8 +22,14 @@ function FilteredModel() {
     Object.keys(isChecked).forEach(async (modelName) => {
       if (isChecked[modelName]) {
         try {
+          const source = JSON.stringify(
+            filteredModels.find((model) => model.name === modelName)
+          );
+
+          console.log("source:", source);
+
           const response = await fetch(
-            `http://localhost:5005/api/underlying_asset/${modelName}`
+            `http://localhost:5005/api/underlying_asset/${source}`
           );
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -36,6 +42,8 @@ function FilteredModel() {
       }
     });
   }, [isChecked]);
+
+  console.log("filtered_models:", filteredModels);
 
   return (
     <div>
