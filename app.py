@@ -8,6 +8,7 @@ from flask import Flask, request, render_template, url_for, send_from_directory,
 from flask_cors import CORS
 import json
 import os
+import base64
 
 from elasticsearch import Elasticsearch
 
@@ -77,6 +78,11 @@ class Model(db.Model):
 with app.app_context():
     db.create_all() 
 
+def base64_to_file(base64_string, filename):
+    with open(filename, 'wb') as file_to_save:
+        decoded_data = base64.b64decode(base64_string)
+        file_to_save.write(decoded_data)
+
 #test routes for sqlalchemy
 @app.route('/test', methods=['POST'])
 def create_testasset():
@@ -131,7 +137,10 @@ def create_testmodel():
         model_name = models.get('modelName')
         model_type = models.get('modelType')
         model_data = models.get('modelData')
-     
+
+        base64_string = models.get('modelAasx')
+        filename = 'output.aasx'  
+        base64_to_file(base64_string, filename)
 
         model = Model(
             model_name=model_name,

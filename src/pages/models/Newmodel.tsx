@@ -20,6 +20,20 @@ const Newmodel = () => {
     reader.readAsText(file);
   };
 
+  const handleAASXChange = (event) => {
+    const file = event.target.files[0];
+    if (file.name.endsWith(".aasx")) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result.split(",")[1];
+        setModelAasx(base64String);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      console.error("Unsupported file type:", file);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -28,7 +42,6 @@ const Newmodel = () => {
       modelType,
       modelData,
       modelAasx,
-      modelImage: selectedImage,
     };
 
     try {
@@ -51,7 +64,6 @@ const Newmodel = () => {
       console.error("Error:", error);
       setError("Failed to connect to the server");
     }
-    
   };
 
   return (
@@ -123,7 +135,7 @@ const Newmodel = () => {
             <input
               type="file"
               className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-              onChange={(event) => handleFileChange(event, setModelAasx)}
+              onChange={(event) => handleAASXChange(event)}
             />
           </div>
         </div>
