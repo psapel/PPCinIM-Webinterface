@@ -429,7 +429,7 @@ def get_asset(source):
     
     # Extract 'name' and 'production_duration_expected'
     names, durations = extract_data(db_values)
-    return names, duratiosn
+    return names, durations
 
 
 @app.route('/api/execution/<name>, <durations>')
