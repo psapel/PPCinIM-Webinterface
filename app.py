@@ -4,10 +4,13 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Integer, String
 
 
-from flask import Flask, request, render_template, url_for, send_from_directory, jsonify
+from flask import Flask, request,  jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 import json
-import os
+
+from py2neo import Graph
+from neo4j import GraphDatabase
 
 from elasticsearch import Elasticsearch
 
@@ -23,25 +26,22 @@ from python_files.execution_logs import total_execution
 from python_files.model_execution import total_order
 from python_files.odoo_connect import connect
 
-
-from py2neo import Graph
-
-# Neo4j configuration
-neo4j_uri = "bolt://localhost:7687"
-neo4j_username = "neo4j"
-neo4j_password = "12345678"
-
-graph = Graph(neo4j_uri, auth=(neo4j_username, neo4j_password))
-
 # Import queries from the local folder
+from queries.metadata import cypher_query
 from queries.coolant_query import get_coolant_data
 from queries.handling_device_query import get_handling_device_data
 from queries.injection_molding_machine_query import run_injection_molding_machine_query
 
 
+# Neo4j configuration
+uri = "bolt://localhost:7687"
+username = "neo4j"
+password = "12345678"
+
 es = Elasticsearch(hosts=['http://localhost:9200'])
 
 app = Flask(__name__)
+load_dotenv()
 CORS(app)
 
 memory_storage = []
@@ -463,15 +463,153 @@ def get_execution_logs(model_name):
     logs = total_execution(new_model)
     return logs
 
+# Define the URLs
+
+# HandlingDevice_1 configuration
+handling_device_1 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9oYW5kbGluZ0RldmljZV8x?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0hEMQ?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0hEMQ?format=json',
+    'label': 'HandlingDevice_1'
+}
+
+# HandlingDevice_2 configuration
+handling_device_2 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9oYW5kbGluZ0RldmljZV8y?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0hEMg?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0hEMg?format=json',
+    'label': 'HandlingDevice_2'
+}
+
+# TemperatureControlUnit_1 configuration
+temperature_control_unit_1 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS90ZW1wZXJhdHVyZUNvbnRyb2xVbml0XzE?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L1RDVTE?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL1RDVTE?format=json',
+    'label': 'TemperatureControlUnit_1'
+}
+
+# TemperatureControlUnit_2 configuration
+temperature_control_unit_2 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS90ZW1wZXJhdHVyZUNvbnRyb2xVbml0XzI?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L1RDVTI?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL1RDVTI?format=json',
+    'label': 'TemperatureControlUnit_2'
+}
+
+# IMM_1 configuration
+injection_molding_machine_1 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV8x?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTE?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTE?format=json',
+    'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTE??format=json',
+    'label': 'InjectionMoldingMachine_1'
+}
+
+# IMM_2 configuration
+injection_molding_machine_2 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV8y?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTI?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTI?format=json',
+    'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTI?format=json',
+    'label': 'InjectionMoldingMachine_2'
+}
+
+# IMM_3 configuration
+injection_molding_machine_3 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV8z?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTM?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTM?format=json',
+    'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTM?format=json',
+    'label': 'InjectionMoldingMachine_3'
+}
+
+# IMM_4 configuration
+injection_molding_machine_4 = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV80?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTQ?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTQ?format=json',
+    'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTQ?format=json',
+    'label': 'InjectionMoldingMachine_4'
+}
+
+# Injection Mold configuration
+injection_mold = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9tb2xkRXhhbXBsZQ?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL01vbGQ?format=json',
+    'label': 'Mold'
+}
+
+# Inquiry_1 configuration
+inquiry = {
+    'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbnF1aXJ5XzE?format=json',
+    'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lOUVVJUlkx?format=json',
+    'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lOUVVJUlkx?format=json',
+    'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NwZWNpZmljYXRpb25zL0lOUVVJUlkx?format=json',
+    'label': 'Inquiry_1'
+}
+
+def execute_cypher_query(query, device_config, **params):
+    with GraphDatabase.driver(uri, auth=(username, password)) as driver:
+        with driver.session() as session:
+            if 'url1' in device_config and 'url3' in device_config:
+                result = session.run(query, 
+                                     url=device_config['url'], 
+                                     label=device_config['label'], 
+                                     url1=device_config['url1'], 
+                                     url2=device_config['url2'], 
+                                     url3=device_config['url3'], 
+                                     **params)
+            elif 'url1' in device_config:
+                result = session.run(query, 
+                                     url=device_config['url'], 
+                                     label=device_config['label'], 
+                                     url1=device_config['url1'], 
+                                     url2=device_config['url2'], 
+                                     **params)
+            else:
+                result = session.run(query, 
+                                     url=device_config['url'], 
+                                     label=device_config['label'], 
+                                     url2=device_config['url2'], 
+                                     **params)
+            return result.data()
+
+
+# Define the Cypher queries for each device
+cypher_query_hd1 = cypher_query(handling_device_1['url'], handling_device_1['label'], handling_device_1['url1'], handling_device_1['url2'], None)
+cypher_query_hd2 = cypher_query(handling_device_2['url'], handling_device_2['label'], handling_device_2['url1'], handling_device_2['url2'], None)
+cypher_query_tcu1 = cypher_query(temperature_control_unit_1['url'], temperature_control_unit_1['label'], temperature_control_unit_1['url1'], temperature_control_unit_1['url2'], None)
+cypher_query_tcu2 = cypher_query(temperature_control_unit_2['url'], temperature_control_unit_2['label'], temperature_control_unit_2['url1'], temperature_control_unit_2['url2'], None)
+cypher_query_mold = cypher_query(injection_mold['url'], injection_mold['label'], None, injection_mold['url2'], None)
+cypher_query_inquiry = cypher_query(inquiry['url'], inquiry['label'], inquiry['url1'], inquiry['url2'], inquiry['url3'])
+cypher_query_imm1 = cypher_query(injection_molding_machine_1['url'], injection_molding_machine_1['label'], injection_molding_machine_1['url1'], injection_molding_machine_1['url2'], injection_molding_machine_1['url3'])
+cypher_query_imm2 = cypher_query(injection_molding_machine_2['url'], injection_molding_machine_2['label'], injection_molding_machine_2['url1'], injection_molding_machine_2['url2'], injection_molding_machine_2['url3'])
+cypher_query_imm3 = cypher_query(injection_molding_machine_3['url'], injection_molding_machine_3['label'], injection_molding_machine_3['url1'], injection_molding_machine_3['url2'], injection_molding_machine_3['url3'])
+cypher_query_imm4 = cypher_query(injection_molding_machine_4['url'], injection_molding_machine_4['label'], injection_molding_machine_4['url1'], injection_molding_machine_4['url2'], injection_molding_machine_4['url3'])
+
+# Execute the queries for each device
+result_hd1 = execute_cypher_query(cypher_query_hd1, handling_device_1)
+result_hd2 = execute_cypher_query(cypher_query_hd2, handling_device_2)
+result_tcu1 = execute_cypher_query(cypher_query_tcu1, temperature_control_unit_1)
+result_tcu2 = execute_cypher_query(cypher_query_tcu2, temperature_control_unit_2)
+result_mold = execute_cypher_query(cypher_query_mold, injection_mold)
+result_inuiry = execute_cypher_query(cypher_query_inquiry, inquiry)
+result_imm1 = execute_cypher_query(cypher_query_imm1, injection_molding_machine_1)
+result_imm2 = execute_cypher_query(cypher_query_imm2, injection_molding_machine_2)
+result_imm3 = execute_cypher_query(cypher_query_imm3, injection_molding_machine_3)
+result_imm4 = execute_cypher_query(cypher_query_imm4, injection_molding_machine_4)
+
+graph = Graph(uri, auth=(username, password))
 
 @app.route('/query1', methods=['POST'])
 def run_query1():
-    coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)
+    coolant_data = get_coolant_data(uri, username, password)
     return jsonify(data=coolant_data, query_type='Temperature Control Unit Query')
 
 @app.route('/query2', methods=['POST'])
 def run_query2():
-    handling_device_data = get_handling_device_data(neo4j_uri, neo4j_username, neo4j_password)
+    handling_device_data = get_handling_device_data(uri, username, password)
     return jsonify(data=handling_device_data, query_type='Handling Device Query')
 
 @app.route('/query3', methods=['POST'])
