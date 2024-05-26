@@ -1,13 +1,10 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String
-
-
 from flask import Flask, request,  jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 import json
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy import Integer, String
 
 from py2neo import Graph
 from neo4j import GraphDatabase
