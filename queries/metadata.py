@@ -86,7 +86,7 @@ def cypher_query(url, label, url1, url2, url3):
     MATCH (b)
     WHERE b.idS IS NOT NULL AND n.assetType = b.idS
     WITH n, b LIMIT 1
-    CREATE (n)-[:IsA]->(b)
+    MERGE (n)-[:IsA]->(b)
 
     WITH n
     SET n = apoc.map.clean(n, ['de', 'en'], [])
