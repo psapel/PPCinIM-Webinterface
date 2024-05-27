@@ -8,7 +8,7 @@ const Newmodel = () => {
   const [modelData, setModelData] = useState(null);
   const [modelAasx, setModelAasx] = useState(null);
   const [error, setError] = useState(null);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [aasxFileName, setAasxFileName] = useState("");
 
   const handleFileChange = (event, setData) => {
     const file = event.target.files[0];
@@ -23,6 +23,7 @@ const Newmodel = () => {
   const handleAASXChange = (event) => {
     const file = event.target.files[0];
     if (file.name.endsWith(".aasx")) {
+      setAasxFileName(file.name);
       const reader = new FileReader();
       reader.onload = (event) => {
         const base64String = event.target.result.split(",")[1];
@@ -42,6 +43,7 @@ const Newmodel = () => {
       modelType,
       modelData,
       modelAasx,
+      aasxFileName,
     };
 
     try {
@@ -129,7 +131,7 @@ const Newmodel = () => {
             />
           </div>
         </div>
-        <div className="my-3">
+        {/* <div className="my-3">
           Asset Administration Shell (AASX):
           <div>
             <input
@@ -138,7 +140,7 @@ const Newmodel = () => {
               onChange={(event) => handleAASXChange(event)}
             />
           </div>
-        </div>
+        </div> */}
         <div>
           <button className="btn btn-wide  text-white bg-secondary hover:bg-primary my-3">
             Create

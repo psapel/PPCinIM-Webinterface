@@ -53,15 +53,15 @@ const Newasset = () => {
     };
     reader.readAsText(file);
   };
-  const handleAasxFileChange = (event) => {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const data = JSON.parse(event.target.result);
-      setAssetData(data);
-    };
-    reader.readAsText(file);
-  };
+  // const handleAasxFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   const reader = new FileReader();
+  //   reader.onload = (event) => {
+  //     const data = JSON.parse(event.target.result);
+  //     setAssetData(data);
+  //   };
+  //   reader.readAsText(file);
+  // };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -218,7 +218,7 @@ const Newasset = () => {
             />
           </div>
         </div>
-        <div className="my-3">
+        {/* <div className="my-3">
           Asset Administration Shell Aasx
           <div>
             <input
@@ -227,7 +227,7 @@ const Newasset = () => {
               onChange={handleAasxFileChange}
             />
           </div>
-        </div>
+        </div> */}
         <div>
           <button className="btn btn-wide text-white bg-secondary hover:bg-primary my-3">
             Create

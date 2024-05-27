@@ -78,10 +78,10 @@ class Model(db.Model):
 with app.app_context():
     db.create_all() 
 
-def base64_to_file(base64_string, filename):
-    with open(filename, 'wb') as file_to_save:
-        decoded_data = base64.b64decode(base64_string)
-        file_to_save.write(decoded_data)
+# def base64_to_file(base64_string, filename):
+#     with open(filename, 'wb') as file_to_save:
+#         decoded_data = base64.b64decode(base64_string)
+#         file_to_save.write(decoded_data)
 
 #test routes for sqlalchemy
 @app.route('/test', methods=['POST'])
@@ -94,6 +94,14 @@ def create_testasset():
         asset_data = assets.get('assetData')
         asset_categories = assets.get('assetCategories')
         asset_image = assets.get('assetImage')
+        # aasxassetfilename = models.get('aasxassetFileName')
+
+        
+        # derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
+        
+        # if asset_type != derived_from_value:
+        #     print(derived_from_value)
+        #     return jsonify({"error": "Asset Type does not match model selection"}), 400
 
         asset = Asset(
             asset_name=asset_name,
@@ -137,10 +145,11 @@ def create_testmodel():
         model_name = models.get('modelName')
         model_type = models.get('modelType')
         model_data = models.get('modelData')
+        aasxfilename = models.get('aasxFileName')
+        # filename = fr"C:\Users\Priscillia\Desktop\AasxServerBlazor.2022-07-25.alpha\AasxServerBlazor\aasx_test\{aasxfilename}"
 
-        base64_string = models.get('modelAasx')
-        filename = 'output.aasx'  
-        base64_to_file(base64_string, filename)
+        # base64_string = models.get('modelAasx') 
+        # base64_to_file(base64_string, filename)
 
         model = Model(
             model_name=model_name,
