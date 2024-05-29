@@ -423,7 +423,6 @@ def index():
         selected_models = []
         for hit in matching_model:
             source = hit.get('_source', {})
-            print("hiiiiiiiiiiiiiiiiiiiiiiiii" , source)
             selected_models.append(source)
         
         if selected_models:
@@ -434,26 +433,36 @@ def index():
     return jsonify({"message": "Invalid request method"})
 
 
-@app.route('/api/underlying_asset/<source>')
-def get_asset(source):
+@app.route('/api/underlying_asset', methods=['POST'])
+def get_asset():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
+
+    source = data.get('source')
+    if not source:
+        return jsonify({"error": "No 'source' key in JSON data"}), 400
+    print("source found:", source)
     url, db, username, password = get_odoo_credentials()
     
     # Translate identifiers
-    db_prop_names  = translate_identifiers(source, id_to_name_mapping, id_to_duration_mapping)
+    db_prop_names = translate_identifiers(source, id_to_name_mapping, id_to_duration_mapping)
     
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
     
     # Extract 'name' and 'production_duration_expected'
     names, durations = extract_data(db_values)
-    return names, durations
+    
+    return jsonify({"message": "Data processed successfully", "names": names, "durations": durations})
+
 
 
 @app.route('/api/execution/<names>, <durations>')
 def get_execution(names, duration):
    
     # Optimization model
-    result= optimization_model(durations)
+    result= optimization_model(duration)
 
     # Optimal job order
     post_result = process_results(result, names)
