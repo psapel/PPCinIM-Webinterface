@@ -22,6 +22,7 @@ if selected_json:
     
     # Translate identifiers
     db_prop_names  = translate_identifiers(selected_json, id_to_name_mapping, id_to_duration_mapping)
+    print(db_prop_names)
     
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
