@@ -1,16 +1,10 @@
-from flask import Flask
+from flask import Flask, request, jsonify
+from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String
-
-
-from flask import Flask, request, render_template, url_for, send_from_directory, jsonify
-from flask_cors import CORS
 import json
-import os
-import base64
-
 from elasticsearch import Elasticsearch
+from py2neo import Graph
 
 from gui_setup.db_login import get_odoo_credentials
 from gui_setup.translator_new import translate_identifiers
@@ -21,11 +15,14 @@ from gui_setup.model import optimization_model
 from gui_setup.postprocessing import process_results
 
 from python_files.execution_logs import total_execution
-from python_files.model_execution import total_order
-from python_files.odoo_connect import connect
 
+# Import queries from the local folder
+from queries.coolant_query import get_coolant_data
+from queries.handling_device_query import get_handling_device_data
+from queries.injection_molding_machine_query import run_injection_molding_machine_query
 
-from py2neo import Graph
+# Elasticsearch configuration
+es = Elasticsearch(hosts=['http://localhost:9200'])
 
 # Neo4j configuration
 neo4j_uri = "bolt://localhost:7687"
@@ -33,14 +30,6 @@ neo4j_username = "neo4j"
 neo4j_password = "12345678"
 
 graph = Graph(neo4j_uri, auth=(neo4j_username, neo4j_password))
-
-# Import queries from the local folder
-from queries.coolant_query import get_coolant_data
-from queries.handling_device_query import get_handling_device_data
-from queries.injection_molding_machine_query import run_injection_molding_machine_query
-
-
-es = Elasticsearch(hosts=['http://localhost:9200'])
 
 app = Flask(__name__)
 CORS(app)
@@ -438,7 +427,6 @@ def get_asset():
     data = request.json
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
-
     source = data.get('source')
     print("source:", source)
     if not source:
@@ -448,21 +436,14 @@ def get_asset():
     db_prop_names = translate_identifiers(source, id_to_name_mapping, id_to_duration_mapping)
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
-    print("db_values:", db_values)
     # Extract 'name' and 'production_duration_expected'
-    names, durations = extract_data(db_values)
-    print("extracted_values:", names, durations)
-    
-    return jsonify({"message": "Data processed successfully", "names": names, "durations": durations})
-
-
+    names, durations = extract_data(db_values)    
+    return jsonify(names=names, durations=durations)
 
 @app.route('/api/execution/<names>, <durations>')
 def get_execution(names, duration):
-   
     # Optimization model
     result= optimization_model(duration)
-
     # Optimal job order
     post_result = process_results(result, names)
     return post_result
@@ -471,7 +452,6 @@ def get_execution(names, duration):
 def get_execution_logs(model_name):
     logs = total_execution(model_name)
     return logs
-
 
 @app.route('/query1', methods=['POST'])
 def run_query1():
@@ -507,7 +487,6 @@ def create_model():
 
     # Return a response to the frontend
     return jsonify({'message': 'Model created successfully'}), 200
-
 
 
 if __name__ == '__main__':

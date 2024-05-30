@@ -151,7 +151,7 @@ function FilteredModel() {
                   </div>
                 );
               }
-              return null; // Add this line to avoid warnings
+              return null;
             })}
           </div>
           <div className="overflow-x-auto">
