@@ -88,7 +88,7 @@ const Execution = () => {
   }, [isChecked]);
   console.log("isChecked", isChecked);
   console.log(tableData);
-  console.log("executionData", executionLogsData);
+  console.log("executionData", executionData);
 
   return (
     <div>
