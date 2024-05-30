@@ -56,7 +56,7 @@ const Execution = () => {
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th>Job</th>
+                <th>Name</th>
                 <th>Duration</th>
               </tr>
             </thead>
