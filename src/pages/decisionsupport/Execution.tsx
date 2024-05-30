@@ -4,7 +4,7 @@ import "./Decisionsupport.css";
 
 const Execution = () => {
   const [executionData, setExecutionData] = useState("");
-  // const [logs, setLogs] = useState([]);
+  const [executionLogsData, setExecutionLogsData] = useState("");
 
   const location = useLocation();
   const tableData = location.state.tableData;
@@ -15,6 +15,7 @@ const Execution = () => {
     // Clear the state before fetching new data
 
     setExecutionData([]);
+    setExecutionLogsData([]);
 
     // Find the first checked model
     const modelName = Object.keys(isChecked).find(
@@ -25,6 +26,49 @@ const Execution = () => {
       // Define an async function inside the hook
       const fetchData = async () => {
         try {
+          console.log(tableData, "ssssssssssssss");
+          const names = tableData.map((item) => item.names);
+          const durations = tableData.map((item) => item.durations);
+
+          // First, fetch the underlying asset data
+          const assetResponse = await fetch(
+            "http://localhost:5005/api/underlying_asset",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                source: { names: names, durations: durations },
+              }),
+            }
+          );
+          if (!assetResponse.ok) {
+            throw new Error(`HTTP error! status: ${assetResponse.status}`);
+          }
+          const assetData = await assetResponse.json();
+
+          // Then, fetch the execution data
+          const executionResponse = await fetch(
+            "http://localhost:5005/api/execution",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(assetData),
+            }
+          );
+          if (!executionResponse.ok) {
+            throw new Error(`HTTP error! status: ${executionResponse.status}`);
+          }
+          const executionData = await executionResponse.json();
+          setExecutionData(executionData);
+        } catch (error) {
+          console.error("Error fetching execution data:", error);
+        }
+
+        try {
           const response = await fetch(
             `http://localhost:5005/api/execution_logs/${modelName}`
           );
@@ -32,9 +76,9 @@ const Execution = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          setExecutionData(data);
+          setExecutionLogsData(data);
         } catch (error) {
-          console.error("Error fetching execution data:", error);
+          console.error("Error fetching execution logs data:", error);
         }
       };
 
@@ -44,6 +88,7 @@ const Execution = () => {
   }, [isChecked]);
   console.log("isChecked", isChecked);
   console.log(tableData);
+  console.log("executionData", executionLogsData);
 
   return (
     <div>
@@ -76,7 +121,7 @@ const Execution = () => {
       <div className="execution-logs" style={{ textAlign: "center" }}>
         {executionData ? (
           <div>
-            <strong> {executionData["146"]}</strong>
+            <strong> {executionData.join(" ").trim().replace(/,$/, "")}</strong>
           </div>
         ) : (
           <p>Loading...</p>
@@ -89,7 +134,7 @@ const Execution = () => {
           onClick={() => {
             const newWindow = window.open("", "_blank");
             newWindow.document.write(
-              `<pre>${JSON.stringify(executionData, null, 2)}</pre>`
+              `<pre>${JSON.stringify(executionLogsData, null, 2)}</pre>`
             );
           }}
         >

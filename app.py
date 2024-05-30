@@ -437,16 +437,23 @@ def get_asset():
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
     # Extract 'name' and 'production_duration_expected'
-    names, durations = extract_data(db_values)    
-    return jsonify(names=names, durations=durations)
+    names, durations = extract_data(db_values)
+    print(names, durations)    
+    return jsonify({"names": names, "durations": durations})
 
-@app.route('/api/execution/<names>, <durations>')
-def get_execution(names, duration):
+    
+@app.route('/api/execution', methods=['POST'])
+def get_execution():
+    data = request.get_json()
+    names = data['names']
+    print("names:", names)
+    durations = data['durations']
+    print("durations:", durations)
     # Optimization model
-    result= optimization_model(duration)
+    result = optimization_model(durations)
     # Optimal job order
     post_result = process_results(result, names)
-    return post_result
+    return jsonify(post_result)
 
 @app.route('/api/execution_logs/<model_name>')
 def get_execution_logs(model_name):
