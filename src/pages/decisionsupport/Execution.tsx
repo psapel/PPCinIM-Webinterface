@@ -26,28 +26,6 @@ const Execution = () => {
       // Define an async function inside the hook
       const fetchData = async () => {
         try {
-          console.log(tableData, "ssssssssssssss");
-          const names = tableData.map((item) => item.names);
-          const durations = tableData.map((item) => item.durations);
-
-          // First, fetch the underlying asset data
-          const assetResponse = await fetch(
-            "http://localhost:5005/api/underlying_asset",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({
-                source: { names: names, durations: durations },
-              }),
-            }
-          );
-          if (!assetResponse.ok) {
-            throw new Error(`HTTP error! status: ${assetResponse.status}`);
-          }
-          const assetData = await assetResponse.json();
-
           // Then, fetch the execution data
           const executionResponse = await fetch(
             "http://localhost:5005/api/execution",
@@ -56,7 +34,7 @@ const Execution = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(assetData),
+              body: JSON.stringify(tableData[0]),
             }
           );
           if (!executionResponse.ok) {
