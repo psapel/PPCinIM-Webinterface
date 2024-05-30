@@ -24,15 +24,20 @@ function FilteredModel() {
       for (const modelName of Object.keys(isChecked)) {
         if (isChecked[modelName]) {
           try {
-            const source = filteredModels.find((model) => model.name === modelName);
+            const source = filteredModels.find(
+              (model) => model.name === modelName
+            );
 
-            const response = await fetch(`http://localhost:5005/api/underlying_asset`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({ source }),
-            });
+            const response = await fetch(
+              `http://localhost:5005/api/underlying_asset`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ source }),
+              }
+            );
 
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
@@ -68,7 +73,13 @@ function FilteredModel() {
         ))}
       </div>
       {Object.values(isChecked).some((value) => value) && (
-        <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            marginTop: "20px",
+          }}
+        >
           <div className="modelBox">
             {filteredModels.map((model, index) => {
               if (isChecked[model.name]) {
@@ -79,21 +90,59 @@ function FilteredModel() {
                     <p>Formula: {model.formula}</p>
                     <br></br>
                     <p>
-                      Machine Environment: {urlToNameMapping[model["https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"]] || model["https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"]}
+                      Machine Environment:{" "}
+                      {urlToNameMapping[
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                        ]
+                      ] ||
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                        ]}
                     </p>
                     <br></br>
                     <p>
                       Scheduling Constraints:{" "}
-                      {Array.isArray(model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"])
-                        ? model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"].map((url) => urlToNameMapping[url] || url).join(", ")
-                        : urlToNameMapping[model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"]] || model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"]}
+                      {Array.isArray(
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                        ]
+                      )
+                        ? model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                          ]
+                            .map((url) => urlToNameMapping[url] || url)
+                            .join(", ")
+                        : urlToNameMapping[
+                            model[
+                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                            ]
+                          ] ||
+                          model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                          ]}
                     </p>
                     <br></br>
                     <p>
                       Scheduling Objective Function:{" "}
-                      {Array.isArray(model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"])
-                        ? model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"].map((url) => urlToNameMapping[url] || url).join(", ")
-                        : urlToNameMapping[model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"]] || model["https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"]}
+                      {Array.isArray(
+                        model[
+                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                        ]
+                      )
+                        ? model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                          ]
+                            .map((url) => urlToNameMapping[url] || url)
+                            .join(", ")
+                        : urlToNameMapping[
+                            model[
+                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                            ]
+                          ] ||
+                          model[
+                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                          ]}
                     </p>
                   </div>
                 );
@@ -135,7 +184,9 @@ function FilteredModel() {
         <div className="button">
           <button
             className="btn text-white bg-secondary hover:bg-primary rounded"
-            onClick={() => navigate("/execution-model", { state: { isChecked } })}
+            onClick={() =>
+              navigate("/execution-model", { state: { isChecked } })
+            }
           >
             Execute Model
           </button>
