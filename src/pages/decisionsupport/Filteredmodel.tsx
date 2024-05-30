@@ -43,7 +43,10 @@ function FilteredModel() {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            setTableData((prevData) => [...prevData, data.data]);
+            setTableData((prevData) => [
+              ...prevData,
+              { names: data.names, durations: data.durations },
+            ]);
           } catch (error) {
             console.error("Error fetching data:", error);
           }
@@ -159,25 +162,19 @@ function FilteredModel() {
               <table className="table table-zebra">
                 <thead>
                   <tr>
-                    <th>Reference</th>
+                    <th>Name</th>
                     <th>Duration</th>
-                    <th>Company</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>State</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.map((row, index) => (
-                    <tr key={index}>
-                      <td>{row.Reference}</td>
-                      <td>{row.Duration}</td>
-                      <td>{row.Company}</td>
-                      <td>{row.Product}</td>
-                      <td>{row.Quantity}</td>
-                      <td>{row.State}</td>
-                    </tr>
-                  ))}
+                  {tableData.map((row, index) =>
+                    row.names.map((name, i) => (
+                      <tr key={`${index}-${i}`}>
+                        <td>{name}</td>
+                        <td>{row.durations[i]}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             )}
@@ -188,9 +185,11 @@ function FilteredModel() {
         <div className="button">
           <button
             className="btn text-white bg-secondary hover:bg-primary rounded"
-            onClick={() =>
-              navigate("/execution-model", { state: { isChecked } })
-            }
+            onClick={() => {
+              navigate("/execution-model", {
+                state: { isChecked, tableData },
+              });
+            }}
           >
             Execute Model
           </button>
