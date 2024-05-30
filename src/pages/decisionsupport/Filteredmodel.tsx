@@ -43,7 +43,7 @@ function FilteredModel() {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            setTableData((prevData) => [...prevData, data]);
+            setTableData((prevData) => [...prevData, data.data]);
           } catch (error) {
             console.error("Error fetching data:", error);
           }
@@ -52,7 +52,11 @@ function FilteredModel() {
     };
 
     fetchData();
-  }, [isChecked]);
+  }, [isChecked, filteredModels]);
+
+  useEffect(() => {
+    console.log(tableData);
+  }, [tableData]);
 
   return (
     <div>
@@ -93,11 +97,11 @@ function FilteredModel() {
                       Machine Environment:{" "}
                       {urlToNameMapping[
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
                         ]
                       ] ||
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
                         ]}
                     </p>
                     <br></br>
@@ -105,21 +109,21 @@ function FilteredModel() {
                       Scheduling Constraints:{" "}
                       {Array.isArray(
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                         ]
                       )
                         ? model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                           ]
                             .map((url) => urlToNameMapping[url] || url)
                             .join(", ")
                         : urlToNameMapping[
                             model[
-                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                              "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                             ]
                           ] ||
                           model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                           ]}
                     </p>
                     <br></br>
@@ -127,21 +131,21 @@ function FilteredModel() {
                       Scheduling Objective Function:{" "}
                       {Array.isArray(
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                         ]
                       )
                         ? model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                           ]
                             .map((url) => urlToNameMapping[url] || url)
                             .join(", ")
                         : urlToNameMapping[
                             model[
-                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                              "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                             ]
                           ] ||
                           model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                           ]}
                     </p>
                   </div>

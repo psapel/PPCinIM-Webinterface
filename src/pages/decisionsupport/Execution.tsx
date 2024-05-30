@@ -61,6 +61,7 @@ const Execution = () => {
           }
           const data = await response.json();
           setExecutionData(data);
+          console.log("Fetched table data:", data);
         } catch (error) {
           console.error("Error fetching execution data:", error);
         }
