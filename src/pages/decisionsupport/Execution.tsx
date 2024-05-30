@@ -3,18 +3,17 @@ import { useLocation } from "react-router-dom";
 import "./Decisionsupport.css";
 
 const Execution = () => {
-  const [tableData, setTableData] = useState([]);
   const [executionData, setExecutionData] = useState("");
   // const [logs, setLogs] = useState([]);
 
   const location = useLocation();
-  // const filteredModels = location.state.filteredModels;
+  const tableData = location.state.tableData;
   const { isChecked } = location.state;
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     // Clear the state before fetching new data
-    setTableData([]);
+
     setExecutionData([]);
 
     // Find the first checked model
@@ -27,20 +26,6 @@ const Execution = () => {
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `http://localhost:5005/api/underlying_asset/${modelName}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          setTableData(data);
-          console.log("Fetched data:", data); // Log the fetched data
-        } catch (error) {
-          console.error("Error fetching asset data:", error);
-        }
-
-        try {
-          const response = await fetch(
             `http://localhost:5005/api/execution_logs/${modelName}`
           );
           if (!response.ok) {
@@ -51,20 +36,6 @@ const Execution = () => {
         } catch (error) {
           console.error("Error fetching execution data:", error);
         }
-
-        try {
-          const response = await fetch(
-            `http://localhost:5005/api/execution/${modelName}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          setExecutionData(data);
-          console.log("Fetched table data:", data);
-        } catch (error) {
-          console.error("Error fetching execution data:", error);
-        }
       };
 
       // Call the async function
@@ -72,6 +43,7 @@ const Execution = () => {
     }
   }, [isChecked]);
   console.log("isChecked", isChecked);
+  console.log(tableData);
 
   return (
     <div>
@@ -86,19 +58,17 @@ const Execution = () => {
               <tr>
                 <th>Job</th>
                 <th>Duration</th>
-                <th>Quantity</th>
-                <th>State</th>
               </tr>
             </thead>
             <tbody>
-              {tableData.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.Reference}</td>
-                  <td>{row.Duration}</td>
-                  <td>{row.Quantity}</td>
-                  <td>{row.State}</td>
-                </tr>
-              ))}
+              {tableData.map((row, index) =>
+                row.names.map((name, i) => (
+                  <tr key={`${index}-${i}`}>
+                    <td>{name}</td>
+                    <td>{row.durations[i]}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         )}
