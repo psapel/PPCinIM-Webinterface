@@ -296,7 +296,7 @@ index_settings = {
     }
 }
 
-index_name = 'new_version'
+index_name = 'new_version_final'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -380,7 +380,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index= 'new_version', size=16, body=query)
+    result = es.search(index= 'new_version_final', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -437,13 +437,14 @@ def get_asset():
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
     # Extract 'name' and 'production_duration_expected'
-    names, durations = extract_data(db_values)
-    print(names, durations)    
+    names, durations = extract_data(db_values) 
+    # Save the result in JSON format  
     return jsonify({"names": names, "durations": durations})
 
     
 @app.route('/api/execution', methods=['POST'])
 def get_execution():
+    # Extract name and duration from the json
     data = request.get_json()
     names = data['names']
     print("names:", names)
@@ -458,7 +459,7 @@ def get_execution():
 @app.route('/api/execution_logs/<model_name>')
 def get_execution_logs(model_name):
     logs = total_execution(model_name)
-    return logs
+    return jsonify(logs)
 
 @app.route('/query1', methods=['POST'])
 def run_query1():

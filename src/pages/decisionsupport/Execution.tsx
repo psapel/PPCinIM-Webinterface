@@ -13,9 +13,8 @@ const Execution = () => {
 
   useEffect(() => {
     // Clear the state before fetching new data
-
-    setExecutionData([]);
-    setExecutionLogsData([]);
+    setExecutionData("");
+    setExecutionLogsData("");
 
     // Find the first checked model
     const modelName = Object.keys(isChecked).find(
@@ -41,7 +40,7 @@ const Execution = () => {
             throw new Error(`HTTP error! status: ${executionResponse.status}`);
           }
           const executionData = await executionResponse.json();
-          setExecutionData(executionData);
+          setExecutionData(JSON.stringify(executionData)); // Format data here
         } catch (error) {
           console.error("Error fetching execution data:", error);
         }
@@ -64,6 +63,7 @@ const Execution = () => {
       fetchData();
     }
   }, [isChecked]);
+
   console.log("isChecked", isChecked);
   console.log(tableData);
   console.log("executionData", executionData);
@@ -97,12 +97,12 @@ const Execution = () => {
         )}
       </div>
       <div className="execution-logs" style={{ textAlign: "center" }}>
-        {executionData ? (
+        {executionData && (
           <div>
-            <strong> {executionData.join(" ").trim().replace(/,$/, "")}</strong>
+            <strong>The optimal job order is:</strong>
+            <br />
+            <pre>{executionData}</pre>
           </div>
-        ) : (
-          <p>Loading...</p>
         )}
       </div>
       <div>
