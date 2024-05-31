@@ -9,7 +9,7 @@ from model import optimization_model
 from postprocessing import process_results
 
 # Specify the folder path where your JSON files are located
-json_folder_path = 'jsonModels'
+json_folder_path = 'ModelsNew'
 
 # Load JSON files using the imported function
 json_models = load_json_files(json_folder_path)
@@ -22,6 +22,7 @@ if selected_json:
     
     # Translate identifiers
     db_prop_names  = translate_identifiers(selected_json, id_to_name_mapping, id_to_duration_mapping)
+    print(db_prop_names)
     
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)

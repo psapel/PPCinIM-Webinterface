@@ -8,7 +8,7 @@ const Newmodel = () => {
   const [modelData, setModelData] = useState(null);
   const [modelAasx, setModelAasx] = useState(null);
   const [error, setError] = useState(null);
-  const [selectedImage, setSelectedImage] = useState("");
+  const [aasxFileName, setAasxFileName] = useState("");
 
   const handleFileChange = (event, setData) => {
     const file = event.target.files[0];
@@ -20,6 +20,21 @@ const Newmodel = () => {
     reader.readAsText(file);
   };
 
+  const handleAASXChange = (event) => {
+    const file = event.target.files[0];
+    if (file.name.endsWith(".aasx")) {
+      setAasxFileName(file.name);
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const base64String = event.target.result.split(",")[1];
+        setModelAasx(base64String);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      console.error("Unsupported file type:", file);
+    }
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -28,7 +43,7 @@ const Newmodel = () => {
       modelType,
       modelData,
       modelAasx,
-      modelImage: selectedImage,
+      aasxFileName,
     };
 
     try {
@@ -51,7 +66,6 @@ const Newmodel = () => {
       console.error("Error:", error);
       setError("Failed to connect to the server");
     }
-    
   };
 
   return (
@@ -117,16 +131,16 @@ const Newmodel = () => {
             />
           </div>
         </div>
-        <div className="my-3">
+        {/* <div className="my-3">
           Asset Administration Shell (AASX):
           <div>
             <input
               type="file"
               className="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-              onChange={(event) => handleFileChange(event, setModelAasx)}
+              onChange={(event) => handleAASXChange(event)}
             />
           </div>
-        </div>
+        </div> */}
         <div>
           <button className="btn btn-wide  text-white bg-secondary hover:bg-primary my-3">
             Create

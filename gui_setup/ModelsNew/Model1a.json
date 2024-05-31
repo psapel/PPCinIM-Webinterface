@@ -1,6 +1,7 @@
 {
-    "_id": "66ef1f64-c559-4123-9fc3-b404ccb24d71",
+    "_id": "6c45f7a2-0b51-435b-901d-5105392d151d",
     "GrahamNotation": {
+        "name": "model_1a",
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
             "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup"
@@ -12,6 +13,7 @@
         "jobName": "0173-1#02-XXX999#999",
         "jobDuration": "0173-1#02-ABF201#002",
         "Preprocessing": "preprocessing.py",
-        "Postprocessing": "postprocessing.py"
+        "Postprocessing": "postprocessing.py",
+        "formula": "P\u2098 | s\u1d62\u2c7c  | C\u2098\u2090\u2093, \u03a3w\u2c7cW\u2c7c"
     }
 }
