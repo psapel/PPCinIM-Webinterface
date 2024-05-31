@@ -1,24 +1,12 @@
-<<<<<<< HEAD
-from flask import Flask, request,  jsonify
-from flask_cors import CORS
-from dotenv import load_dotenv
-import json
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy import Integer, String
-
-from py2neo import Graph
-from neo4j import GraphDatabase
-
-=======
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from dotenv import load_dotenv
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import json
->>>>>>> test
 from elasticsearch import Elasticsearch
 from py2neo import Graph
+from neo4j import GraphDatabase
 
 from gui_setup.db_login import get_odoo_credentials
 from gui_setup.translator_new import translate_identifiers
@@ -31,36 +19,22 @@ from gui_setup.postprocessing import process_results
 from python_files.execution_logs import total_execution
 
 # Import queries from the local folder
-<<<<<<< HEAD
 from queries.metadata import cypher_query
-=======
->>>>>>> test
 from queries.coolant_query import get_coolant_data
 from queries.handling_device_query import get_handling_device_data
 from queries.injection_molding_machine_query import run_injection_molding_machine_query
 
-<<<<<<< HEAD
+# Elasticsearch configuration
+es = Elasticsearch(hosts=['http://localhost:9200'])
 
 # Neo4j configuration
 uri = "bolt://localhost:7687"
 username = "neo4j"
 password = "12345678"
 
-es = Elasticsearch(hosts=['http://localhost:9200'])
 
-=======
-# Elasticsearch configuration
-es = Elasticsearch(hosts=['http://localhost:9200'])
-
-# Neo4j configuration
-neo4j_uri = "bolt://localhost:7687"
-neo4j_username = "neo4j"
-neo4j_password = "12345678"
-
-graph = Graph(neo4j_uri, auth=(neo4j_username, neo4j_password))
-
->>>>>>> test
 app = Flask(__name__)
+
 load_dotenv()
 CORS(app)
 
@@ -491,21 +465,6 @@ def get_execution_logs(model_name):
     logs = total_execution(model_name)
     return jsonify(logs)
 
-@app.route('/query1', methods=['POST'])
-def run_query1():
-    coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)
-    return jsonify(data=coolant_data, query_type='Temperature Control Unit Query')
-
-@app.route('/query2', methods=['POST'])
-def run_query2():
-    handling_device_data = get_handling_device_data(neo4j_uri, neo4j_username, neo4j_password)
-    return jsonify(data=handling_device_data, query_type='Handling Device Query')
-
-@app.route('/query3', methods=['POST'])
-def run_query3():
-    result = run_injection_molding_machine_query(graph)
-    return jsonify(data=result, query_type='Injection Molding Machine Query')
-
 @app.route('/api/create_model', methods=['POST'])
 def create_model():
     # Assuming you're receiving form data
@@ -525,35 +484,6 @@ def create_model():
 
     # Return a response to the frontend
     return jsonify({'message': 'Model created successfully'}), 200
-
-
-<<<<<<< HEAD
-@app.route('/underlying-asset/<model_name>')
-def get_asset(model_name):
-    model = model_name.replace(" ID ", "-")
-    new_model = model.lower()
-    print(new_model)
-    asset = connect(new_model)
-    # asset = asset.decode("utf-8")
-    asset_json = json.dumps(asset, indent=4)
-    return asset
-
-
-@app.route('/execution/<model_name>')
-def get_execution(model_name):
-    model = model_name.replace(" ID ", "-")
-    new_model = model.lower()
-    print(new_model)
-    job_order = total_order(new_model)
-    return job_order
-
-@app.route('/api/execution_logs/<model_name>')
-def get_execution_logs(model_name):
-    model = model_name.replace(" ID ", "-")
-    new_model = model.lower()
-    print(new_model)
-    logs = total_execution(new_model)
-    return logs
 
 # Define the URLs
 
@@ -709,7 +639,5 @@ def run_query3():
     result = run_injection_molding_machine_query(graph)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
 
-=======
->>>>>>> test
 if __name__ == '__main__':
     app.run(debug=True)
