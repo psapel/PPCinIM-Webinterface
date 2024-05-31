@@ -3,19 +3,18 @@ import { useLocation } from "react-router-dom";
 import "./Decisionsupport.css";
 
 const Execution = () => {
-  const [tableData, setTableData] = useState([]);
   const [executionData, setExecutionData] = useState("");
-  // const [logs, setLogs] = useState([]);
+  const [executionLogsData, setExecutionLogsData] = useState("");
 
   const location = useLocation();
-  // const filteredModels = location.state.filteredModels;
+  const tableData = location.state.tableData;
   const { isChecked } = location.state;
   const [showDetails, setShowDetails] = useState(false);
 
   useEffect(() => {
     // Clear the state before fetching new data
-    setTableData([]);
-    setExecutionData([]);
+    setExecutionData("");
+    setExecutionLogsData("");
 
     // Find the first checked model
     const modelName = Object.keys(isChecked).find(
@@ -26,17 +25,24 @@ const Execution = () => {
       // Define an async function inside the hook
       const fetchData = async () => {
         try {
-          const response = await fetch(
-            `http://localhost:5005/api/underlying_asset/${modelName}`
+          // Then, fetch the execution data
+          const executionResponse = await fetch(
+            "http://localhost:5005/api/execution",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(tableData[0]),
+            }
           );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+          if (!executionResponse.ok) {
+            throw new Error(`HTTP error! status: ${executionResponse.status}`);
           }
-          const data = await response.json();
-          setTableData(data);
-          console.log("Fetched data:", data); // Log the fetched data
+          const executionData = await executionResponse.json();
+          setExecutionData(JSON.stringify(executionData)); // Format data here
         } catch (error) {
-          console.error("Error fetching asset data:", error);
+          console.error("Error fetching execution data:", error);
         }
 
         try {
@@ -47,22 +53,9 @@ const Execution = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          setExecutionData(data);
+          setExecutionLogsData(data);
         } catch (error) {
-          console.error("Error fetching execution data:", error);
-        }
-
-        try {
-          const response = await fetch(
-            `http://localhost:5005/api/execution/${modelName}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          setExecutionData(data);
-        } catch (error) {
-          console.error("Error fetching execution data:", error);
+          console.error("Error fetching execution logs data:", error);
         }
       };
 
@@ -70,7 +63,10 @@ const Execution = () => {
       fetchData();
     }
   }, [isChecked]);
+
   console.log("isChecked", isChecked);
+  console.log(tableData);
+  console.log("executionData", executionData);
 
   return (
     <div>
@@ -83,32 +79,30 @@ const Execution = () => {
           <table className="table table-zebra">
             <thead>
               <tr>
-                <th>Job</th>
+                <th>Name</th>
                 <th>Duration</th>
-                <th>Quantity</th>
-                <th>State</th>
               </tr>
             </thead>
             <tbody>
-              {tableData.map((row, index) => (
-                <tr key={index}>
-                  <td>{row.Reference}</td>
-                  <td>{row.Duration}</td>
-                  <td>{row.Quantity}</td>
-                  <td>{row.State}</td>
-                </tr>
-              ))}
+              {tableData.map((row, index) =>
+                row.names.map((name, i) => (
+                  <tr key={`${index}-${i}`}>
+                    <td>{name}</td>
+                    <td>{row.durations[i]}</td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         )}
       </div>
       <div className="execution-logs" style={{ textAlign: "center" }}>
-        {executionData ? (
+        {executionData && (
           <div>
-            <strong> {executionData["146"]}</strong>
+            <strong>The optimal job order is:</strong>
+            <br />
+            <pre>{executionData}</pre>
           </div>
-        ) : (
-          <p>Loading...</p>
         )}
       </div>
       <div>
@@ -118,7 +112,7 @@ const Execution = () => {
           onClick={() => {
             const newWindow = window.open("", "_blank");
             newWindow.document.write(
-              `<pre>${JSON.stringify(executionData, null, 2)}</pre>`
+              `<pre>${JSON.stringify(executionLogsData, null, 2)}</pre>`
             );
           }}
         >

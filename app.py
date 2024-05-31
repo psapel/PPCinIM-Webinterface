@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from flask import Flask, request,  jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
@@ -9,10 +10,18 @@ from sqlalchemy import Integer, String
 from py2neo import Graph
 from neo4j import GraphDatabase
 
+=======
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+import json
+>>>>>>> test
 from elasticsearch import Elasticsearch
+from py2neo import Graph
 
 from gui_setup.db_login import get_odoo_credentials
-from gui_setup.translator import translate_identifiers
+from gui_setup.translator_new import translate_identifiers
 from gui_setup.connector import connect_and_fetch_data
 from gui_setup.mappings import id_to_name_mapping, id_to_duration_mapping
 from gui_setup.preprocessing import extract_data
@@ -20,15 +29,17 @@ from gui_setup.model import optimization_model
 from gui_setup.postprocessing import process_results
 
 from python_files.execution_logs import total_execution
-from python_files.model_execution import total_order
-from python_files.odoo_connect import connect
 
 # Import queries from the local folder
+<<<<<<< HEAD
 from queries.metadata import cypher_query
+=======
+>>>>>>> test
 from queries.coolant_query import get_coolant_data
 from queries.handling_device_query import get_handling_device_data
 from queries.injection_molding_machine_query import run_injection_molding_machine_query
 
+<<<<<<< HEAD
 
 # Neo4j configuration
 uri = "bolt://localhost:7687"
@@ -37,6 +48,18 @@ password = "12345678"
 
 es = Elasticsearch(hosts=['http://localhost:9200'])
 
+=======
+# Elasticsearch configuration
+es = Elasticsearch(hosts=['http://localhost:9200'])
+
+# Neo4j configuration
+neo4j_uri = "bolt://localhost:7687"
+neo4j_username = "neo4j"
+neo4j_password = "12345678"
+
+graph = Graph(neo4j_uri, auth=(neo4j_username, neo4j_password))
+
+>>>>>>> test
 app = Flask(__name__)
 load_dotenv()
 CORS(app)
@@ -74,6 +97,11 @@ class Model(db.Model):
 with app.app_context():
     db.create_all() 
 
+# def base64_to_file(base64_string, filename):
+#     with open(filename, 'wb') as file_to_save:
+#         decoded_data = base64.b64decode(base64_string)
+#         file_to_save.write(decoded_data)
+
 #test routes for sqlalchemy
 @app.route('/test', methods=['POST'])
 def create_testasset():
@@ -85,6 +113,14 @@ def create_testasset():
         asset_data = assets.get('assetData')
         asset_categories = assets.get('assetCategories')
         asset_image = assets.get('assetImage')
+        # aasxassetfilename = models.get('aasxassetFileName')
+
+        
+        # derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
+        
+        # if asset_type != derived_from_value:
+        #     print(derived_from_value)
+        #     return jsonify({"error": "Asset Type does not match model selection"}), 400
 
         asset = Asset(
             asset_name=asset_name,
@@ -128,13 +164,16 @@ def create_testmodel():
         model_name = models.get('modelName')
         model_type = models.get('modelType')
         model_data = models.get('modelData')
-        model_image = "models.get('modelImage')"
+        aasxfilename = models.get('aasxFileName')
+        # filename = fr"C:\Users\Priscillia\Desktop\AasxServerBlazor.2022-07-25.alpha\AasxServerBlazor\aasx_test\{aasxfilename}"
+
+        # base64_string = models.get('modelAasx') 
+        # base64_to_file(base64_string, filename)
 
         model = Model(
             model_name=model_name,
             model_type=model_type,
             model_data=json.dumps(model_data),
-            model_image=model_image
         )
         db.session.add(model)
         db.session.commit()
@@ -287,7 +326,7 @@ index_settings = {
     }
 }
 
-index_name = 'final_version'
+index_name = 'new_version_final'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -371,7 +410,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index= 'final_version', size=16, body=query)
+    result = es.search(index= 'new_version_final', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -406,11 +445,66 @@ def index():
             selected_models.append(source)
         
         if selected_models:
+            print("selcted_models:", selected_models)
             return jsonify(selected_models), 200
         else:
             return "No matching model found."
     return jsonify({"message": "Invalid request method"})
 
+
+@app.route('/api/underlying_asset', methods=['POST'])
+def get_asset():
+    data = request.json
+    if not data:
+        return jsonify({"error": "No JSON data provided"}), 400
+    source = data.get('source')
+    print("source:", source)
+    if not source:
+        return jsonify({"error": "No 'source' key in JSON data"}), 400
+    url, db, username, password = get_odoo_credentials()
+    # Translate identifiers
+    db_prop_names = translate_identifiers(source, id_to_name_mapping, id_to_duration_mapping)
+    # Connect to odoo and fetch data
+    db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
+    # Extract 'name' and 'production_duration_expected'
+    names, durations = extract_data(db_values) 
+    # Save the result in JSON format  
+    return jsonify({"names": names, "durations": durations})
+
+    
+@app.route('/api/execution', methods=['POST'])
+def get_execution():
+    # Extract name and duration from the json
+    data = request.get_json()
+    names = data['names']
+    print("names:", names)
+    durations = data['durations']
+    print("durations:", durations)
+    # Optimization model
+    result = optimization_model(durations)
+    # Optimal job order
+    post_result = process_results(result, names)
+    return jsonify(post_result)
+
+@app.route('/api/execution_logs/<model_name>')
+def get_execution_logs(model_name):
+    logs = total_execution(model_name)
+    return jsonify(logs)
+
+@app.route('/query1', methods=['POST'])
+def run_query1():
+    coolant_data = get_coolant_data(neo4j_uri, neo4j_username, neo4j_password)
+    return jsonify(data=coolant_data, query_type='Temperature Control Unit Query')
+
+@app.route('/query2', methods=['POST'])
+def run_query2():
+    handling_device_data = get_handling_device_data(neo4j_uri, neo4j_username, neo4j_password)
+    return jsonify(data=handling_device_data, query_type='Handling Device Query')
+
+@app.route('/query3', methods=['POST'])
+def run_query3():
+    result = run_injection_molding_machine_query(graph)
+    return jsonify(data=result, query_type='Injection Molding Machine Query')
 
 @app.route('/api/create_model', methods=['POST'])
 def create_model():
@@ -433,6 +527,7 @@ def create_model():
     return jsonify({'message': 'Model created successfully'}), 200
 
 
+<<<<<<< HEAD
 @app.route('/underlying-asset/<model_name>')
 def get_asset(model_name):
     model = model_name.replace(" ID ", "-")
@@ -614,5 +709,7 @@ def run_query3():
     result = run_injection_molding_machine_query(graph)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
 
+=======
+>>>>>>> test
 if __name__ == '__main__':
     app.run(debug=True)

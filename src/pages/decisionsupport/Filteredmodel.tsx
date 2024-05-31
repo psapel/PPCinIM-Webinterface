@@ -18,24 +18,48 @@ function FilteredModel() {
   };
 
   useEffect(() => {
-    setTableData([]); // Clear the table data before fetching new data
-    Object.keys(isChecked).forEach(async (modelName) => {
-      if (isChecked[modelName]) {
-        try {
-          const response = await fetch(
-            `http://localhost:5005/api/underlying_asset/${modelName}`
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+    const fetchData = async () => {
+      setTableData([]); // Clear the table data before fetching new data
+
+      for (const modelName of Object.keys(isChecked)) {
+        if (isChecked[modelName]) {
+          try {
+            const source = filteredModels.find(
+              (model) => model.name === modelName
+            );
+
+            const response = await fetch(
+              `http://localhost:5005/api/underlying_asset`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ source }),
+              }
+            );
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            const data = await response.json();
+            setTableData((prevData) => [
+              ...prevData,
+              { names: data.names, durations: data.durations },
+            ]);
+          } catch (error) {
+            console.error("Error fetching data:", error);
           }
-          const data = await response.json();
-          setTableData((prevData) => [...prevData, ...data]);
-        } catch (error) {
-          console.error("Error fetching data:", error);
         }
       }
-    });
-  }, [isChecked]);
+    };
+
+    fetchData();
+  }, [isChecked, filteredModels]);
+
+  useEffect(() => {
+    console.log(tableData);
+  }, [tableData]);
 
   return (
     <div>
@@ -73,14 +97,14 @@ function FilteredModel() {
                     <p>Formula: {model.formula}</p>
                     <br></br>
                     <p>
-                      Machine Environment:{""}
+                      Machine Environment:{" "}
                       {urlToNameMapping[
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
                         ]
                       ] ||
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
                         ]}
                     </p>
                     <br></br>
@@ -88,21 +112,21 @@ function FilteredModel() {
                       Scheduling Constraints:{" "}
                       {Array.isArray(
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                         ]
                       )
                         ? model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                           ]
                             .map((url) => urlToNameMapping[url] || url)
                             .join(", ")
                         : urlToNameMapping[
                             model[
-                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                              "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                             ]
                           ] ||
                           model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                           ]}
                     </p>
                     <br></br>
@@ -110,26 +134,27 @@ function FilteredModel() {
                       Scheduling Objective Function:{" "}
                       {Array.isArray(
                         model[
-                          "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                          "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                         ]
                       )
                         ? model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                           ]
                             .map((url) => urlToNameMapping[url] || url)
                             .join(", ")
                         : urlToNameMapping[
                             model[
-                              "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                              "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                             ]
                           ] ||
                           model[
-                            "https://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
+                            "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                           ]}
                     </p>
                   </div>
                 );
               }
+              return null;
             })}
           </div>
           <div className="overflow-x-auto">
@@ -137,25 +162,19 @@ function FilteredModel() {
               <table className="table table-zebra">
                 <thead>
                   <tr>
-                    <th>Reference</th>
+                    <th>Name</th>
                     <th>Duration</th>
-                    <th>Company</th>
-                    <th>Product</th>
-                    <th>Quantity</th>
-                    <th>State</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {tableData.map((row, index) => (
-                    <tr key={row.Reference}>
-                      <td>{row.Reference}</td>
-                      <td>{row.Duration}</td>
-                      <td>{row.Company}</td>
-                      <td>{row.Product}</td>
-                      <td>{row.Quantity}</td>
-                      <td>{row.State}</td>
-                    </tr>
-                  ))}
+                  {tableData.map((row, index) =>
+                    row.names.map((name, i) => (
+                      <tr key={`${index}-${i}`}>
+                        <td>{name}</td>
+                        <td>{row.durations[i]}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             )}
@@ -166,9 +185,11 @@ function FilteredModel() {
         <div className="button">
           <button
             className="btn text-white bg-secondary hover:bg-primary rounded"
-            onClick={() =>
-              navigate("/execution-model", { state: { isChecked } })
-            }
+            onClick={() => {
+              navigate("/execution-model", {
+                state: { isChecked, tableData },
+              });
+            }}
           >
             Execute Model
           </button>
