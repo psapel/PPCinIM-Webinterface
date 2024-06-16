@@ -7,6 +7,7 @@ import json
 from elasticsearch import Elasticsearch
 from py2neo import Graph
 from neo4j import GraphDatabase
+import os
 
 
 
@@ -146,6 +147,18 @@ def create_testmodel():
         # base64_string = models.get('modelAasx') 
         # base64_to_file(base64_string, filename)
 
+        # Assuming this script is at the root of your project, adjust the path as necessary
+        project_root = os.path.dirname(os.path.abspath(__file__))  # Gets the directory of the current script
+        json_models_dir = os.path.join(project_root, "src", "pages", "models", "jsonModels")  # Constructs the path
+
+        # Ensure the directory exists
+        os.makedirs(json_models_dir, exist_ok=True)
+
+        # Save model_data to a JSON file
+        json_file_path = os.path.join(json_models_dir, f"{model_name}.json")
+        with open(json_file_path, 'w') as json_file:
+            json.dump(model_data, json_file)
+
         model = Model(
             model_name=model_name,
             model_type=model_type,
@@ -193,6 +206,13 @@ def delete_model(model_id):
     model = Model.query.get(model_id)
     if model is None:  
         return jsonify({'message': 'Model not found'}), 404
+
+    # Construct the path to the JSON file
+    json_file_path = os.path.join('src', 'pages', 'models', 'jsonModels', f'{model.model_name}.json')
+
+    # Check if the file exists and delete it
+    if os.path.exists(json_file_path):
+        os.remove(json_file_path)    
 
     db.session.delete(model)
     db.session.commit()
@@ -572,58 +592,58 @@ inquiry = {
     'label': 'Inquiry_1'
 }
 
-def execute_cypher_query(query, device_config, **params):
-    with GraphDatabase.driver(uri, auth=(username, password)) as driver:
-        with driver.session() as session:
-            if 'url1' in device_config and 'url3' in device_config:
-                result = session.run(query, 
-                                     url=device_config['url'], 
-                                     label=device_config['label'], 
-                                     url1=device_config['url1'], 
-                                     url2=device_config['url2'], 
-                                     url3=device_config['url3'], 
-                                     **params)
-            elif 'url1' in device_config:
-                result = session.run(query, 
-                                     url=device_config['url'], 
-                                     label=device_config['label'], 
-                                     url1=device_config['url1'], 
-                                     url2=device_config['url2'], 
-                                     **params)
-            else:
-                result = session.run(query, 
-                                     url=device_config['url'], 
-                                     label=device_config['label'], 
-                                     url2=device_config['url2'], 
-                                     **params)
-            return result.data()
+# def execute_cypher_query(query, device_config, **params):
+#     with GraphDatabase.driver(uri, auth=(username, password)) as driver:
+#         with driver.session() as session:
+#             if 'url1' in device_config and 'url3' in device_config:
+#                 result = session.run(query, 
+#                                      url=device_config['url'], 
+#                                      label=device_config['label'], 
+#                                      url1=device_config['url1'], 
+#                                      url2=device_config['url2'], 
+#                                      url3=device_config['url3'], 
+#                                      **params)
+#             elif 'url1' in device_config:
+#                 result = session.run(query, 
+#                                      url=device_config['url'], 
+#                                      label=device_config['label'], 
+#                                      url1=device_config['url1'], 
+#                                      url2=device_config['url2'], 
+#                                      **params)
+#             else:
+#                 result = session.run(query, 
+#                                      url=device_config['url'], 
+#                                      label=device_config['label'], 
+#                                      url2=device_config['url2'], 
+#                                      **params)
+#             return result.data()
 
 
-# Define the Cypher queries for each device
-cypher_query_hd1 = cypher_query(handling_device_1['url'], handling_device_1['label'], handling_device_1['url1'], handling_device_1['url2'], None)
-cypher_query_hd2 = cypher_query(handling_device_2['url'], handling_device_2['label'], handling_device_2['url1'], handling_device_2['url2'], None)
-cypher_query_tcu1 = cypher_query(temperature_control_unit_1['url'], temperature_control_unit_1['label'], temperature_control_unit_1['url1'], temperature_control_unit_1['url2'], None)
-cypher_query_tcu2 = cypher_query(temperature_control_unit_2['url'], temperature_control_unit_2['label'], temperature_control_unit_2['url1'], temperature_control_unit_2['url2'], None)
-cypher_query_mold = cypher_query(injection_mold['url'], injection_mold['label'], None, injection_mold['url2'], None)
-cypher_query_inquiry = cypher_query(inquiry['url'], inquiry['label'], inquiry['url1'], inquiry['url2'], inquiry['url3'])
-cypher_query_imm1 = cypher_query(injection_molding_machine_1['url'], injection_molding_machine_1['label'], injection_molding_machine_1['url1'], injection_molding_machine_1['url2'], injection_molding_machine_1['url3'])
-cypher_query_imm2 = cypher_query(injection_molding_machine_2['url'], injection_molding_machine_2['label'], injection_molding_machine_2['url1'], injection_molding_machine_2['url2'], injection_molding_machine_2['url3'])
-cypher_query_imm3 = cypher_query(injection_molding_machine_3['url'], injection_molding_machine_3['label'], injection_molding_machine_3['url1'], injection_molding_machine_3['url2'], injection_molding_machine_3['url3'])
-cypher_query_imm4 = cypher_query(injection_molding_machine_4['url'], injection_molding_machine_4['label'], injection_molding_machine_4['url1'], injection_molding_machine_4['url2'], injection_molding_machine_4['url3'])
+# # Define the Cypher queries for each device
+# cypher_query_hd1 = cypher_query(handling_device_1['url'], handling_device_1['label'], handling_device_1['url1'], handling_device_1['url2'], None)
+# cypher_query_hd2 = cypher_query(handling_device_2['url'], handling_device_2['label'], handling_device_2['url1'], handling_device_2['url2'], None)
+# cypher_query_tcu1 = cypher_query(temperature_control_unit_1['url'], temperature_control_unit_1['label'], temperature_control_unit_1['url1'], temperature_control_unit_1['url2'], None)
+# cypher_query_tcu2 = cypher_query(temperature_control_unit_2['url'], temperature_control_unit_2['label'], temperature_control_unit_2['url1'], temperature_control_unit_2['url2'], None)
+# cypher_query_mold = cypher_query(injection_mold['url'], injection_mold['label'], None, injection_mold['url2'], None)
+# cypher_query_inquiry = cypher_query(inquiry['url'], inquiry['label'], inquiry['url1'], inquiry['url2'], inquiry['url3'])
+# cypher_query_imm1 = cypher_query(injection_molding_machine_1['url'], injection_molding_machine_1['label'], injection_molding_machine_1['url1'], injection_molding_machine_1['url2'], injection_molding_machine_1['url3'])
+# cypher_query_imm2 = cypher_query(injection_molding_machine_2['url'], injection_molding_machine_2['label'], injection_molding_machine_2['url1'], injection_molding_machine_2['url2'], injection_molding_machine_2['url3'])
+# cypher_query_imm3 = cypher_query(injection_molding_machine_3['url'], injection_molding_machine_3['label'], injection_molding_machine_3['url1'], injection_molding_machine_3['url2'], injection_molding_machine_3['url3'])
+# cypher_query_imm4 = cypher_query(injection_molding_machine_4['url'], injection_molding_machine_4['label'], injection_molding_machine_4['url1'], injection_molding_machine_4['url2'], injection_molding_machine_4['url3'])
 
-# Execute the queries for each device
-result_hd1 = execute_cypher_query(cypher_query_hd1, handling_device_1)
-result_hd2 = execute_cypher_query(cypher_query_hd2, handling_device_2)
-result_tcu1 = execute_cypher_query(cypher_query_tcu1, temperature_control_unit_1)
-result_tcu2 = execute_cypher_query(cypher_query_tcu2, temperature_control_unit_2)
-result_mold = execute_cypher_query(cypher_query_mold, injection_mold)
-result_inuiry = execute_cypher_query(cypher_query_inquiry, inquiry)
-result_imm1 = execute_cypher_query(cypher_query_imm1, injection_molding_machine_1)
-result_imm2 = execute_cypher_query(cypher_query_imm2, injection_molding_machine_2)
-result_imm3 = execute_cypher_query(cypher_query_imm3, injection_molding_machine_3)
-result_imm4 = execute_cypher_query(cypher_query_imm4, injection_molding_machine_4)
+# # Execute the queries for each device
+# result_hd1 = execute_cypher_query(cypher_query_hd1, handling_device_1)
+# result_hd2 = execute_cypher_query(cypher_query_hd2, handling_device_2)
+# result_tcu1 = execute_cypher_query(cypher_query_tcu1, temperature_control_unit_1)
+# result_tcu2 = execute_cypher_query(cypher_query_tcu2, temperature_control_unit_2)
+# result_mold = execute_cypher_query(cypher_query_mold, injection_mold)
+# result_inuiry = execute_cypher_query(cypher_query_inquiry, inquiry)
+# result_imm1 = execute_cypher_query(cypher_query_imm1, injection_molding_machine_1)
+# result_imm2 = execute_cypher_query(cypher_query_imm2, injection_molding_machine_2)
+# result_imm3 = execute_cypher_query(cypher_query_imm3, injection_molding_machine_3)
+# result_imm4 = execute_cypher_query(cypher_query_imm4, injection_molding_machine_4)
 
-graph = Graph(uri, auth=(username, password))
+# graph = Graph(uri, auth=(username, password))
 
 @app.route('/query1', methods=['POST'])
 def run_query1():
@@ -639,6 +659,9 @@ def run_query2():
 def run_query3():
     result = run_injection_molding_machine_query(graph)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
+
+
+  
 
 if __name__ == '__main__':
     app.run(debug=True)
