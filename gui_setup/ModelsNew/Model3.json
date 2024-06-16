@@ -1,7 +1,8 @@
 {
-    "_id": "ca649420-a8c8-45b9-a331-f955cfabd1c9",
+    "_id": "bb9d3ce3-f3a3-4627-8e18-9c05fe6934cf",
     "GrahamNotation": {
         "name": "model_3",
+        "model_id": "Model-Id",
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
             "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility"
@@ -12,8 +13,12 @@
         ],
         "jobName": "0173-1#02-XXX999#999",
         "jobDuration": "0173-1#02-ABF201#002",
-        "Preprocessing": "preprocessing.py",
-        "Postprocessing": "postprocessing.py",
+        "Preprocessing": [
+            "preprocessing.py"
+        ],
+        "Postprocessing": [
+            "postprocessing.py"
+        ],
         "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
     }
 }

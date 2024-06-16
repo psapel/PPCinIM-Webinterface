@@ -1,11 +1,11 @@
 {
     "assetAdministrationShells": [
         {
-            "idShort": "ProductionSchedulingModel_1a",
+            "idShort": "ProductionSchedulingModel_3",
             "displayName": [
                 {
                     "language": "en",
-                    "text": "Production Scheduling Model 1a"
+                    "text": "Production Scheduling Model 3"
                 }
             ],
             "description": [],
@@ -13,10 +13,10 @@
                 "version": "1",
                 "revision": "1"
             },
-            "id": "https://iop.rwth-aachen.de/IM/aas/1/1/ProductionSchedulingModel_1a",
+            "id": "https://iop.rwth-aachen.de/IM/aas/1/1/ProductionSchedulingModel_3",
             "assetInformation": {
                 "assetKind": "Instance",
-                "globalAssetId": "https://iop.rwth-aachen.de/IM/asset/1/1/ProductionSchedulingModel_1a",
+                "globalAssetId": "https://iop.rwth-aachen.de/IM/asset/1/1/ProductionSchedulingModel_3",
                 "assetType": "ProductionSchedulingModel"
             },
             "submodels": [
@@ -25,7 +25,7 @@
                     "keys": [
                         {
                             "type": "Submodel",
-                            "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/ModelSignature/Model1a"
+                            "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/ModelSignature/Model3"
                         }
                     ]
                 }
@@ -42,7 +42,7 @@
                     "text": "Model Signature"
                 }
             ],
-            "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/modelSignature/Model1a",
+            "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/modelSignature/Model3",
             "kind": "Instance",
             "submodelElements": [
                 {
@@ -99,13 +99,13 @@
                                 }
                             ],
                             "valueType": "xs:string",
-                            "value": "ParallelMachines",
+                            "value": "UnrelatedMachines",
                             "valueId": {
                                 "type": "ExternalReference",
                                 "keys": [
                                     {
                                         "type": "GlobalReference",
-                                        "value": "http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines"
+                                        "value": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines"
                                     }
                                 ]
                             },
@@ -152,13 +152,13 @@
                                 }
                             ],
                             "valueType": "xs:string",
-                            "value": "SequenceDependentSetupTimes",
+                            "value": "MaschineEligibility",
                             "valueId": {
                                 "type": "ExternalReference",
                                 "keys": [
                                     {
                                         "type": "GlobalReference",
-                                        "value": "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup"
+                                        "value": "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility"
                                     }
                                 ]
                             },
@@ -205,7 +205,7 @@
                                 }
                             ],
                             "valueType": "xs:string",
-                            "value": "MaxCompletionTime; SumCompletionTime",
+                            "value": "MaxCompletionTime; WeightedSumCompletionTime",
                             "valueId": {
                                 "type": "ExternalReference",
                                 "keys": [
@@ -215,7 +215,7 @@
                                     },
                                     {
                                         "type": "GlobalReference",
-                                        "value": "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime"
+                                        "value": "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
                                     }
                                 ]
                             },
@@ -462,27 +462,7 @@
                     ],
                     "embeddedDataSpecifications": [],
                     "valueType": "xs:string",
-                    "value": "P\u2098 | s\u1D62\u2C7C  | C\u2098\u2090\u2093, \u03A3w\u2C7CW\u2C7C",
-                    "modelType": "Property"
-                },
-                {
-                    "idShort": "Model-Id",
-                    "displayName": [
-                        {
-                            "language": "en",
-                            "text": "Model-Id"
-                        }
-                    ],
-                    "semanticId": {
-                        "type": "ExternalReference",
-                        "keys": []
-                    },
-                    "valueType": "xs:string",
-                    "value": "M1a",
-                    "valueId": {
-                        "type": "ExternalReference",
-                        "keys": []
-                    },
+                    "value": "R\u2098 | M\u2C7C | C\u2098\u2090\u2093, \u03A3w\u2C7CC\u2C7C",
                     "modelType": "Property"
                 },
                 {
@@ -502,7 +482,32 @@
                                     "text": "Job Name"
                                 }
                             ],
-                            "qualifiers": [],
+                            "qualifiers": [
+                                {
+                                    "semanticId": {
+                                        "type": "ExternalReference",
+                                        "keys": [
+                                            {
+                                                "type": "GlobalReference",
+                                                "value": "https://iop.rwth-aachen.de/1/1/DatabaseName"
+                                            }
+                                        ]
+                                    },
+                                    "kind": "TemplateQualifier",
+                                    "type": "DatabaseName",
+                                    "valueType": "xs:string",
+                                    "value": "ZeroToOne",
+                                    "valueId": {
+                                        "type": "ExternalReference",
+                                        "keys": [
+                                            {
+                                                "type": "GlobalReference",
+                                                "value": "https://www.odoo.com/"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
                             "embeddedDataSpecifications": [],
                             "value": {
                                 "type": "ExternalReference",
@@ -513,7 +518,7 @@
                                 "keys": [
                                     {
                                         "type": "GlobalReference",
-                                        "value": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+                                        "value": "odoo"
                                     },
                                     {
                                         "type": "GlobalReference",
@@ -531,7 +536,32 @@
                                     "text": "Job Duration"
                                 }
                             ],
-                            "qualifiers": [],
+                            "qualifiers": [
+                                {
+                                    "semanticId": {
+                                        "type": "ExternalReference",
+                                        "keys": [
+                                            {
+                                                "type": "GlobalReference",
+                                                "value": "https://iop.rwth-aachen.de/1/1/DatabaseName"
+                                            }
+                                        ]
+                                    },
+                                    "kind": "TemplateQualifier",
+                                    "type": "DatabaseName",
+                                    "valueType": "xs:string",
+                                    "value": "ZeroToOne",
+                                    "valueId": {
+                                        "type": "ExternalReference",
+                                        "keys": [
+                                            {
+                                                "type": "GlobalReference",
+                                                "value": "https://www.odoo.com/"
+                                            }
+                                        ]
+                                    }
+                                }
+                            ],
                             "embeddedDataSpecifications": [],
                             "value": {
                                 "type": "ExternalReference",
@@ -542,7 +572,7 @@
                                 "keys": [
                                     {
                                         "type": "GlobalReference",
-                                        "value": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+                                        "value": "odoo"
                                     },
                                     {
                                         "type": "GlobalReference",
