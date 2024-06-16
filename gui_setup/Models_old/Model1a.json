@@ -466,26 +466,6 @@
                     "modelType": "Property"
                 },
                 {
-                    "idShort": "Model-Id",
-                    "displayName": [
-                        {
-                            "language": "en",
-                            "text": "Model-Id"
-                        }
-                    ],
-                    "semanticId": {
-                        "type": "ExternalReference",
-                        "keys": []
-                    },
-                    "valueType": "xs:string",
-                    "value": "M1a",
-                    "valueId": {
-                        "type": "ExternalReference",
-                        "keys": []
-                    },
-                    "modelType": "Property"
-                },
-                {
                     "idShort": "InputData",
                     "displayName": [
                         {

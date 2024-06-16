@@ -1,11 +1,11 @@
 {
     "assetAdministrationShells": [
         {
-            "idShort": "ProductionSchedulingModel_1a",
+            "idShort": "ProductionSchedulingModel_1",
             "displayName": [
                 {
                     "language": "en",
-                    "text": "Production Scheduling Model 1a"
+                    "text": "Production Scheduling Model 1"
                 }
             ],
             "description": [],
@@ -13,10 +13,10 @@
                 "version": "1",
                 "revision": "1"
             },
-            "id": "https://iop.rwth-aachen.de/IM/aas/1/1/ProductionSchedulingModel_1a",
+            "id": "https://iop.rwth-aachen.de/IM/aas/1/1/ProductionSchedulingModel_1",
             "assetInformation": {
                 "assetKind": "Instance",
-                "globalAssetId": "https://iop.rwth-aachen.de/IM/asset/1/1/ProductionSchedulingModel_1a",
+                "globalAssetId": "https://iop.rwth-aachen.de/IM/asset/1/1/ProductionSchedulingModel_1",
                 "assetType": "ProductionSchedulingModel"
             },
             "submodels": [
@@ -25,7 +25,7 @@
                     "keys": [
                         {
                             "type": "Submodel",
-                            "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/ModelSignature/Model1a"
+                            "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/ModelSignature/Model1"
                         }
                     ]
                 }
@@ -42,7 +42,7 @@
                     "text": "Model Signature"
                 }
             ],
-            "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/modelSignature/Model1a",
+            "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/modelSignature/Model1",
             "kind": "Instance",
             "submodelElements": [
                 {
@@ -463,26 +463,6 @@
                     "embeddedDataSpecifications": [],
                     "valueType": "xs:string",
                     "value": "P\u2098 | s\u1D62\u2C7C  | C\u2098\u2090\u2093, \u03A3w\u2C7CW\u2C7C",
-                    "modelType": "Property"
-                },
-                {
-                    "idShort": "Model-Id",
-                    "displayName": [
-                        {
-                            "language": "en",
-                            "text": "Model-Id"
-                        }
-                    ],
-                    "semanticId": {
-                        "type": "ExternalReference",
-                        "keys": []
-                    },
-                    "valueType": "xs:string",
-                    "value": "M1a",
-                    "valueId": {
-                        "type": "ExternalReference",
-                        "keys": []
-                    },
                     "modelType": "Property"
                 },
                 {

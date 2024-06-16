@@ -636,6 +636,18 @@
                         }
                     ],
                     "modelType": "SubmodelElementCollection"
+                },
+                {
+                    "idShort": "Model-Id",
+                    "displayName": [
+                        {
+                            "language": "en",
+                            "text": "Model-Id"
+                        }
+                    ],
+                    "valueType": "xs:string",
+                    "value": "M1",
+                    "modelType": "Property"
                 }
             ],
             "modelType": "Submodel"

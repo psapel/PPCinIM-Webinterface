@@ -28,7 +28,7 @@ for filename in os.listdir(models_folder):
         
         # Extract the "Machine Environment", "Scheduling Constraints",
         # "Objective Functions", "Input Data",
-        # "Preprocessing", "Postprocessing" and "Scope of Model" parts
+        # "Preprocessing", "Postprocessing", "Scope of Model" and "Model-id" parts
         machine_environment = None
         scheduling_constraints = []
         objective_functions = []
@@ -36,6 +36,7 @@ for filename in os.listdir(models_folder):
         preprocessing = None
         post_processing = None
         scope_of_model = None
+        model_id = None
         
         for submodel in data["submodels"]:
             if submodel["idShort"] == "ModelSignature":
@@ -56,7 +57,9 @@ for filename in os.listdir(models_folder):
                     elif element["idShort"] == "Postprocessing":
                         postprocessing = element
                     elif element["idShort"] == "ScopeOfModel":
-                        scope_of_model = element    
+                        scope_of_model = element  
+                    elif element["idShort"] == "Model-Id":
+                        model_id = element  
         
         # Create a dictionary to store extracted data
         required_data = {}
@@ -64,10 +67,12 @@ for filename in os.listdir(models_folder):
         # Add a 'name' attribute based on the filename
         required_data['name'] = os.path.splitext(filename)[0].replace("Model", "model_").replace(" ", "_").lower()
 
-        
+        # Extract "Model-Id"
+        if model_id:
+            required_data['model_id'] = model_id['displayName'][0]['text']
         
         # Extract "Machine Environment"
-        if machine_environment:
+        if machine_environment and 'valueId' in machine_environment and 'keys' in machine_environment['valueId']:
             extracted_data = {
                 machine_environment['semanticId']['keys'][0]['value']: machine_environment['valueId']['keys'][0]['value']
             }
@@ -76,35 +81,40 @@ for filename in os.listdir(models_folder):
         # Extract "Scheduling Constraints" 
         if scheduling_constraints:
             for constraint in scheduling_constraints:
-                key = constraint['semanticId']['keys'][0]['value']
-                value_ids = [value_id['value'] for value_id in constraint['valueId']['keys']]
-                extracted_data[key] = value_ids
-                required_data.update(extracted_data)
+                if 'semanticId' in constraint and 'keys' in constraint['semanticId']:
+                    key = constraint['semanticId']['keys'][0]['value']
+                    value_ids = [value_id['value'] for value_id in constraint.get('valueId', {}).get('keys', [])]
+                    if value_ids:
+                        extracted_data[key] = value_ids
+                        required_data.update(extracted_data)
             
         # Extract "Objective Functions" 
         if objective_functions:
             for function in objective_functions:
-                key = function['semanticId']['keys'][0]['value']
-                value_ids = [value_id['value'] for value_id in function['valueId']['keys']]
-                extracted_data[key] = value_ids
-                required_data.update(extracted_data)
+                if 'semanticId' in function and 'keys' in function['semanticId']:
+                    key = function['semanticId']['keys'][0]['value']
+                    value_ids = [value_id['value'] for value_id in function.get('valueId', {}).get('keys', [])]
+                    if value_ids:
+                        extracted_data[key] = value_ids
+                        required_data.update(extracted_data)
                 
         # Extract "Input Data" 
         if input_data:
-            for item in input_data["value"]:
-                required_data[item['idShort']] = item['value']['keys'][1]['value']
+            for item in input_data.get("value", []):
+                if 'value' in item and 'keys' in item['value'] and len(item['value']['keys']) > 1:
+                    required_data[item['idShort']] = item['value']['keys'][1]['value']
         
         # Extract "Preprocessing"
         if preprocessing:
-            for item in preprocessing["value"]:
-                id_short = preprocessing['idShort']
-                required_data[id_short] = item['value']
+            preprocessing_values = [item['value'] for item in preprocessing.get("value", [])]
+            if preprocessing_values:
+                required_data[preprocessing['idShort']] = preprocessing_values
         
         # Extract "Postprocessing"
         if postprocessing:
-            for item in postprocessing["value"]:
-                id_short = postprocessing['idShort']
-                required_data[id_short] = item['value']
+            postprocessing_values = [item['value'] for item in postprocessing.get("value", [])]
+            if postprocessing_values:
+                required_data[postprocessing['idShort']] = postprocessing_values
         
         # Extract "Scope of Model" 
         if scope_of_model:

@@ -482,32 +482,7 @@
                                     "text": "Job Name"
                                 }
                             ],
-                            "qualifiers": [
-                                {
-                                    "semanticId": {
-                                        "type": "ExternalReference",
-                                        "keys": [
-                                            {
-                                                "type": "GlobalReference",
-                                                "value": "https://iop.rwth-aachen.de/1/1/DatabaseName"
-                                            }
-                                        ]
-                                    },
-                                    "kind": "TemplateQualifier",
-                                    "type": "DatabaseName",
-                                    "valueType": "xs:string",
-                                    "value": "ZeroToOne",
-                                    "valueId": {
-                                        "type": "ExternalReference",
-                                        "keys": [
-                                            {
-                                                "type": "GlobalReference",
-                                                "value": "https://www.odoo.com/"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ],
+                            "qualifiers": [],
                             "embeddedDataSpecifications": [],
                             "value": {
                                 "type": "ExternalReference",
@@ -518,7 +493,7 @@
                                 "keys": [
                                     {
                                         "type": "GlobalReference",
-                                        "value": "odoo"
+                                        "value": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
                                     },
                                     {
                                         "type": "GlobalReference",
@@ -536,32 +511,7 @@
                                     "text": "Job Duration"
                                 }
                             ],
-                            "qualifiers": [
-                                {
-                                    "semanticId": {
-                                        "type": "ExternalReference",
-                                        "keys": [
-                                            {
-                                                "type": "GlobalReference",
-                                                "value": "https://iop.rwth-aachen.de/1/1/DatabaseName"
-                                            }
-                                        ]
-                                    },
-                                    "kind": "TemplateQualifier",
-                                    "type": "DatabaseName",
-                                    "valueType": "xs:string",
-                                    "value": "ZeroToOne",
-                                    "valueId": {
-                                        "type": "ExternalReference",
-                                        "keys": [
-                                            {
-                                                "type": "GlobalReference",
-                                                "value": "https://www.odoo.com/"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ],
+                            "qualifiers": [],
                             "embeddedDataSpecifications": [],
                             "value": {
                                 "type": "ExternalReference",
@@ -572,7 +522,7 @@
                                 "keys": [
                                     {
                                         "type": "GlobalReference",
-                                        "value": "odoo"
+                                        "value": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
                                     },
                                     {
                                         "type": "GlobalReference",
@@ -686,6 +636,18 @@
                         }
                     ],
                     "modelType": "SubmodelElementCollection"
+                },
+                {
+                    "idShort": "Model-Id",
+                    "displayName": [
+                        {
+                            "language": "en",
+                            "text": "Model-Id"
+                        }
+                    ],
+                    "valueType": "xs:string",
+                    "value": "M3",
+                    "modelType": "Property"
                 }
             ],
             "modelType": "Submodel"

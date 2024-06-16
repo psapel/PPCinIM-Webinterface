@@ -474,6 +474,18 @@
                     "modelType": "Property"
                 },
                 {
+                    "idShort": "Model-Id",
+                    "displayName": [
+                        {
+                            "language": "en",
+                            "text": "Model-Id"
+                        }
+                    ],
+                    "valueType": "xs:string",
+                    "value": "M2",
+                    "modelType": "Property"
+                },
+                {
                     "idShort": "InputData",
                     "displayName": [
                         {

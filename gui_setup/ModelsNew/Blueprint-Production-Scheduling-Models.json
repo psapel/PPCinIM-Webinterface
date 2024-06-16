@@ -1,0 +1,14 @@
+{
+    "_id": "f5bf3821-2a7b-4c64-b78f-0cf690bf8744",
+    "GrahamNotation": {
+        "name": "blueprint-production-scheduling-model_s",
+        "model_id": "Model-Id",
+        "Preprocessing": [
+            "/aasx/files/1_Initital-Screen.jpg"
+        ],
+        "Postprocessing": [
+            ""
+        ],
+        "formula": ""
+    }
+}

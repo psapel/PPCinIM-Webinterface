@@ -8,6 +8,8 @@ from elasticsearch import Elasticsearch
 from py2neo import Graph
 from neo4j import GraphDatabase
 
+
+
 from gui_setup.db_login import get_odoo_credentials
 from gui_setup.translator_new import translate_identifiers
 from gui_setup.connector import connect_and_fetch_data
@@ -279,6 +281,25 @@ def search_assets():
         print(e)
         return jsonify({"error": "Failed to retrieve assets"}), 500
 
+@app.route('/api/create_model', methods=['POST'])
+def create_model():
+    # Assuming you're receiving form data
+    model_name = request.form.get('modelName')
+    model_type = request.form.get('modelType')
+    model_image = request.files['modelImage']
+    model_file = request.files['modelFile']
+    aasx_file = request.files['aasxFile']
+
+    # Process the files as needed (e.g., save to disk, database, etc.)
+    # For demonstration, let's print some info
+    print(f"Model Name: {model_name}")
+    print(f"Model Type: {model_type}")
+    print(f"Model Image File Name: {model_image.filename}")
+    print(f"Model File Name: {model_file.filename}")
+    print(f"AASX File Name: {aasx_file.filename}")
+
+    # Return a response to the frontend
+    return jsonify({'message': 'Model created successfully'}), 200
 
 index_settings = {
     "settings": {
@@ -465,28 +486,8 @@ def get_execution_logs(model_name):
     logs = total_execution(model_name)
     return jsonify(logs)
 
-@app.route('/api/create_model', methods=['POST'])
-def create_model():
-    # Assuming you're receiving form data
-    model_name = request.form.get('modelName')
-    model_type = request.form.get('modelType')
-    model_image = request.files['modelImage']
-    model_file = request.files['modelFile']
-    aasx_file = request.files['aasxFile']
-
-    # Process the files as needed (e.g., save to disk, database, etc.)
-    # For demonstration, let's print some info
-    print(f"Model Name: {model_name}")
-    print(f"Model Type: {model_type}")
-    print(f"Model Image File Name: {model_image.filename}")
-    print(f"Model File Name: {model_file.filename}")
-    print(f"AASX File Name: {aasx_file.filename}")
-
-    # Return a response to the frontend
-    return jsonify({'message': 'Model created successfully'}), 200
-
 # Define the URLs
-
+# /shells/{aasIdentifier}/submodel-refs
 # HandlingDevice_1 configuration
 handling_device_1 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9oYW5kbGluZ0RldmljZV8x?format=json',
