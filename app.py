@@ -142,19 +142,17 @@ def create_testmodel():
         model_type = models.get('modelType')
         model_data = models.get('modelData')
         aasxfilename = models.get('aasxFileName')
-        # filename = fr"C:\Users\Priscillia\Desktop\AasxServerBlazor.2022-07-25.alpha\AasxServerBlazor\aasx_test\{aasxfilename}"
 
-        # base64_string = models.get('modelAasx') 
-        # base64_to_file(base64_string, filename)
+        # Check if a model with the same name already exists
+        existing_model = Model.query.filter_by(model_name=model_name).first()
+        if existing_model:
+            return jsonify({"error": "Model name already exists"}), 400  # Return an error message and 400 Bad Request status
 
-        # Assuming this script is at the root of your project, adjust the path as necessary
-        project_root = os.path.dirname(os.path.abspath(__file__))  # Gets the directory of the current script
-        json_models_dir = os.path.join(project_root, "src", "pages", "models", "jsonModels")  # Constructs the path
+        project_root = os.path.dirname(os.path.abspath(__file__))
+        json_models_dir = os.path.join(project_root, "src", "pages", "models", "jsonModels")
 
-        # Ensure the directory exists
         os.makedirs(json_models_dir, exist_ok=True)
 
-        # Save model_data to a JSON file
         json_file_path = os.path.join(json_models_dir, f"{model_name}.json")
         with open(json_file_path, 'w') as json_file:
             json.dump(model_data, json_file)
@@ -169,7 +167,8 @@ def create_testmodel():
         return "model created"
             
     except Exception as e:
-        print(e)  
+        print(e)
+        return jsonify({"error": "An error occurred"}), 500
 
 @app.route('/testmodel2', methods=['GET'])
 def get_testmodel():
