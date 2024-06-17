@@ -3,8 +3,9 @@ import json
 import uuid
 
 # Define the paths to the folders
-models_folder = "Models"
-models_new_folder = "ModelsNew"
+models_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/pages/models/jsonModels'))
+
+models_new_folder =  os.path.abspath(os.path.join(os.path.dirname(__file__), '../src/pages/decisionsupport/ModelsNew'))
 
 # Create the target folder if it doesn't exist
 if not os.path.exists(models_new_folder):
