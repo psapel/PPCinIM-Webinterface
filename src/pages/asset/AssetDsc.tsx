@@ -39,7 +39,7 @@ const AssetDsc = ({
   let maxHeatingCap;
   let coolant;
 
-  if (machineType === "Injection Molding Machine") {
+  if (machineType === "InjectionMoldingMachine") {
     clampingForce = assetData.submodels[0].submodelElements
       .find((el) => el.idShort === "TechnicalProperties")
       .value.find((el) => el.idShort === "ClampingUnitTechnicalProperties")
@@ -64,7 +64,7 @@ const AssetDsc = ({
       ).value;
   }
 
-  if (machineType === "Mold") {
+  if (machineType === "InjectionMold") {
     largerMoldDim = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "DimAndWeight")
       .value.find((el) => el.idShort === "InjectionMold")
@@ -89,7 +89,7 @@ const AssetDsc = ({
       .value.find((el) => el.idShort === "ShotVolume").value;
   }
 
-  if (machineType === "Temperature Control Unit") {
+  if (machineType === "TemperatureControlUnit") {
     maxPumpPressure = assetData.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxPumpPressure"
     ).value;
@@ -113,7 +113,7 @@ const AssetDsc = ({
 
   return (
     <div className=" flex flex-col items-start">
-      {machineType === "Injection Molding Machine" && (
+      {machineType === "InjectionMoldingMachine" && (
         <div>
           <p>
             <strong>Max Clamping Force: </strong>
@@ -128,7 +128,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Injection Molding Machine"
+                machineType="InjectionMoldingMachine"
                 dataType="MaxClampingForce"
               />
             </div>
@@ -147,7 +147,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Injection Molding Machine"
+                machineType="InjectionMoldingMachine"
                 dataType="MaxOpeningStroke"
               />
             </div>
@@ -197,7 +197,7 @@ const AssetDsc = ({
         </div>
       )}
 
-      {machineType === "Mold" && (
+      {machineType === "InjectionMold" && (
         <div>
           <p>
             <strong> Larger Mold Dimension:</strong> {largerMoldDim}
@@ -211,7 +211,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Mold"
+                machineType="InjectionMold"
                 dataType="LargerMoldDimension"
               />
             </div>
@@ -230,7 +230,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Mold"
+                machineType="InjectionMold"
                 dataType="MoldDepth"
               />
             </div>
@@ -248,7 +248,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Mold"
+                machineType="InjectionMold"
                 dataType="SmallerMoldDimension"
               />
             </div>
@@ -267,7 +267,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Mold"
+                machineType="InjectionMold"
                 dataType="Coolant"
               />
             </div>
@@ -285,7 +285,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Mold"
+                machineType="InjectionMold"
                 dataType="ShotVolume"
               />
             </div>
@@ -293,7 +293,7 @@ const AssetDsc = ({
         </div>
       )}
 
-      {machineType === "Temperature Control Unit" && (
+      {machineType === "TemperatureControlUnit" && (
         <div>
           <p>
             <strong> Max Pump Pressure:</strong> {maxPumpPressure}
@@ -307,7 +307,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Temperature Control Unit"
+                machineType="TemperatureControlUnit"
                 dataType="MaxPumpPressure"
               />
             </div>
@@ -325,7 +325,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Temperature Control Unit"
+                machineType="TemperatureControlUnit"
                 dataType="MaxHeatingCapacity"
               />
             </div>
@@ -343,7 +343,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Temperature Control Unit"
+                machineType="TemperatureControlUnit"
                 dataType="Coolant"
               />
             </div>

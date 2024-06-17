@@ -75,7 +75,7 @@ const Newasset = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:5005/api/create_asset", {
+      const response = await fetch("http://localhost:5005/test", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -141,11 +141,11 @@ const Newasset = () => {
               <option disabled value="">
                 Asset Type
               </option>
-              <option value="Injection Molding Machine">
+              <option value="InjectionMoldingMachine">
                 Injection Molding Machine
               </option>
-              <option value="Mold">Mold</option>
-              <option value="Temperature Control Unit">
+              <option value="InjectionMold">Mold</option>
+              <option value="TemperatureControlUnit">
                 Temperature Control Unit
               </option>
               <option value="Hot Runner Device">Hot Runner Device</option>

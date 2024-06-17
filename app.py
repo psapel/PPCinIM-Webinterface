@@ -93,11 +93,20 @@ def create_testasset():
         # aasxassetfilename = models.get('aasxassetFileName')
 
         
-        # derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
-        
-        # if asset_type != derived_from_value:
-        #     print(derived_from_value)
-        #     return jsonify({"error": "Asset Type does not match model selection"}), 400
+        if not asset_name or not asset_type or not asset_data:
+            return jsonify({"error": "Incomplete asset information provided"}), 400
+
+        asset_type_from_data = asset_data['assetAdministrationShells'][0]['assetInformation']['assetType']
+        if asset_type != asset_type_from_data:
+            return jsonify({"error": "Asset Type does not match model selection"}), 400
+
+        # Check for duplicate asset name
+        if Asset.query.filter_by(asset_name=asset_name).first():
+            return jsonify({"error": "Asset name already exists"}), 400
+
+        # # Check for duplicate asset data
+        # if Asset.query.filter_by(asset_data=json.dumps(asset_data)).first():
+        #     return jsonify({"error": "Asset JSON data already exists"}), 400
 
         asset = Asset(
             asset_name=asset_name,
@@ -108,10 +117,11 @@ def create_testasset():
         )
         db.session.add(asset)
         db.session.commit()
-        return "asset created"
+        return jsonify({"message": "Asset created successfully"}), 200
             
     except Exception as e:
         print(e)
+        return jsonify({"error": "An error occurred"}), 500
 
 @app.route('/test2', methods=['GET'])
 def get_testasset():
