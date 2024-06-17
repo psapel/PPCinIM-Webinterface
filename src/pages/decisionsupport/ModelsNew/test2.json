@@ -1,0 +1,24 @@
+{
+    "_id": "02f4391f-075c-42f5-b1ad-4894875762c2",
+    "GrahamNotation": {
+        "name": "test2",
+        "model_id": "Model-Id",
+        "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+        "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
+            "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup"
+        ],
+        "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
+            "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
+            "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime"
+        ],
+        "jobName": "0173-1#02-XXX999#999",
+        "jobDuration": "0173-1#02-ABF201#002",
+        "Preprocessing": [
+            "preprocessing.py"
+        ],
+        "Postprocessing": [
+            "postprocessing.py"
+        ],
+        "formula": "P\u2098 | s\u1d62\u2c7c  | C\u2098\u2090\u2093, \u03a3w\u2c7cW\u2c7c"
+    }
+}

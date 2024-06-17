@@ -231,11 +231,9 @@ def create_asset():
         asset_categories = models.get('assetCategories')
         asset_image = models.get('assetImage')
 
-        # Check if assetType matches derivedFrom value in assetData
-        derived_from_value = asset_data["assetAdministrationShells"][0]["derivedFrom"]["keys"][0]["value"]
-        
-        if asset_type != derived_from_value:
-            print(derived_from_value)
+        # Check if assetType matches assetType value in assetData
+        asset_type_from_data = asset_data['assetAdministrationShells'][0]['assetInformation']['assetType']
+        if asset_type != asset_type_from_data:
             return jsonify({"error": "Asset Type does not match model selection"}), 400
 
         if asset_name and asset_type and asset_data:
