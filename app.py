@@ -18,6 +18,7 @@ from gui_setup.mappings import id_to_name_mapping, id_to_duration_mapping
 from gui_setup.preprocessing import extract_data
 from gui_setup.model import optimization_model
 from gui_setup.postprocessing import process_results
+from gui_setup.extract import run_extraction
 
 from python_files.execution_logs import total_execution
 
@@ -156,7 +157,7 @@ def create_testmodel():
         # Check if a model with the same name already exists
         existing_model = Model.query.filter_by(model_name=model_name).first()
         if existing_model:
-            return jsonify({"error": "Model name already exists"}), 400  # Return an error message and 400 Bad Request status
+            return jsonify({"error": "Model name already exists"}), 400
 
         project_root = os.path.dirname(os.path.abspath(__file__))
         json_models_dir = os.path.join(project_root, "src", "pages", "models", "jsonModels")
@@ -167,6 +168,9 @@ def create_testmodel():
         with open(json_file_path, 'w') as json_file:
             json.dump(model_data, json_file)
 
+        # Now call run_extraction with the path of the newly saved file
+        run_extraction(json_file_path)
+
         model = Model(
             model_name=model_name,
             model_type=model_type,
@@ -175,7 +179,6 @@ def create_testmodel():
         db.session.add(model)
         db.session.commit()
         return "model created"
-            
     except Exception as e:
         print(e)
         return jsonify({"error": "An error occurred"}), 500
@@ -221,7 +224,13 @@ def delete_model(model_id):
 
     # Check if the file exists and delete it
     if os.path.exists(json_file_path):
-        os.remove(json_file_path)    
+        os.remove(json_file_path)  
+
+    models_new_file_path = os.path.join('src','pages','decisionsupport', 'modelsNew', f'{model.model_name}.json')
+
+    # Check if the file exists in decisionsupport/modelsNew and delete it
+    if os.path.exists(models_new_file_path):
+        os.remove(models_new_file_path)      
 
     db.session.delete(model)
     db.session.commit()
