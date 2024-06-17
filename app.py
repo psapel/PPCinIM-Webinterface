@@ -508,9 +508,7 @@ def get_execution():
     # Extract name and duration from the json
     data = request.get_json()
     names = data['names']
-    print("names:", names)
     durations = data['durations']
-    print("durations:", durations)
     # Optimization model
     result = optimization_model(durations)
     # Optimal job order
@@ -521,92 +519,92 @@ def get_execution():
 def get_execution_logs(model_name):
     logs = total_execution(model_name)
     return jsonify(logs)
-
+"""
 # Define the URLs
 # /shells/{aasIdentifier}/submodel-refs
 # HandlingDevice_1 configuration
-handling_device_1 = {
+#handling_device_1 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9oYW5kbGluZ0RldmljZV8x?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0hEMQ?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0hEMQ?format=json',
     'label': 'HandlingDevice_1'
-}
+#}
 
 # HandlingDevice_2 configuration
-handling_device_2 = {
+#handling_device_2 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9oYW5kbGluZ0RldmljZV8y?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0hEMg?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0hEMg?format=json',
     'label': 'HandlingDevice_2'
-}
+#}
 
 # TemperatureControlUnit_1 configuration
-temperature_control_unit_1 = {
+#temperature_control_unit_1 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS90ZW1wZXJhdHVyZUNvbnRyb2xVbml0XzE?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L1RDVTE?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL1RDVTE?format=json',
     'label': 'TemperatureControlUnit_1'
-}
+#}
 
 # TemperatureControlUnit_2 configuration
-temperature_control_unit_2 = {
+#temperature_control_unit_2 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS90ZW1wZXJhdHVyZUNvbnRyb2xVbml0XzI?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L1RDVTI?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL1RDVTI?format=json',
     'label': 'TemperatureControlUnit_2'
-}
+#}
 
 # IMM_1 configuration
-injection_molding_machine_1 = {
+#injection_molding_machine_1 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV8x?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTE?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTE?format=json',
     'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTE??format=json',
     'label': 'InjectionMoldingMachine_1'
-}
+#}
 
 # IMM_2 configuration
-injection_molding_machine_2 = {
+#injection_molding_machine_2 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV8y?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTI?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTI?format=json',
     'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTI?format=json',
     'label': 'InjectionMoldingMachine_2'
-}
+#}
 
 # IMM_3 configuration
-injection_molding_machine_3 = {
+# = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV8z?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTM?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTM?format=json',
     'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTM?format=json',
     'label': 'InjectionMoldingMachine_3'
-}
+#}
 
 # IMM_4 configuration
-injection_molding_machine_4 = {
+#injection_molding_machine_4 = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbmplY3Rpb25Nb2xkaW5nTWFjaGluZV80?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lNTTQ?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lNTTQ?format=json',
     'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NldHVwUGVyaXBoZXJ5L0lNTTQ?format=json',
     'label': 'InjectionMoldingMachine_4'
-}
+#}
 
 # Injection Mold configuration
-injection_mold = {
+#injection_mold = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9tb2xkRXhhbXBsZQ?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL01vbGQ?format=json',
     'label': 'Mold'
-}
+#}
 
 # Inquiry_1 configuration
-inquiry = {
+#inquiry = {
     'url': 'http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbnF1aXJ5XzE?format=json',
     'url1': 'http://localhost:5001/submodels/d3d3LmV4YW1wbGUuY29tL2lkcy9zbS8xMjI1XzkwMjBfNTAyMl8xOTc0L0lOUVVJUlkx?format=json',
     'url2': 'http://localhost:5001/submodels/aHR0cHM6Ly9hZG1pbi1zaGVsbC5pby9aVkVJL1RlY2huaWNhbERhdGEvU3VibW9kZWwvMS8yL0lOUVVJUlkx?format=json',
     'url3': 'http://localhost:5001/submodels/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vc20vMS8xL3NwZWNpZmljYXRpb25zL0lOUVVJUlkx?format=json',
     'label': 'Inquiry_1'
-}
+#}
 
 # def execute_cypher_query(query, device_config, **params):
 #     with GraphDatabase.driver(uri, auth=(username, password)) as driver:
@@ -660,7 +658,7 @@ inquiry = {
 # result_imm4 = execute_cypher_query(cypher_query_imm4, injection_molding_machine_4)
 
 # graph = Graph(uri, auth=(username, password))
-
+"""
 @app.route('/query1', methods=['POST'])
 def run_query1():
     coolant_data = get_coolant_data(uri, username, password)

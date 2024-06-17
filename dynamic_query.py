@@ -21,6 +21,9 @@ def extract_submodel_identifier(data):
 # Specify the directory containing the JSON files
 directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json'))
 
+# Initialize list to store queries
+query_list = []
+
 # Iterate over all JSON files in the directory
 for filename in os.listdir(directory_path):
     if filename.endswith(".json"):
@@ -67,4 +70,11 @@ for filename in os.listdir(directory_path):
         # Build Final Query:
         query = idShort + " = { " + AAS_address + f", {', '.join(submodel_list)}, 'label': '" + idShort + "' }"
 
-        print(query)
+        # Add query to the list
+        query_list.append(query)
+
+# Now query_list contains all your queries
+
+# Example of accessing each query individually:
+for i, query in enumerate(query_list, start=1):
+    print(f"Query {i}: {query}")
