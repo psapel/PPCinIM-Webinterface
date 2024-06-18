@@ -148,7 +148,8 @@ const Newasset = () => {
               <option value="TemperatureControlUnit">
                 Temperature Control Unit
               </option>
-              <option value="Hot Runner Device">Hot Runner Device</option>
+              <option value="HotRunnerSystem">Hot Runner Device</option>
+              <option value="HandlingDevice">Handling Device</option>
             </select>
           </div>
         </div>

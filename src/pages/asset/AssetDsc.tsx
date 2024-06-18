@@ -38,6 +38,7 @@ const AssetDsc = ({
   let shotVolume;
   let maxHeatingCap;
   let coolant;
+  let handlingDevice;
 
   if (machineType === "InjectionMoldingMachine") {
     clampingForce = assetData.submodels[0].submodelElements
@@ -53,7 +54,7 @@ const AssetDsc = ({
       .value.find((el) => el.idShort === "MaxOpeningStroke").value;
   }
 
-  if (machineType === "Hot Runner Device") {
+  if (machineType === "HotRunnerSystem") {
     maxHeatingPower = assetData.submodels[0].submodelElements[0].value.find(
       (el) => el.idShort === "MaxHeatingPower"
     ).value;
@@ -101,6 +102,12 @@ const AssetDsc = ({
     coolant = assetData.submodels[0].submodelElements[0].value
       .find((el) => el.idShort === "Channels")
       .value.find((el) => el.idShort === "Coolant").value[0].text;
+  }
+
+  if (machineType === "HandlingDevice") {
+    handlingDevice = assetData.submodels[0].submodelElements
+      .find((el) => el.idShort === "TechnicalProperties")
+      ?.value.find((el) => el.idShort === "HandlingDevice").value;
   }
 
   const [showDetails, setShowDetails] = useState(false);
@@ -155,7 +162,7 @@ const AssetDsc = ({
         </div>
       )}
 
-      {machineType === "Hot Runner Device" && (
+      {machineType === "HotRunnerSystem" && (
         <div>
           <p>
             <strong>Max Heating Power: </strong>
@@ -170,7 +177,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Hot Runner Device"
+                machineType="HotRunnerSystem"
                 dataType="MaxHeatingPower"
               />
             </div>
@@ -189,7 +196,7 @@ const AssetDsc = ({
             <div className="py-4 asset-description">
               <MetaDataIMM
                 assetData={assetData}
-                machineType="Hot Runner Device"
+                machineType="HotRunnerSystem"
                 dataType="MaxOperatingTemperature"
               />
             </div>
@@ -345,6 +352,28 @@ const AssetDsc = ({
                 assetData={assetData}
                 machineType="TemperatureControlUnit"
                 dataType="Coolant"
+              />
+            </div>
+          )}
+        </div>
+      )}
+
+      {machineType === "HandlingDevice" && (
+        <div>
+          <p>
+            <strong> Handling Device:</strong> {handlingDevice}
+            <ToggleButton
+              show={showDetails}
+              setShow={setShowDetails}
+              text="Show Details"
+            />
+          </p>
+          {showDetails && (
+            <div className="py-4 asset-description">
+              <MetaDataIMM
+                assetData={assetData}
+                machineType="HandlingDevice"
+                dataType="handlingDevice"
               />
             </div>
           )}
