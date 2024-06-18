@@ -17,6 +17,8 @@ const MetaDataIMM = ({
   const unitSym = dataSpecContent?.symbol;
   const valueFormat = dataSpecContent?.valueFormat;
 
+  console.log("concept", concept);
+
   return (
     <>
       <p>

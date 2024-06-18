@@ -373,7 +373,7 @@ const AssetDsc = ({
               <MetaDataIMM
                 assetData={assetData}
                 machineType="HandlingDevice"
-                dataType="handlingDevice"
+                dataType="HandlingDevice"
               />
             </div>
           )}
