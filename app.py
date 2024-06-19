@@ -92,7 +92,6 @@ def create_testasset():
         asset_categories = assets.get('assetCategories')
         asset_image = assets.get('assetImage')
         # aasxassetfilename = models.get('aasxassetFileName')
-
         
         if not asset_name or not asset_type or not asset_data:
             return jsonify({"error": "Incomplete asset information provided"}), 400
@@ -118,6 +117,13 @@ def create_testasset():
         )
         db.session.add(asset)
         db.session.commit()
+
+        folder_path = os.path.join('src', 'pages', 'asset', 'json')
+        os.makedirs(folder_path, exist_ok=True)  # Ensure the directory exists
+        file_path = os.path.join(folder_path, f"{asset_name}.json")
+        with open(file_path, 'w') as json_file:
+            json.dump(asset_data, json_file)
+
         return jsonify({"message": "Asset created successfully"}), 200
             
     except Exception as e:
@@ -207,6 +213,13 @@ def delete_asset(asset_id):
     asset = Asset.query.get(asset_id)
     if asset is None:
         return jsonify({'message': 'Asset not found'}), 404
+
+    folder_path = os.path.join('src', 'pages', 'asset', 'json')
+    file_path = os.path.join(folder_path, f"{asset.asset_name}.json")
+
+    # Check if the file exists and delete it
+    if os.path.exists(file_path):
+        os.remove(file_path)    
 
     db.session.delete(asset)
     db.session.commit()
