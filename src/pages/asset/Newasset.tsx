@@ -239,6 +239,10 @@ const Newasset = () => {
             <p>{error}</p>
           </div>
         )}
+        <p>
+          Please put the corresponding aasx file in the AASX server blazor
+          folder/aasxs
+        </p>
       </div>
     </form>
   );

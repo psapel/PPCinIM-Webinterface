@@ -370,7 +370,7 @@ index_settings = {
     }
 }
 
-index_name = 'new_version_final'
+index_name = 'haha'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -454,7 +454,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index= 'new_version_final', size=16, body=query)
+    result = es.search(index= 'haha', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
