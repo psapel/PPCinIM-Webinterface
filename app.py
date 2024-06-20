@@ -579,7 +579,7 @@ def execute_cypher_query(query, query_params):
         return session.run(query, query_params)
 
 # Specify the directory containing the JSON files
-directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json1'))
+directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json'))
 
 # Initialize list to store queries and configurations
 queries_and_configs = []
