@@ -23,20 +23,6 @@ def extract_submodel_identifier(data):
                 submodel_identifier.append(key['value'])
     return submodel_identifier
 
-def determine_apoc_procedure(submodel_url):
-    try:
-        with urllib.request.urlopen(submodel_url) as response:
-            submodel_data = json.load(response)
-    except Exception as e:
-        print(f"Error accessing submodel URL {submodel_url}: {e}")
-        return "procedure_1"  # Default procedure if there's an error
-
-    # Check if submodel data contains SubmodelElementCollection
-    if 'SubmodelElementCollection' in json.dumps(submodel_data):
-        return "procedure_2"
-    else:
-        return "procedure_1"
-
 # Specify the directory containing the JSON files
 directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json'))
 
@@ -101,20 +87,13 @@ for filename in os.listdir(directory_path):
         # Neo4j Cypher query construction
         query = """
         MERGE (n:Asset {idShort: $idShort})
-        SET n.url = $url, n.label = $label, n.assetType = $assetType, n.AAS_address = $AAS_address
+        SET n.label = $label, n.assetType = $assetType
         """
-
-        for i in range(1, len(submodel_urls) + 1):
-            query += f"""
-            SET n.url{i} = $url{i}
-            """
 
         # Prepare device_config dictionary
         device_config = {
             'idShort': idShort,
-            'url': AAS_address,
             'label': idShort,
-            'AAS_address': AAS_address,
             'assetType': assetType,
             **submodel_urls
         }
@@ -133,6 +112,7 @@ for i, (query, device_config) in enumerate(queries_and_configs, start=1):
         # Execute the main Neo4j query for creating nodes and setting properties
         print(f"Executing query for device {i}: {device_config['idShort']}")
         result = execute_cypher_query(query, device_config)
+        print(f"Query {i} executed successfully.")
         
         # Additional operations with APOC after each node creation
         try:
@@ -144,103 +124,13 @@ for i, (query, device_config) in enumerate(queries_and_configs, start=1):
             WHERE b.idS IS NOT NULL AND n.assetType = b.idS
             MERGE (n)-[:IsA]->(b)
             """
-            execute_cypher_query(relationship_query, device_config)
-            print("Relationship between nodes created successfully.")
-            
-            # Adding dynamic property extraction from submodel URLs
-            for j in range(1, len(submodel_urls) + 1):
-                submodel_url = device_config[f'url{j}']
-                procedure = determine_apoc_procedure(submodel_url)
-                
-                if procedure == "procedure_1":
-                    submodel_query = f"""
-                    MATCH (n:Asset {{idShort: $idShort}})
-                    CALL apoc.load.json(n.url{j}) YIELD value
-                    WITH value.submodelElements AS elements, n
-                    UNWIND elements AS element
-                    WITH n, element
-                    WHERE element.modelType = 'Property' OR element.modelType = 'MultiLanguageProperty'
-                    WITH n, element,
-                      CASE
-                        WHEN element.modelType = 'MultiLanguageProperty' THEN element.value[0].text
-                        ELSE element.value
-                      END AS propertyValue
-                    SET n += apoc.map.fromPairs([[element.idShort, propertyValue]])
-                    """
-                else:
-                    submodel_query = f"""
-                    MATCH (n:Asset {{idShort: $idShort}})
-                    CALL apoc.load.json(n.url{j}) YIELD value
-                    WITH value.submodelElements AS elements, n
-                    UNWIND elements AS element
-                    WITH n, element,
-                      CASE
-                        WHEN element.modelType = 'Property' THEN [element]
-                        ELSE []
-                      END AS properties,
-                      CASE
-                        WHEN element.modelType = 'SubmodelElementCollection' THEN element.value
-                        ELSE []
-                      END AS subElements
 
-                    FOREACH (prop IN properties |
-                      SET n += apoc.map.fromPairs([ [prop.idShort, prop.value] ])
-                    )
-                    FOREACH (subElem IN subElements |
-                      FOREACH (_ IN CASE WHEN subElem.modelType = 'Property' THEN [1] ELSE [] END |
-                        SET n += apoc.map.fromPairs([[subElem.idShort, subElem.value]])
-                        FOREACH (desc IN subElem.descriptions |
-                          SET n += apoc.map.fromPairs([ [desc.language, desc.text] ])
-                        )
-                      )
-                      FOREACH (nestedSubElem IN CASE WHEN subElem.modelType = 'SubmodelElementCollection' THEN subElem.value ELSE [] END |
-                        FOREACH (_ IN CASE WHEN nestedSubElem.modelType = 'Property' THEN [1] ELSE [] END |
-                          SET n += apoc.map.fromPairs([[nestedSubElem.idShort, nestedSubElem.value]])
-                          FOREACH (desc IN nestedSubElem.descriptions |
-                            SET n += apoc.map.fromPairs([ [desc.language, desc.text] ])
-                          )
-                        )
-                        FOREACH (deepNestedSubElem IN CASE WHEN nestedSubElem.modelType = 'SubmodelElementCollection' THEN nestedSubElem.value ELSE [] END |
-                          SET n += apoc.map.fromPairs([[deepNestedSubElem.idShort, deepNestedSubElem.value]])
-                            FOREACH (ts IN CASE WHEN deepNestedSubElem.idShort = 'TextStatement' THEN [deepNestedSubElem.value] ELSE [] END |
-                          SET n += apoc.map.fromPairs([ ['TextStatement', ts] ])
-                            )
-                        )
-                      )
-                    )
-                    """
-                
-                execute_cypher_query(submodel_query, device_config)
-                print(f"Properties from submodel URL {j} added to asset node.")
-        except Exception as e:
-            print(f"An error occurred during property extraction from submodel URL {j}: {e}")
+            # Execute the relationship creation query with device_config parameters
+            relationship_result = execute_cypher_query(relationship_query, device_config)
 
-        # Add relationship creation and cleanup query after property extraction
-        try:
-            relationship_query = """
-            MATCH (n:Asset {idShort: $idShort})
-            WHERE n.assetType IS NOT NULL
-            MATCH (b)
-            WHERE b.idS IS NOT NULL AND n.assetType = b.idS
-            MERGE (n)-[:IsA]->(b)
-            """
-            execute_cypher_query(relationship_query, device_config)
-            print("Relationship between nodes created successfully.")
+            print("Relationships between nodes created successfully.")
         except Exception as e:
             print(f"An error occurred during relationship creation: {e}")
 
-        # Clean up node properties using apoc.map.clean
-        try:
-            cleanup_query = """
-            MATCH (n:Asset {idShort: $idShort})
-            WHERE n.assetType IS NOT NULL
-            SET n = apoc.map.clean(n, ['de', 'en'], [])
-            """
-            execute_cypher_query(cleanup_query, device_config)
-            print("Node properties cleaned up successfully.")
-        except Exception as e:
-            print(f"An error occurred during node property cleanup: {e}")
-
     except Exception as e:
-        print(f"An error occurred while processing device {i}: {e}")
-
+        print(f"An error occurred while executing query {i}: {e}")
