@@ -6,10 +6,11 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import json
 from elasticsearch import Elasticsearch
 from py2neo import Graph
-from neo4j import GraphDatabase
+from neo4j import GraphDatabase, basic_auth
 import os
 import base64
 import urllib.request
+from concurrent.futures import ThreadPoolExecutor
 
 
 from gui_setup.db_login import get_odoo_credentials
@@ -31,14 +32,15 @@ from queries.injection_molding_machine_query import run_injection_molding_machin
 # Elasticsearch configuration
 es = Elasticsearch(hosts=['http://localhost:9200'])
 
+app = Flask(__name__)
+
 # Neo4j configuration
 uri = "bolt://localhost:7687"
 username = "neo4j"
 password = "12345678"
 
-graph = Graph(uri, auth=(username, password))
-
-app = Flask(__name__)
+# Neo4j driver with connection pooling
+driver = GraphDatabase.driver(uri, auth=basic_auth(username, password), max_connection_pool_size=50)
 
 load_dotenv()
 CORS(app)
@@ -371,7 +373,7 @@ index_settings = {
     }
 }
 
-index_name = 'new_version_final'
+index_name = 'wtf'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -395,7 +397,6 @@ def load_models(es):
                     model_id = model_data.get('_id')
                     del model_data['_id']
                     es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'])
-                    print(f"Model data: {model_data}")
                     models.append(model_data)   
             except FileNotFoundError:
                 print(f"Failed to load model: {model_path}")
@@ -455,7 +456,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index= 'new_version_final', size=16, body=query)
+    result = es.search(index= 'wtf', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -463,8 +464,6 @@ def find_matching_model(es, url1, url2, url3):
     if hits:
         for hit in hits:
             source = hit.get('_source')
-            print("Retrieved Document:", source)
-
     return hits
 
 
@@ -474,14 +473,9 @@ def index():
         machine_environment = request.form.get('machine')
         scheduling_constraints = request.form.getlist('checked[]')
         scheduling_objective_function = request.form.getlist('checking[]')
-        print("Received values:")
-        print("Machine Environment:", machine_environment)
-        print("Scheduling Constraints:", scheduling_constraints)
-        print("Scheduling Objective Function:", scheduling_objective_function)
 
         matching_model = find_matching_model(es, machine_environment, scheduling_constraints,
                                              scheduling_objective_function)
-        print("Matching Models:", matching_model)
 
         # Extract the relevant information from the hits
         selected_models = []
@@ -490,7 +484,6 @@ def index():
             selected_models.append(source)
         
         if selected_models:
-            print("selcted_models:", selected_models)
             return jsonify(selected_models), 200
         else:
             return "No matching model found."
@@ -535,6 +528,7 @@ def get_execution_logs(model_name):
     return jsonify(logs)
 
 
+
 def extract_idShort(data):
     return [shell['idShort'] for shell in data['assetAdministrationShells']]
 
@@ -549,19 +543,40 @@ def extract_submodel_identifier(data):
                 submodel_identifier.append(key['value'])
     return submodel_identifier
 
-def determine_apoc_procedure(submodel_url):
-    try:
-        with urllib.request.urlopen(submodel_url) as response:
-            submodel_data = json.load(response)
-    except Exception as e:
-        print(f"Error accessing submodel URL {submodel_url}: {e}")
-        return "procedure_1"  # Default procedure if there's an error
-
-    # Check if submodel data contains SubmodelElementCollection
+def determine_apoc_procedure(submodel_data):
     if 'SubmodelElementCollection' in json.dumps(submodel_data):
         return "procedure_2"
     else:
         return "procedure_1"
+
+# Function to load JSON data from a file
+def load_json_file(file_path):
+    try:
+        with open(file_path) as file:
+            return json.load(file)
+    except FileNotFoundError:
+        print(f"The file {file_path} does not exist.")
+    except json.JSONDecodeError:
+        print(f"Error decoding JSON from the file {file_path}.")
+    return None
+
+# Function to fetch JSON data from a URL
+def fetch_json_data(url):
+    try:
+        with urllib.request.urlopen(url) as response:
+            return json.load(response)
+    except urllib.error.URLError as e:
+        print(f"Error accessing URL {url}: {e}")
+    except json.JSONDecodeError as e:
+        print(f"Error decoding JSON from URL {url}: {e}")
+    return None
+
+# Neo4j driver with connection pooling
+driver = GraphDatabase.driver(uri, auth=basic_auth(username, password), max_connection_pool_size=50)
+
+def execute_cypher_query(query, query_params):
+    with driver.session() as session:
+        return session.run(query, query_params)
 
 # Specify the directory containing the JSON files
 directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json1'))
@@ -573,15 +588,8 @@ queries_and_configs = []
 for filename in os.listdir(directory_path):
     if filename.endswith(".json"):
         file_path = os.path.join(directory_path, filename)
-
-        try:
-            with open(file_path) as file:
-                result = json.load(file)
-        except FileNotFoundError:
-            print(f"The file {file_path} does not exist.")
-            continue
-        except json.JSONDecodeError:
-            print(f"Error decoding JSON from the file {file_path}.")
+        result = load_json_file(file_path)
+        if not result:
             continue
 
         idShort_list = extract_idShort(result)
@@ -600,21 +608,11 @@ for filename in os.listdir(directory_path):
         submodel_identifier = extract_submodel_identifier(result)
 
         AAS_address = f'http://localhost:5001/shells/{AAS_identifier}?format=json'
-
-        try:
-            # Fetch JSON data from AAS address
-            with urllib.request.urlopen(AAS_address) as response:
-                aas_data = json.load(response)
-        except urllib.error.URLError as e:
-            print(f"Error accessing AAS address {AAS_address}: {e}")
-            continue
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON from AAS address {AAS_address}: {e}")
+        aas_data = fetch_json_data(AAS_address)
+        if not aas_data:
             continue
 
-        # Extract assetType from AAS data
         assetType = aas_data.get('assetInformation', {}).get('assetType')
-
         if not assetType:
             print(f"No assetType found in AAS data for {filename}.")
             continue
@@ -624,13 +622,11 @@ for filename in os.listdir(directory_path):
             base64_str = base64.b64encode(bytes(entry, 'utf-8')).decode('utf-8')
             submodel_urls[f'url{i}'] = f'http://localhost:5001/submodels/{base64_str}?format=json'
 
-        # Neo4j Cypher query construction
         query = """
         MERGE (n:Asset {idShort: $idShort})
         SET n.label = $label, n.assetType = $assetType
         """
 
-        # Prepare device_config dictionary
         device_config = {
             'idShort': idShort,
             'label': idShort,
@@ -639,118 +635,109 @@ for filename in os.listdir(directory_path):
 
         queries_and_configs.append((query, device_config, submodel_urls))
 
-def execute_cypher_query(query, query_params):
-    driver = GraphDatabase.driver(uri, auth=(username, password))
-    with driver.session() as session:
-        result = session.run(query, query_params)
-        return result
+def process_device_config(device_config_tuple):
+    query, device_config, submodel_urls = device_config_tuple
 
-# Iterate over each device configuration
-for i, (query, device_config, submodel_urls) in enumerate(queries_and_configs, start=1):
     try:
-        # Execute the main Neo4j query for creating nodes and setting properties
-        print(f"Executing query for device {i}: {device_config['idShort']}")
-        result = execute_cypher_query(query, device_config)
-        
-        # Additional operations with APOC after each node creation
-        try:
-            # Neo4j Cypher query to create relationships and clean up node properties
-            relationship_query = """
-            MATCH (n:Asset)
-            WHERE n.assetType IS NOT NULL AND n.idShort = $idShort
-            MATCH (b)
-            WHERE b.idS IS NOT NULL AND n.assetType = b.idS
-            MERGE (n)-[:IsA]->(b)
-            """
-            execute_cypher_query(relationship_query, device_config)
-            print("Relationship between nodes created successfully.")
-            
-            # Adding dynamic property extraction from submodel URLs
-            for j in range(1, len(submodel_urls) + 1):
-                submodel_url = submodel_urls[f'url{j}']
-                procedure = determine_apoc_procedure(submodel_url)
-                
-                if procedure == "procedure_1":
-                    submodel_query = f"""
-                    MATCH (n:Asset {{idShort: $idShort}})
-                    CALL apoc.load.json($url{j}) YIELD value
-                    WITH value.submodelElements AS elements, n
-                    UNWIND elements AS element
-                    WITH n, element
-                    WHERE element.modelType = 'Property' OR element.modelType = 'MultiLanguageProperty'
-                    WITH n, element,
-                      CASE
-                        WHEN element.modelType = 'MultiLanguageProperty' THEN element.value[0].text
-                        ELSE element.value
-                      END AS propertyValue
-                    SET n += apoc.map.fromPairs([[element.idShort, propertyValue]])
-                    """
-                else:
-                    submodel_query = f"""
-                    MATCH (n:Asset {{idShort: $idShort}})
-                    CALL apoc.load.json($url{j}) YIELD value
-                    WITH value.submodelElements AS elements, n
-                    UNWIND elements AS element
-                    WITH n, element,
-                      CASE
-                        WHEN element.modelType = 'Property' THEN [element]
-                        ELSE []
-                      END AS properties,
-                      CASE
-                        WHEN element.modelType = 'SubmodelElementCollection' THEN element.value
-                        ELSE []
-                      END AS subElements
+        execute_cypher_query(query, device_config)
 
-                    FOREACH (prop IN properties |
-                      SET n += apoc.map.fromPairs([ [prop.idShort, prop.value] ])
+        relationship_query = """
+        MATCH (n:Asset)
+        WHERE n.assetType IS NOT NULL AND n.idShort = $idShort
+        MATCH (b)
+        WHERE b.idS IS NOT NULL AND n.assetType = b.idS
+        MERGE (n)-[:IsA]->(b)
+        """
+        execute_cypher_query(relationship_query, device_config)
+
+        for j, submodel_url in submodel_urls.items():
+            submodel_data = fetch_json_data(submodel_url)
+            if not submodel_data:
+                continue
+
+            procedure = determine_apoc_procedure(submodel_data)
+
+            if procedure == "procedure_1":
+                submodel_query = f"""
+                MATCH (n:Asset {{idShort: $idShort}})
+                CALL apoc.load.json($url) YIELD value
+                WITH value.submodelElements AS elements, n
+                UNWIND elements AS element
+                WITH n, element
+                WHERE element.modelType = 'Property' OR element.modelType = 'MultiLanguageProperty'
+                WITH n, element,
+                  CASE
+                    WHEN element.modelType = 'MultiLanguageProperty' THEN element.value[0].text
+                    ELSE element.value
+                  END AS propertyValue
+                SET n += apoc.map.fromPairs([[element.idShort, propertyValue]])
+                """
+            else:
+                submodel_query = f"""
+                MATCH (n:Asset {{idShort: $idShort}})
+                CALL apoc.load.json($url) YIELD value
+                WITH value.submodelElements AS elements, n
+                UNWIND elements AS element
+                WITH n, element,
+                  CASE
+                    WHEN element.modelType = 'Property' THEN [element]
+                    ELSE []
+                  END AS properties,
+                  CASE
+                    WHEN element.modelType = 'SubmodelElementCollection' THEN element.value
+                    ELSE []
+                  END AS subElements
+
+                FOREACH (prop IN properties |
+                  SET n += apoc.map.fromPairs([ [prop.idShort, prop.value] ])
+                )
+                FOREACH (subElem IN subElements |
+                  FOREACH (_ IN CASE WHEN subElem.modelType = 'Property' THEN [1] ELSE [] END |
+                    SET n += apoc.map.fromPairs([[subElem.idShort, subElem.value]])
+                    FOREACH (desc IN subElem.descriptions |
+                      SET n += apoc.map.fromPairs([ [desc.language, desc.text] ])
                     )
-                    FOREACH (subElem IN subElements |
-                      FOREACH (_ IN CASE WHEN subElem.modelType = 'Property' THEN [1] ELSE [] END |
-                        SET n += apoc.map.fromPairs([[subElem.idShort, subElem.value]])
-                        FOREACH (desc IN subElem.descriptions |
-                          SET n += apoc.map.fromPairs([ [desc.language, desc.text] ])
-                        )
-                      )
-                      FOREACH (nestedSubElem IN CASE WHEN subElem.modelType = 'SubmodelElementCollection' THEN subElem.value ELSE [] END |
-                        FOREACH (_ IN CASE WHEN nestedSubElem.modelType = 'Property' THEN [1] ELSE [] END |
-                          SET n += apoc.map.fromPairs([[nestedSubElem.idShort, nestedSubElem.value]])
-                          FOREACH (desc IN nestedSubElem.descriptions |
-                            SET n += apoc.map.fromPairs([ [desc.language, desc.text] ])
-                          )
-                        )
-                        FOREACH (deepNestedSubElem IN CASE WHEN nestedSubElem.modelType = 'SubmodelElementCollection' THEN nestedSubElem.value ELSE [] END |
-                          SET n += apoc.map.fromPairs([[deepNestedSubElem.idShort, deepNestedSubElem.value]])
-                            FOREACH (ts IN CASE WHEN deepNestedSubElem.idShort = 'TextStatement' THEN [deepNestedSubElem.value] ELSE [] END |
-                          SET n += apoc.map.fromPairs([ ['TextStatement', ts] ])
-                            )
-                        )
+                  )
+                  FOREACH (nestedSubElem IN CASE WHEN subElem.modelType = 'SubmodelElementCollection' THEN subElem.value ELSE [] END |
+                    FOREACH (_ IN CASE WHEN nestedSubElem.modelType = 'Property' THEN [1] ELSE [] END |
+                      SET n += apoc.map.fromPairs([[nestedSubElem.idShort, nestedSubElem.value]])
+                      FOREACH (desc IN nestedSubElem.descriptions |
+                        SET n += apoc.map.fromPairs([ [desc.language, desc.text] ])
                       )
                     )
-                    """
-                
-                execute_cypher_query(submodel_query, {**device_config, f'url{j}': submodel_url})
-                print(f"Properties from submodel URL {j} added to asset node.")
-        except Exception as e:
-            print(f"An error occurred during property extraction from submodel URL {j}: {e}")
+                    FOREACH (deepNestedSubElem IN CASE WHEN nestedSubElem.modelType = 'SubmodelElementCollection' THEN nestedSubElem.value ELSE [] END |
+                      SET n += apoc.map.fromPairs([[deepNestedSubElem.idShort, deepNestedSubElem.value]])
+                        FOREACH (ts IN CASE WHEN deepNestedSubElem.idShort = 'TextStatement' THEN [deepNestedSubElem.value] ELSE [] END |
+                      SET n += apoc.map.fromPairs([ ['TextStatement', ts] ])
+                        )
+                    )
+                  )
+                )
+                """
+            execute_cypher_query(submodel_query, {**device_config, 'url': submodel_url})
 
-        # Add relationship creation and cleanup query after property extraction
-        try:
-            relationship_query = """
-            MATCH (n:Asset {idShort: $idShort})
-            WHERE n.assetType IS NOT NULL
-            MATCH (b)
-            WHERE b.idS IS NOT NULL AND n.assetType = b.idS
-            MERGE (n)-[:IsA]->(b)
-            """
-            execute_cypher_query(relationship_query, device_config)
-            print("Relationship between nodes created successfully.")
-        except Exception as e:
-            print(f"An error occurred during relationship creation: {e}")
-
+        relationship_query = """
+        MATCH (n:Asset {idShort: $idShort})
+        WHERE n.assetType IS NOT NULL
+        MATCH (b)
+        WHERE b.idS IS NOT NULL AND n.assetType = b.idS
+        MERGE (n)-[:IsA]->(b)
+        """
+        execute_cypher_query(relationship_query, device_config)
     except Exception as e:
-        print(f"An error occurred while executing query {i}: {e}")
+        print(f"An error occurred: {e}")
 
+# Initialize ThreadPoolExecutor to run queries in parallel
+executor = ThreadPoolExecutor(max_workers=10)
 
+# Process each device configuration in parallel
+futures = [executor.submit(process_device_config, config) for config in queries_and_configs]
+
+# Ensure all threads have completed
+for future in futures:
+    future.result()
+
+# Execute the three queries after nodes and properties have been added
 @app.route('/query1', methods=['POST'])
 def run_query1():
     coolant_data = get_coolant_data(uri, username, password)
@@ -763,9 +750,12 @@ def run_query2():
 
 @app.route('/query3', methods=['POST'])
 def run_query3():
-    result = run_injection_molding_machine_query(graph)
+    result = run_injection_molding_machine_query(uri, username, password)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
 
+
+# Properly close the Neo4j driver
+driver.close()
 
 if __name__ == '__main__':
     app.run(debug=True)

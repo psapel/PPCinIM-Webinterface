@@ -119,11 +119,10 @@ def execute_cypher_query(query, query_params):
         result = session.run(query, query_params)
         return result
 
-# Iterate over each device configuration
-for i, (query, device_config, submodel_urls) in enumerate(queries_and_configs, start=1):
+def process_device_configuration(query, device_config, submodel_urls):
     try:
         # Execute the main Neo4j query for creating nodes and setting properties
-        print(f"Executing query for device {i}: {device_config['idShort']}")
+        print(f"Executing query for device {device_config['idShort']}")
         result = execute_cypher_query(query, device_config)
         
         # Additional operations with APOC after each node creation
@@ -223,4 +222,74 @@ for i, (query, device_config, submodel_urls) in enumerate(queries_and_configs, s
 
     except Exception as e:
         print(f"An error occurred while executing query {i}: {e}")
+
+# Iterate over each device configuration
+for i, (query, device_config, submodel_urls) in enumerate(queries_and_configs, start=1):
+    process_device_configuration(query, device_config, submodel_urls)
+
+
+# Function to get coolant data
+def get_coolant_data(uri, username, password):
+    with GraphDatabase.driver(uri, auth=(username, password)) as driver:
+        with driver.session() as session:
+            query = """
+            MATCH (i:Inquiry_1)
+            WITH i.Coolant AS InquiryCoolant
+            MATCH (tcu)
+            WHERE tcu.ManufacturerProductRoot = 'TemperatureControlUnit'
+            AND tcu.Coolant = InquiryCoolant
+            RETURN InquiryCoolant, COLLECT(tcu) AS MatchingControlUnits
+            """
+            result = session.run(query)
+            return result.data()
+
+# Function to get handling device data
+def get_handling_device_data(uri, username, password):
+    with GraphDatabase.driver(uri, auth=(username, password)) as driver:
+        with driver.session() as session:
+            query = """
+            MATCH (i:Inquiry_1)
+            WITH i.RequiredHandlingType AS InquiryHandlingDevice
+            MATCH (tcu)
+            WHERE tcu.ManufacturerProductRoot = 'HandlingDevice'
+            AND tcu.HandlingDevice = InquiryHandlingDevice
+            RETURN InquiryHandlingDevice, COLLECT(tcu) AS MatchingControlUnits
+            """
+            result = session.run(query)
+            return result.data()
+
+# Function to run injection molding machine query
+def run_injection_molding_machine_query(uri, username, password):
+    with GraphDatabase.driver(uri, auth=(username, password)) as driver:
+        with driver.session() as session:
+            cypher_query = """
+            MATCH (inquiry:Inquiry_1)
+            MATCH (imm)
+            WHERE imm.ManufacturerProductRoot = 'InjectionMoldingMachine'
+            WITH inquiry, imm,
+              (inquiry.MinRequiredClampingForce <= imm.MaxClampingForce) AS OK1,
+              (inquiry.ShotVolume <= imm.MaxPlasticizingCapacity) AS OK2,
+              (inquiry.GreaterMoldDimension <= imm.GreaterClearDistanceBetweenColumns) AS OK3,
+              (inquiry.SmallerMoldDimension <= imm.SmallerClearDistanceBetweenColumns) AS OK4,
+              (inquiry.RequiredOpeningStroke <= imm.MaxOpeningStroke) AS OK5
+            RETURN imm.idShort AS idShort,
+              CASE
+                WHEN OK1 AND OK2 AND OK3 AND OK4 AND OK5 THEN 'is technically capable'
+                ELSE 'is not technically capable'
+              END AS feasibility
+            """
+            result = session.run(cypher_query)
+            return result.data()
+
+
+
+# Execute the three queries after nodes and properties have been added
+coolant_data = get_coolant_data(uri, username, password)
+handling_device_data = get_handling_device_data(uri, username, password)
+injection_molding_machine_data = run_injection_molding_machine_query(uri, username, password)
+
+# Print results
+print("Coolant Data:", coolant_data)
+print("Handling Device Data:", handling_device_data)
+print("Injection Molding Machine Data:", injection_molding_machine_data)
 
