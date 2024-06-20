@@ -36,6 +36,7 @@ uri = "bolt://localhost:7687"
 username = "neo4j"
 password = "12345678"
 
+graph = Graph(uri, auth=(username, password))
 
 app = Flask(__name__)
 
@@ -563,7 +564,7 @@ def determine_apoc_procedure(submodel_url):
         return "procedure_1"
 
 # Specify the directory containing the JSON files
-directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json'))
+directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json1'))
 
 # Initialize list to store queries and configurations
 queries_and_configs = []
@@ -574,7 +575,7 @@ for filename in os.listdir(directory_path):
         file_path = os.path.join(directory_path, filename)
 
         try:
-            with open(file_path, encoding='utf-8') as file:
+            with open(file_path) as file:
                 result = json.load(file)
         except FileNotFoundError:
             print(f"The file {file_path} does not exist.")
@@ -626,25 +627,17 @@ for filename in os.listdir(directory_path):
         # Neo4j Cypher query construction
         query = """
         MERGE (n:Asset {idShort: $idShort})
-        SET n.url = $url, n.label = $label, n.assetType = $assetType, n.AAS_address = $AAS_address
+        SET n.label = $label, n.assetType = $assetType
         """
-
-        for i in range(1, len(submodel_urls) + 1):
-            query += f"""
-            SET n.url{i} = $url{i}
-            """
 
         # Prepare device_config dictionary
         device_config = {
             'idShort': idShort,
-            'url': AAS_address,
             'label': idShort,
-            'AAS_address': AAS_address,
-            'assetType': assetType,
-            **submodel_urls
+            'assetType': assetType
         }
 
-        queries_and_configs.append((query, device_config))
+        queries_and_configs.append((query, device_config, submodel_urls))
 
 def execute_cypher_query(query, query_params):
     driver = GraphDatabase.driver(uri, auth=(username, password))
@@ -653,7 +646,7 @@ def execute_cypher_query(query, query_params):
         return result
 
 # Iterate over each device configuration
-for i, (query, device_config) in enumerate(queries_and_configs, start=1):
+for i, (query, device_config, submodel_urls) in enumerate(queries_and_configs, start=1):
     try:
         # Execute the main Neo4j query for creating nodes and setting properties
         print(f"Executing query for device {i}: {device_config['idShort']}")
@@ -674,13 +667,13 @@ for i, (query, device_config) in enumerate(queries_and_configs, start=1):
             
             # Adding dynamic property extraction from submodel URLs
             for j in range(1, len(submodel_urls) + 1):
-                submodel_url = device_config[f'url{j}']
+                submodel_url = submodel_urls[f'url{j}']
                 procedure = determine_apoc_procedure(submodel_url)
                 
                 if procedure == "procedure_1":
                     submodel_query = f"""
                     MATCH (n:Asset {{idShort: $idShort}})
-                    CALL apoc.load.json(n.url{j}) YIELD value
+                    CALL apoc.load.json($url{j}) YIELD value
                     WITH value.submodelElements AS elements, n
                     UNWIND elements AS element
                     WITH n, element
@@ -695,7 +688,7 @@ for i, (query, device_config) in enumerate(queries_and_configs, start=1):
                 else:
                     submodel_query = f"""
                     MATCH (n:Asset {{idShort: $idShort}})
-                    CALL apoc.load.json(n.url{j}) YIELD value
+                    CALL apoc.load.json($url{j}) YIELD value
                     WITH value.submodelElements AS elements, n
                     UNWIND elements AS element
                     WITH n, element,
@@ -735,7 +728,7 @@ for i, (query, device_config) in enumerate(queries_and_configs, start=1):
                     )
                     """
                 
-                execute_cypher_query(submodel_query, device_config)
+                execute_cypher_query(submodel_query, {**device_config, f'url{j}': submodel_url})
                 print(f"Properties from submodel URL {j} added to asset node.")
         except Exception as e:
             print(f"An error occurred during property extraction from submodel URL {j}: {e}")
@@ -754,22 +747,9 @@ for i, (query, device_config) in enumerate(queries_and_configs, start=1):
         except Exception as e:
             print(f"An error occurred during relationship creation: {e}")
 
-        # Clean up node properties using apoc.map.clean
-        try:
-            cleanup_query = """
-            MATCH (n:Asset {idShort: $idShort})
-            WHERE n.assetType IS NOT NULL
-            SET n = apoc.map.clean(n, ['de', 'en'], [])
-            """
-            execute_cypher_query(cleanup_query, device_config)
-            print("Node properties cleaned up successfully.")
-        except Exception as e:
-            print(f"An error occurred during node property cleanup: {e}")
-
     except Exception as e:
-        print(f"An error occurred while processing device {i}: {e}")
+        print(f"An error occurred while executing query {i}: {e}")
 
-graph = Graph(uri, auth=(username, password))
 
 @app.route('/query1', methods=['POST'])
 def run_query1():
@@ -786,8 +766,6 @@ def run_query3():
     result = run_injection_molding_machine_query(graph)
     return jsonify(data=result, query_type='Injection Molding Machine Query')
 
-
-  
 
 if __name__ == '__main__':
     app.run(debug=True)
