@@ -484,7 +484,7 @@ index_settings = {
     }
 }
 
-index_name = "1234hahahaaaaaaaaaaaaaaaaaaa"
+index_name = 'ppcinim_final'
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
@@ -586,7 +586,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index=index_name, size=16, body=query)
+    result = es.search(index= 'ppcinim_final', size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -721,7 +721,7 @@ def execute_cypher_query(query, query_params):
         return session.run(query, query_params)
 
 # Specify the directory containing the JSON files
-directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json1'))
+directory_path = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/asset/json'))
 
 # Initialize list to store queries and configurations
 queries_and_configs = []
