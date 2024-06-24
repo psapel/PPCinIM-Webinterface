@@ -155,6 +155,7 @@ const Decisionsupport = () => {
     {}
   );
   const [selectedEnvironment, setSelectedEnvironment] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleCheckboxChange = (event) => {
     if (event.target.checked) {
@@ -238,6 +239,8 @@ const Decisionsupport = () => {
     } catch (error) {
       console.error("Error:", error);
       setErrorMessage(error.message || "An error occurred");
+    } finally {
+      setIsLoading(false); // Step 3: Stop loading once processing is complete or fails
     }
 
     console.log("selected criteria", selectedCriteria);
@@ -309,6 +312,11 @@ const Decisionsupport = () => {
         {errorMessage && (
           <div className="text-xl text-red-500">
             <p>{errorMessage}</p>
+          </div>
+        )}
+        {isLoading && (
+          <div className="text-xl">
+            <p>Loading...</p> // Additional loading text, if needed
           </div>
         )}
       </div>
