@@ -3,6 +3,7 @@
 }
 
 .datadetailsbox{
+  position: relative;
   background-color: rgba(128, 128, 128, 0.1);
   padding: 20px;
   border-radius: 8px; 
@@ -17,6 +18,27 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
+}
+
+
+.btn-delete {
+  font-size: 30px;
+  font-weight: bold;
+  background-color: red; 
+  color: white; 
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+  padding: 5px;
+  transition: 0.3s; 
+  border: none; 
+}
+
+.btn-delete span {
+  display: inline-block;
+  color: white; 
+}
+
+.btn-delete span:hover {
+  box-shadow: 0 0 10px red, 0 0 20px red; 
 }

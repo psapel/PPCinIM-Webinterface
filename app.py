@@ -5,12 +5,16 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 import json
 from elasticsearch import Elasticsearch
+from elasticsearch.helpers import scan
 from py2neo import Graph
 from neo4j import GraphDatabase, basic_auth
 import os
 import base64
 import urllib.request
 from concurrent.futures import ThreadPoolExecutor
+import random
+import string
+import time
 
 
 from gui_setup.db_login import get_odoo_credentials
@@ -73,6 +77,12 @@ class Model(db.Model):
     model_type: Mapped[str] = mapped_column(nullable=False)
     model_data: Mapped[str] = mapped_column(nullable=False)
     model_image: Mapped[str]= mapped_column(nullable=True)
+
+class DataSource(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    datasource_name: Mapped[str] = mapped_column(unique=True, nullable=False)
+    datasource_type: Mapped[str] = mapped_column(nullable=False)
+    datasource_data: Mapped[str] = mapped_column(nullable=False)
     
 
 with app.app_context():
@@ -82,6 +92,7 @@ with app.app_context():
 #     with open(filename, 'wb') as file_to_save:
 #         decoded_data = base64.b64decode(base64_string)
 #         file_to_save.write(decoded_data)
+
 
 #test routes for sqlalchemy
 @app.route('/test', methods=['POST'])
@@ -156,6 +167,7 @@ def get_testasset():
 @app.route('/testmodel', methods=['POST'])
 def create_testmodel():
     try:
+
         models = request.get_json()
 
         model_name = models.get('modelName')
@@ -187,10 +199,18 @@ def create_testmodel():
         )
         db.session.add(model)
         db.session.commit()
+
+        # update_index_name()
+
+        # print(f"After change create: {index_name}")
+        # load_models(es)
+
         return "model created"
     except Exception as e:
         print(e)
         return jsonify({"error": "An error occurred"}), 500
+
+        
 
 @app.route('/testmodel2', methods=['GET'])
 def get_testmodel():
@@ -209,7 +229,66 @@ def get_testmodel():
         return jsonify(model_dicts)
   
     except Exception as e:
-        print(e)                
+        print(e)   
+
+@app.route('/datasource', methods=['POST'])
+def create_datasource():
+    try:
+        datasources = request.get_json()
+
+        datasource_name = datasources.get('dataSourceName')
+        datasource_type = datasources.get('dataSourceType')
+        datasource_data = datasources.get('dataSourceData')
+       
+        # Check if a model with the same name already exists
+        existing_datasource = DataSource.query.filter_by(datasource_name=datasource_name).first()
+        if existing_datasource:
+            return jsonify({"error": "Data source name already exists"}), 400
+
+        project_root = os.path.dirname(os.path.abspath(__file__))
+        json_datasources_dir = os.path.join(project_root, "src", "pages", "datasources", "jsonFiles")
+
+        os.makedirs(json_datasources_dir, exist_ok=True)
+
+        json_file_path = os.path.join(json_datasources_dir, f"{datasource_name}.json")
+        with open(json_file_path, 'w') as json_file:
+            json.dump(datasource_data, json_file)
+
+        # Now call run_extraction with the path of the newly saved file
+        run_extraction(json_file_path)
+
+        datasource = DataSource(
+            datasource_name=datasource_name,
+            datasource_type=datasource_type,
+            datasource_data=json.dumps(datasource_data),
+        )
+        db.session.add(datasource)
+        db.session.commit()
+
+        return "Data source created"
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "An error occurred"}), 500
+
+        
+
+@app.route('/datasource2', methods=['GET'])
+def get_datasources():
+    try:
+        # Retrieve all datasources ordered by id
+        datasources = DataSource.query.order_by(DataSource.id).all()
+        # Convert the query results to a list of dictionaries
+        datasource_dicts = [{
+            "dataSourceId": datasource.id,
+            "dataSourceName": datasource.datasource_name,
+            "dataSourceType": datasource.datasource_type,
+            "dataSourceData": json.loads(datasource.datasource_data),
+            } for datasource in datasources]
+        # Return the JSON response
+        return jsonify(datasource_dicts)
+  
+    except Exception as e:
+        print(e)
 
 @app.route('/delete_asset/<int:asset_id>', methods=['DELETE'])
 def delete_asset(asset_id):
@@ -231,6 +310,8 @@ def delete_asset(asset_id):
 
 @app.route('/delete_model/<int:model_id>', methods=['DELETE'])
 def delete_model(model_id):
+
+
     model = Model.query.get(model_id)
     if model is None:  
         return jsonify({'message': 'Model not found'}), 404
@@ -251,7 +332,37 @@ def delete_model(model_id):
     db.session.delete(model)
     db.session.commit()
 
+    # update_index_name()
+
+    # print(f"After change delete: {index_name}")
+    # load_models(es)
+
     return jsonify({'message': 'Model deleted'}), 200
+
+@app.route('/delete_datasource/<int:datasource_id>', methods=['DELETE'])
+def delete_datasource(datasource_id):
+
+
+    datasource = DataSource.query.get(datasource_id)
+    if datasource is None:
+        return jsonify({'message': 'Data source not found'}), 404
+
+    # Construct the path to the JSON file for the data source
+    json_file_path = os.path.join('src', 'pages', 'datasources', 'jsonDatasources', f'{datasource.datasource_name}.json')
+
+    # Check if the file exists and delete it
+    if os.path.exists(json_file_path):
+        os.remove(json_file_path)
+
+    datasources_new_file_path = os.path.join('src', 'pages', 'datasources', 'jsonFIles', f'{datasource.datasource_name}.json')
+
+    if os.path.exists(datasources_new_file_path):
+        os.remove(datasources_new_file_path)
+
+    db.session.delete(datasource)
+    db.session.commit()
+
+    return jsonify({'message': 'Data source deleted'}), 200   
 
 
 #ppcim python script starts here
@@ -373,17 +484,36 @@ index_settings = {
     }
 }
 
-index_name = 'wtf'
+index_name = "1234hahahaaaaaaaaaaaaaaaaaaa"
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
-    es.indices.create(index=index_name, body={"settings": index_settings["settings"]},
-                      mappings=index_settings["mappings"])
+    es.indices.create(index=index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
 
+def update_index_name():
+    global index_name
+    print(f"Before change inside function update: {index_name}")
+
+    random_str = ''.join(random.choice(string.digits) for _ in range(20))
+    new_index_name = "my_index_" + random_str
+
+    # new_index_name="hsadhhasd"
+
+    # Check if the new index exists and create it if it doesn't
+    if not es.indices.exists(index=new_index_name):
+        try:
+            es.indices.create(index=new_index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
+            print(f"Index created: {new_index_name}")
+            index_name = new_index_name  # Update global index_name only after successful creation
+        except Exception as e:
+            print(f"Error creating index: {e}")
+
+    print(f"After change in update function: {index_name}")
 
 def load_models(es):
     import os
     import json
+
 
     model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/ModelsNew'))
     models = []
@@ -396,15 +526,15 @@ def load_models(es):
                     model_data = json.load(f)
                     model_id = model_data.get('_id')
                     del model_data['_id']
-                    es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'])
+                    es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'], refresh=True)
                     models.append(model_data)   
             except FileNotFoundError:
                 print(f"Failed to load model: {model_path}")
-
+    print("load models ran")
     return models
 
 
-loaded_models = load_models(es)
+# loaded_models = load_models(es)
 
 def find_matching_model(es, url1, url2, url3):
     len_2 = len(url2)
@@ -456,7 +586,7 @@ def find_matching_model(es, url1, url2, url3):
 
     print("Elasticsearch Query:", query)
 
-    result = es.search(index= 'wtf', size=16, body=query)
+    result = es.search(index=index_name, size=16, body=query)
     hits = result.get('hits', {}).get('hits', [])
 
     print("Number of hits:", len(hits))
@@ -466,6 +596,16 @@ def find_matching_model(es, url1, url2, url3):
             source = hit.get('_source')
     return hits
 
+def delete_index():
+    
+    try:
+    # Initiate delete by query with refresh=True to make sure the operation is complete
+        es.delete_by_query(index=index_name, body={"query": {"match_all": {}}}, refresh=True, wait_for_completion=True)
+
+        print(f"All documents deleted from index '{index_name}'.")
+    except Exception as e:
+        print(f"Failed to delete documents from index '{index_name}': {str(e)}")
+
 
 @app.route('/api/mapping', methods=['GET', 'POST'])
 def index():
@@ -474,19 +614,21 @@ def index():
         scheduling_constraints = request.form.getlist('checked[]')
         scheduling_objective_function = request.form.getlist('checking[]')
 
-        matching_model = find_matching_model(es, machine_environment, scheduling_constraints,
-                                             scheduling_objective_function)
+    delete_index()
+    load_models(es)
+    
+    matching_model = find_matching_model(es, machine_environment, scheduling_constraints, scheduling_objective_function)
 
-        # Extract the relevant information from the hits
-        selected_models = []
-        for hit in matching_model:
-            source = hit.get('_source', {})
-            selected_models.append(source)
+    # Extract the relevant information from the hits
+    selected_models = []
+    for hit in matching_model:
+        source = hit.get('_source', {})
+        selected_models.append(source)
         
-        if selected_models:
-            return jsonify(selected_models), 200
-        else:
-            return "No matching model found."
+    if selected_models:
+        return jsonify(selected_models), 200
+    else:
+        return "No matching model found."
     return jsonify({"message": "Invalid request method"})
 
 
