@@ -365,104 +365,104 @@ def delete_datasource(datasource_id):
     return jsonify({'message': 'Data source deleted'}), 200   
 
 
-#ppcim python script starts here
-@app.route('/api/create_asset', methods=['POST'])
-def create_asset():
-    try:
-        models = request.get_json()
+# #ppcim python script starts here
+# @app.route('/api/create_asset', methods=['POST'])
+# def create_asset():
+#     try:
+#         models = request.get_json()
 
-        asset_name = models.get('assetName')
-        asset_type = models.get('assetType')
-        asset_data = models.get('assetData')
-        asset_categories = models.get('assetCategories')
-        asset_image = models.get('assetImage')
+#         asset_name = models.get('assetName')
+#         asset_type = models.get('assetType')
+#         asset_data = models.get('assetData')
+#         asset_categories = models.get('assetCategories')
+#         asset_image = models.get('assetImage')
 
-        # Check if assetType matches assetType value in assetData
-        asset_type_from_data = asset_data['assetAdministrationShells'][0]['assetInformation']['assetType']
-        if asset_type != asset_type_from_data:
-            return jsonify({"error": "Asset Type does not match model selection"}), 400
+#         # Check if assetType matches assetType value in assetData
+#         asset_type_from_data = asset_data['assetAdministrationShells'][0]['assetInformation']['assetType']
+#         if asset_type != asset_type_from_data:
+#             return jsonify({"error": "Asset Type does not match model selection"}), 400
 
-        if asset_name and asset_type and asset_data:
-            # Store asset in memory
-            memory_storage.append({
-                'assetType': asset_type,
-                'assetData': asset_data,
-                'assetName': asset_name,
-                'assetCategories': asset_categories,
-                'assetImage': asset_image
-            })
+#         if asset_name and asset_type and asset_data:
+#             # Store asset in memory
+#             memory_storage.append({
+#                 'assetType': asset_type,
+#                 'assetData': asset_data,
+#                 'assetName': asset_name,
+#                 'assetCategories': asset_categories,
+#                 'assetImage': asset_image
+#             })
             
-            return jsonify({"message": "Asset created successfully"}), 200
-        else:
-            return jsonify({"error": "Incomplete asset information provided"}), 400
+#             return jsonify({"message": "Asset created successfully"}), 200
+#         else:
+#             return jsonify({"error": "Incomplete asset information provided"}), 400
 
-    except Exception as e:
-        print(e)
-        return jsonify({"error": "Failed to create asset"}), 500
+#     except Exception as e:
+#         print(e)
+#         return jsonify({"error": "Failed to create asset"}), 500
 
-# Get asset by name
-@app.route('/api/get_assets', methods=['GET'])
-def get_assets():
-    try:
-        asset = memory_storage
-        if asset:
-            return jsonify(asset), 200
-        else:
-            return jsonify({"error": "Asset not found"}), 404
-    except Exception as e:
-        print(e)
-        return jsonify({"error": "Failed to retrieve asset"}), 500
+# # Get asset by name
+# @app.route('/api/get_assets', methods=['GET'])
+# def get_assets():
+#     try:
+#         asset = memory_storage
+#         if asset:
+#             return jsonify(asset), 200
+#         else:
+#             return jsonify({"error": "Asset not found"}), 404
+#     except Exception as e:
+#         print(e)
+#         return jsonify({"error": "Failed to retrieve asset"}), 500
 
 
-@app.route('/api/search_assets', methods=['GET'])
-def search_assets():
-    try:
-        search_query = request.args.get('q')
+# @app.route('/api/search_assets', methods=['GET'])
+# def search_assets():
+#     try:
+#         search_query = request.args.get('q')
 
-        # Retrieve all assets ordered by id
-        assets = Asset.query.order_by(Asset.id).all()
-        # Convert the query results to a list of dictionaries
-        asset_dicts = [{
-            "assetId": asset.id,
-            "assetName": asset.asset_name,
-            "assetType": asset.asset_type,
-            "assetData": json.loads(asset.asset_data),
-            "assetCategories": json.loads(asset.asset_categories),
-            "assetImage": asset.asset_image
-            } for asset in assets]
+#         # Retrieve all assets ordered by id
+#         assets = Asset.query.order_by(Asset.id).all()
+#         # Convert the query results to a list of dictionaries
+#         asset_dicts = [{
+#             "assetId": asset.id,
+#             "assetName": asset.asset_name,
+#             "assetType": asset.asset_type,
+#             "assetData": json.loads(asset.asset_data),
+#             "assetCategories": json.loads(asset.asset_categories),
+#             "assetImage": asset.asset_image
+#             } for asset in assets]
 
-        if search_query:
-            # Filter assets based on the search query
-            filtered_assets = [asset for asset in asset_dicts if
-                               any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) or
-                               any(word.lower().startswith(search_query.lower()) for word in asset['assetType'].split()) or
-                               any(category.lower().startswith(search_query.lower()) for category in asset['assetCategories'])]
-            return jsonify(filtered_assets), 200
-        else:
-            return jsonify(asset_dicts), 200
-    except Exception as e:
-        print(e)
-        return jsonify({"error": "Failed to retrieve assets"}), 500
+#         if search_query:
+#             # Filter assets based on the search query
+#             filtered_assets = [asset for asset in asset_dicts if
+#                                any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) or
+#                                any(word.lower().startswith(search_query.lower()) for word in asset['assetType'].split()) or
+#                                any(category.lower().startswith(search_query.lower()) for category in asset['assetCategories'])]
+#             return jsonify(filtered_assets), 200
+#         else:
+#             return jsonify(asset_dicts), 200
+#     except Exception as e:
+#         print(e)
+#         return jsonify({"error": "Failed to retrieve assets"}), 500
 
-@app.route('/api/create_model', methods=['POST'])
-def create_model():
-    # Assuming you're receiving form data
-    model_name = request.form.get('modelName')
-    model_type = request.form.get('modelType')
-    model_image = request.files['modelImage']
-    model_file = request.files['modelFile']
-    aasx_file = request.files['aasxFile']
+# @app.route('/api/create_model', methods=['POST'])
+# def create_model():
+#     # Assuming you're receiving form data
+#     model_name = request.form.get('modelName')
+#     model_type = request.form.get('modelType')
+#     model_image = request.files['modelImage']
+#     model_file = request.files['modelFile']
+#     aasx_file = request.files['aasxFile']
 
-    # Process the files as needed (e.g., save to disk, database, etc.)
-    # For demonstration, let's print some info
-    print(f"Model Name: {model_name}")
-    print(f"Model Type: {model_type}")
-    print(f"Model Image File Name: {model_image.filename}")
-    print(f"Model File Name: {model_file.filename}")
-    print(f"AASX File Name: {aasx_file.filename}")
+#     # Process the files as needed (e.g., save to disk, database, etc.)
+#     # For demonstration, let's print some info
+#     print(f"Model Name: {model_name}")
+#     print(f"Model Type: {model_type}")
+#     print(f"Model Image File Name: {model_image.filename}")
+#     print(f"Model File Name: {model_file.filename}")
+#     print(f"AASX File Name: {aasx_file.filename}")
 
-    # Return a response to the frontend
-    return jsonify({'message': 'Model created successfully'}), 200
+#     # Return a response to the frontend
+#     return jsonify({'message': 'Model created successfully'}), 200
 
 index_settings = {
     "settings": {
