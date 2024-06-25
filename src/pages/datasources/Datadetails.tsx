@@ -80,7 +80,15 @@ const Datadetails = () => {
           }
         </p>
         <p>
-          <strong>Database URL:</strong>
+          <strong>Database URL:</strong>{" "}
+          {
+            datasourceData.submodels
+              .find((el) => el.idShort === "SoftwareNameplate")
+              .submodelElements.find(
+                (el) => el.idShort === "SoftwareNameplateInstance"
+              )
+              .value.find((el) => el.idShort === "InstanceURL").value
+          }
         </p>
         <p>
           <strong>Instance Name:</strong>{" "}
