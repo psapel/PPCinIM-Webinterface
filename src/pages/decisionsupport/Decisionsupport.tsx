@@ -114,16 +114,40 @@ export const categories = [
         url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
       },
       {
-        name: "Maximum Lateness (Lmax)",
-        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxLateness",
+        name: "Total completion time (ΣCj)",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime",
       },
       {
         name: "Total weighted completion time (Σ(wjCj))",
         url: "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime",
       },
       {
-        name: "Total completion time (ΣCj)",
-        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime",
+        name: "Maximum earliness (Emax)",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxEarliness",
+      },      
+      {
+        name: "Total earliness for each job (Σ(Ej))",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumEarliness",
+      },
+      {
+        name: "Total weighted earliness (Σ(wjEj))",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumEarliness",
+      },     
+      {
+        name: "Maximum lateness (Lmax)",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxLateness",
+      },
+      {
+        name: "Total lateness for each job (Σ(Lj))",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumLateness",
+      },
+      {
+        name: "Total weighted lateness (Σ(wjLj))",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumLateness",
+      },     
+      {
+        name: "Maximum tardiness (Tmax)",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maxTardiness",
       },
       {
         name: "Total tardiness (Σ(Tj))",
@@ -132,10 +156,6 @@ export const categories = [
       {
         name: "Total weighted tardiness (Σ(wjTj))",
         url: "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumTardiness",
-      },
-      {
-        name: "Total earliness for each job (Σ(Ej))",
-        url: "http://www.iop.rwth-aachen.de/PPC/1/1/sumEarliness",
       },
     ],
   },
