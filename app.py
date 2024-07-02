@@ -539,48 +539,64 @@ def find_matching_model(es, url1, url2, url3):
 
     query = {
         "query": {
-            "bool": {
-                "must":
-                    [{"match_phrase": {"http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": url1}},
-                     {"terms": {
-                         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword": url2}},
-                     {
-                         "script":
-                             {
-                                 "script":
-                                     {
-                                         "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword'].length == params.fixed_array_length",
-                                         "params": {
-                                             "fixed_array_length": len_2
-                                         }
-                                     }
-                             }
-                     },
-                     {
-                         "terms": {
-                             "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword": url3}},
-
-                     {
-                         "script":
-                             {
-                                 "script":
-                                     {
-                                         "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword'].length == params.fixed_array_length",
-                                         "params": {
-                                             "fixed_array_length": len_3
-                                             
-                                         }
-                                     }
-                             }
-                     }
-
-                     ]
-
+        "bool": {
+            "must": [
+            {
+                "match_phrase": {
+                "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": url1
+                }
+            },
+            {
+                "terms_set": {
+                "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword": {
+                    "terms": url2,
+                    "minimum_should_match_script": {
+                    "source": "params.num_terms",
+                    "params": {
+                        "num_terms": len_2
+                    }
+                    }
+                }
+                }
+            },
+            {
+                "script": {
+                "script": {
+                    "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword'].length == params.fixed_array_length",
+                    "params": {
+                    "fixed_array_length": len_2
+                    }
+                }
+                }
+            },
+            {
+                "terms_set": {
+                "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword": {
+                    "terms": url3,
+                    "minimum_should_match_script": {
+                    "source": "params.num_terms",
+                    "params": {
+                        "num_terms": len_3
+                    }
+                    }
+                }
+                }
+            },
+            {
+                "script": {
+                "script": {
+                    "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword'].length == params.fixed_array_length",
+                    "params": {
+                    "fixed_array_length": len_3
+                    }
+                }
+                }
             }
+            ]
         }
-
+        }
     }
-
+    
     print("Elasticsearch Query:", query)
 
     result = es.search(index= 'ppcinim_final', size=16, body=query)
