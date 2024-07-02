@@ -511,9 +511,6 @@ def update_index_name():
     print(f"After change in update function: {index_name}")
 
 def load_models(es):
-    import os
-    import json
-
 
     model_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), 'src/pages/decisionsupport/ModelsNew'))
     models = []
