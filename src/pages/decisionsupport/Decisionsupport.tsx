@@ -78,7 +78,7 @@ export const categories = [
       },
       {
         name: "Machine eligibility restrictions (Mj)",
-        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maschEligibility",
+        url: "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility",
       },
       {
         name: "Permutation (prmu)",
