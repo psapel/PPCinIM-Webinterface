@@ -1,5 +1,6 @@
 import { useNavigate, useLocation } from "react-router-dom";
 import "./Datasources.css";
+import { useState } from "react";
 
 const Datadetails = () => {
   const navigate = useNavigate();
@@ -22,6 +23,8 @@ const Datadetails = () => {
       console.log("Error deleting data source");
     }
   };
+  const [showDetails, setShowDetails] = useState(false);
+  const [showDetailsDuration, setShowDetailsDuration] = useState(false);
 
   console.log("Datasource Data:", datasourceData);
   console.log("Datasource Name:", datasourceName);
@@ -68,7 +71,7 @@ const Datadetails = () => {
             borderStyle: "solid",
             margin: "10px 0",
           }}
-        />        
+        />
         <p>
           <strong>URI of the Product:</strong>{" "}
           {
@@ -104,7 +107,7 @@ const Datadetails = () => {
             borderStyle: "solid",
             margin: "10px 0",
           }}
-        />        
+        />
         <p>
           <strong>Database URL:</strong>{" "}
           {
@@ -127,7 +130,7 @@ const Datadetails = () => {
               .value.find((el) => el.idShort === "InstanceName").value
           }
         </p>
-         <br></br>
+        <br></br>
         <br></br>
         <p>Data Points</p>
         <hr
@@ -141,27 +144,83 @@ const Datadetails = () => {
           }}
         />
         <p>
-          <strong>D1:</strong>{" "}
-          {
-            datasourceData.submodels
-              .find((el) => el.idShort === "SoftwareNameplate")
-              .submodelElements.find(
-                (el) => el.idShort === "SoftwareNameplateInstance"
-              )
-              .value.find((el) => el.idShort === "InstanceURL").value
-          }
+          <strong>
+            {
+              datasourceData.submodels
+                .find((el) => el.idShort === "DataPoints")
+                .submodelElements.find((el) => el.idShort === "mrp.production")
+                .value.find((el) => el.idShort === "jobName").value.keys[1]
+                .value
+            }
+          </strong>
+          <button
+            className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
+            onClick={() => setShowDetails(!showDetails)}
+          >
+            {showDetails ? "-" : "+"}
+          </button>{" "}
+          {showDetails && (
+            <div>
+              <strong>Identifier:</strong>{" "}
+              {
+                datasourceData.conceptDescriptions.find(
+                  (el) => el.idShort === "jobName"
+                ).id
+              }
+              <br></br>
+              <strong>Table:</strong>{" "}
+              {
+                datasourceData.submodels
+                  .find((el) => el.idShort === "DataPoints")
+                  .submodelElements.find(
+                    (el) => el.idShort === "mrp.production"
+                  )
+                  .value.find((el) => el.idShort === "jobName").value.keys[0]
+                  .value
+              }
+            </div>
+          )}
         </p>
+        <br></br>
         <p>
-          <strong>D2:</strong>{" "}
-          {
-            datasourceData.submodels
-              .find((el) => el.idShort === "SoftwareNameplate")
-              .submodelElements.find(
-                (el) => el.idShort === "SoftwareNameplateInstance"
-              )
-              .value.find((el) => el.idShort === "InstanceName").value
-          }
+          <strong>
+            {
+              datasourceData.submodels
+                .find((el) => el.idShort === "DataPoints")
+                .submodelElements.find((el) => el.idShort === "mrp.production")
+                .value.find((el) => el.idShort === "jobDuration").value.keys[1]
+                .value
+            }
+          </strong>
+          <button
+            className="btn btn-xs text-white bg-secondary hover:bg-primary ml-2"
+            onClick={() => setShowDetailsDuration(!showDetailsDuration)}
+          >
+            {showDetailsDuration ? "-" : "+"}
+          </button>{" "}
+          {showDetailsDuration && (
+            <div>
+              <strong>Identifier:</strong>{" "}
+              {
+                datasourceData.conceptDescriptions.find(
+                  (el) => el.idShort === "duration"
+                ).id
+              }
+              <br></br>
+              <strong>Table:</strong>{" "}
+              {
+                datasourceData.submodels
+                  .find((el) => el.idShort === "DataPoints")
+                  .submodelElements.find(
+                    (el) => el.idShort === "mrp.production"
+                  )
+                  .value.find((el) => el.idShort === "jobDuration").value
+                  .keys[0].value
+              }
+            </div>
+          )}
         </p>
+
         <br></br>
         <br></br>
         <p>User Credentials</p>
@@ -174,7 +233,7 @@ const Datadetails = () => {
             borderStyle: "solid",
             margin: "10px 0",
           }}
-        />       
+        />
         <p>
           <strong>Username:</strong>{" "}
           {
