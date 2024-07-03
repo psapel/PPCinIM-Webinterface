@@ -56,6 +56,19 @@ const Datadetails = () => {
         <p>
           <strong>Data Connector Type:</strong> {datasourceType}
         </p>
+        <br></br>
+        <br></br>
+        <p>Software Nameplate Type</p>
+        <hr
+          style={{
+            borderColor: "rgba(0, 0, 0, 0.2)",
+            borderWidth: 0.05,
+            height: 0.05,
+            width: "100%",
+            borderStyle: "solid",
+            margin: "10px 0",
+          }}
+        />        
         <p>
           <strong>URI of the Product:</strong>{" "}
           {
@@ -79,6 +92,19 @@ const Datadetails = () => {
               .text
           }
         </p>
+        <br></br>
+        <br></br>
+        <p>Software Nameplate Instance</p>
+        <hr
+          style={{
+            borderColor: "rgba(0, 0, 0, 0.2)",
+            borderWidth: 0.05,
+            height: 0.05,
+            width: "100%",
+            borderStyle: "solid",
+            margin: "10px 0",
+          }}
+        />        
         <p>
           <strong>Database URL:</strong>{" "}
           {
@@ -101,6 +127,54 @@ const Datadetails = () => {
               .value.find((el) => el.idShort === "InstanceName").value
           }
         </p>
+         <br></br>
+        <br></br>
+        <p>Data Points</p>
+        <hr
+          style={{
+            borderColor: "rgba(0, 0, 0, 0.2)",
+            borderWidth: 0.05,
+            height: 0.05,
+            width: "100%",
+            borderStyle: "solid",
+            margin: "10px 0",
+          }}
+        />
+        <p>
+          <strong>D1:</strong>{" "}
+          {
+            datasourceData.submodels
+              .find((el) => el.idShort === "SoftwareNameplate")
+              .submodelElements.find(
+                (el) => el.idShort === "SoftwareNameplateInstance"
+              )
+              .value.find((el) => el.idShort === "InstanceURL").value
+          }
+        </p>
+        <p>
+          <strong>D2:</strong>{" "}
+          {
+            datasourceData.submodels
+              .find((el) => el.idShort === "SoftwareNameplate")
+              .submodelElements.find(
+                (el) => el.idShort === "SoftwareNameplateInstance"
+              )
+              .value.find((el) => el.idShort === "InstanceName").value
+          }
+        </p>
+        <br></br>
+        <br></br>
+        <p>User Credentials</p>
+        <hr
+          style={{
+            borderColor: "rgba(0, 0, 0, 0.2)",
+            borderWidth: 0.05,
+            height: 0.05,
+            width: "100%",
+            borderStyle: "solid",
+            margin: "10px 0",
+          }}
+        />       
         <p>
           <strong>Username:</strong>{" "}
           {
