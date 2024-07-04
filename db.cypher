@@ -187,9 +187,6 @@ MERGE (o)-[:isProcesseBy]->(td)
 // and link them to an 'assetType' node if they share the same property.
 
 
-
-
-
 // Inquiry_1
 
 CALL apoc.load.json('http://localhost:5001/shells/aHR0cHM6Ly9pb3Aucnd0aC1hYWNoZW4uZGUvSU0vYWFzLzEvMS9pbnF1aXJ5XzE?format=json') YIELD value
