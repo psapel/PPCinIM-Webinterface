@@ -1,0 +1,12 @@
+{
+    "URIOfTheProduct": "https://iop.rwth-aachen.de/PPC/1/1/monkey",
+    "InstanceURL": "https://edu-monkey.com",
+    "InstanceName": "monkey-edu",
+    "Username":"test",
+    "Password":"test",
+    "data": {
+        "0173-1#02-XXX999#HIO": "name_monkey",
+        "0173-1#02-ABF201#002": "monkey_duration_expected" 
+    },
+    "Connector_file": "monkey_connect"
+}

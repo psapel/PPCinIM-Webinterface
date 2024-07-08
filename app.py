@@ -15,11 +15,12 @@ from concurrent.futures import ThreadPoolExecutor
 import random
 import string
 import time
+import importlib
 
 
 from gui_setup.db_login import get_odoo_credentials
 from gui_setup.translator_new import translate_identifiers
-from gui_setup.connector import connect_and_fetch_data
+#from pages.datasources.jsonFiles.connector.odoo_connect import connect_and_fetch_data
 from gui_setup.mappings import id_to_name_mapping, id_to_duration_mapping
 from gui_setup.preprocessing import extract_data
 from gui_setup.model import optimization_model
@@ -647,24 +648,150 @@ def index():
 
 @app.route('/api/underlying_asset', methods=['POST'])
 def get_asset():
+    
+    # Function searches all JSON (=AAS) files of data sources within a specific directory by matching the IRI from the model signature with the IRI from the JSONs.
+    # This is an exemplary  result: {'https://iop.rwth-aachen.de/PPC/1/1/odoo': {'0173-1#02-ABF201#002': 'production_duration_expected', '0173-1#02-XXX999#999': 'name'}, 'https://iop.rwth-aachen.de/PPC/1/1/other_db': {'0173-1#02-XXX999#HIO': 'name_whatever'}}   
+    def translate_values(directory, source_location_dict):
+        results = {}
+        
+        # Ensure the directory exists
+        if not os.path.isdir(directory):
+            raise FileNotFoundError(f"The directory '{directory}' does not exist.")
+        
+        # Iterate through all files in the directory
+        for filename in os.listdir(directory):
+            # Check if the file has a .json extension
+            if filename.endswith('.json'):
+                file_path = os.path.join(directory, filename)
+                
+                try:
+                    # Open and read the JSON file
+                    with open(file_path, 'r', encoding='utf-8') as file:
+                        data = json.load(file)
+                        
+                        # Check if the 'URIOfTheProduct' matches any key in the lookup dictionary
+                        uri_of_product = data.get('URIOfTheProduct')
+                        if uri_of_product in source_location_dict:
+                            # Initialize results for the current URI if not already present. Fetches the login information for the database.
+                            # Note: We assume that every source system have the same pattern regarding instance name etc. Due to demonstration purposes, we do not use a dynamic function
+                            if uri_of_product not in results:
+                                results[uri_of_product] = {
+                                "InstanceURL": data.get("InstanceURL"),
+                                "InstanceName": data.get("InstanceName"),
+                                "Username": data.get("Username"),
+                                "Password": data.get("Password"),
+                                "Connector_file": data.get("Connector_file"),
+                                'Translations': []
+                            }
+
+                            # Get the list of keys to translate from the dictionary
+                            keys_to_translate = source_location_dict[uri_of_product]
+                            for key in keys_to_translate:
+                                # Translate the key using the 'data' section of the JSON file
+                                translated_value = data['data'].get(key)
+                                if translated_value:
+                                    results[uri_of_product]['Translations'].append(translated_value)
+
+                except json.JSONDecodeError as e:
+                    print(f"Error decoding JSON from file '{filename}': {e}")
+                except Exception as e:
+                    print(f"An error occurred with file '{filename}': {e}")
+        
+        return results
+        
+
+    # Function established connection to source system via API provided by the source systems vendor. Dynamic consideration of API-file, specified in the JSON (=AAS) of the data connector 
+    def run_connect_and_fetch_data(source_system, db_prop_names):
+        # Get the file name and function parameters from the user
+        module_name = source_system
+        function_name = "connect_and_fetch_data"
+        param1 = results[source_location]['InstanceURL']
+        param2 = results[source_location]['InstanceName']
+        param3 = results[source_location]['Username']
+        param4 = results[source_location]['Password']
+        
+        # Construct the module path
+        module_path = f"src.pages.datasources.jsonFiles.connector.{module_name}"
+        
+        try:
+            # Dynamically import the module
+            module = importlib.import_module(module_path)
+            
+            # Get the function from the module
+            func = getattr(module, function_name)
+            
+            # Call the function with parameters
+            fetch_data = func(param1, param2, param3, param4, db_prop_names)
+            print(f"Function result: {fetch_data}")
+            
+        except ModuleNotFoundError:
+            print(f"Module '{module_path}' does not exist.")
+        except AttributeError:
+            print(f"Function '{function_name}' does not exist in the module '{module_path}'.")
+
+        return fetch_data
+    
+    
     data = request.json
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
     source = data.get('source')
-    print("source:", source)
+
+    # From the selected mode: Search the model signature, fetch all IRI source locations, eliminate duplicates, and assign the IRDIs to the source location.
+    # Example: https://iop.rwth-aachen.de/PPC/1/1/odoo': ['0173-1#02-ABF201#002', '0173-1#02-XXX999#999']
+
+    source_location_dict = {}
+
+    for key, value in source["inputData"].items():
+        source_location = value["source_location"]
+        id_value = value["id"]
+        if source_location in source_location_dict:
+            source_location_dict[source_location].append(id_value)
+        else:
+            source_location_dict[source_location] = [id_value]
+
+    # Separate the IRI of source systems to a single list
+    source_location_dict_list = []
+
+    for source_location in source_location_dict:
+        source_location_dict_list.append(source_location)
+    
+    #print("source:", source)
+
     if not source:
         return jsonify({"error": "No 'source' key in JSON data"}), 400
-    url, db, username, password = get_odoo_credentials()
-    # Translate identifiers
-    db_prop_names = translate_identifiers(source, id_to_name_mapping, id_to_duration_mapping)
-    # Connect to odoo and fetch data
-    db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
+    
+    # Path where the JSON (=AAS) of the source systems are stored
+    # WARNING: Absolute Path !!!
+    directory = r"C:\PPCinIM-Demonstrator\DS-Modelcatalog\PPCinIM-Webinterface\src\pages\datasources\jsonFiles\db_login"
+
+    results = translate_values(directory, source_location_dict)
+    #print("RESULTS: ",results)
+    
+    '''
+    Print results for checking purposes - to be deleted
+    for uri, translations in results.items():
+        print(f"URI: {uri}")
+        for key, value in translations.items():
+            print(f"  {key} -> {value}")
+    '''
+
+    # Seperate the translated property names as a preperation for the fetching process 
+    db_prop_names = []
+
+    for key, value in results.items():
+        translations = value.get('Translations', [])
+        db_prop_names.extend(translations)
+    
+    for source_location in source_location_dict_list:
+        testvalue = run_connect_and_fetch_data(results[source_location]['Connector_file'], results[source_location]['Translations'])
+  
     # Extract 'name' and 'production_duration_expected'
-    names, durations = extract_data(db_values) 
+    names, durations = extract_data(testvalue)
     # Save the result in JSON format  
     return jsonify({"names": names, "durations": durations})
 
-    
+
 @app.route('/api/execution', methods=['POST'])
 def get_execution():
     # Extract name and duration from the json
