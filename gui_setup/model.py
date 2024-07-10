@@ -40,6 +40,7 @@ def optimization_model(durations):
             if dispresult == "y" and op.LpStatus[result] == 'Optimal':
                 print("Objective --- \n", op.value(m.objective))
                 print("Decision --- \n", [(variables.name, variables.varValue) for variables in m.variables() if variables.varValue != 0])
+
                 
              # Return relevant information
     if op.LpStatus[result] == 'Optimal':

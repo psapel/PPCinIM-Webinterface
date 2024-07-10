@@ -16,8 +16,9 @@ import random
 import string
 import time
 import importlib
+import glob
 
-
+from src.pages.datasources.Fetch_translator_data import fetch_URIOfTheProduct, fetch_login_data, translate_properties
 from gui_setup.db_login import get_odoo_credentials
 from gui_setup.translator_new import translate_identifiers
 #from pages.datasources.jsonFiles.connector.odoo_connect import connect_and_fetch_data
@@ -651,6 +652,7 @@ def get_asset():
     
     # Function searches all JSON (=AAS) files of data sources within a specific directory by matching the IRI from the model signature with the IRI from the JSONs.
     # This is an exemplary  result: {'https://iop.rwth-aachen.de/PPC/1/1/odoo': {'0173-1#02-ABF201#002': 'production_duration_expected', '0173-1#02-XXX999#999': 'name'}, 'https://iop.rwth-aachen.de/PPC/1/1/other_db': {'0173-1#02-XXX999#HIO': 'name_whatever'}}   
+    
     def translate_values(directory, source_location_dict):
         results = {}
         
@@ -670,35 +672,34 @@ def get_asset():
                         data = json.load(file)
                         
                         # Check if the 'URIOfTheProduct' matches any key in the lookup dictionary
-                        uri_of_product = data.get('URIOfTheProduct')
+                        #uri_of_product = data.get('URIOfTheProduct')
+                        uri_of_product = fetch_URIOfTheProduct(data)
                         if uri_of_product in source_location_dict:
                             # Initialize results for the current URI if not already present. Fetches the login information for the database.
                             # Note: We assume that every source system have the same pattern regarding instance name etc. Due to demonstration purposes, we do not use a dynamic function
+                            
+                            instance_url, instance_name, username, password, connector_file = fetch_login_data(data)
+
                             if uri_of_product not in results:
                                 results[uri_of_product] = {
-                                "InstanceURL": data.get("InstanceURL"),
-                                "InstanceName": data.get("InstanceName"),
-                                "Username": data.get("Username"),
-                                "Password": data.get("Password"),
-                                "Connector_file": data.get("Connector_file"),
-                                'Translations': []
-                            }
-
-                            # Get the list of keys to translate from the dictionary
-                            keys_to_translate = source_location_dict[uri_of_product]
-                            for key in keys_to_translate:
-                                # Translate the key using the 'data' section of the JSON file
-                                translated_value = data['data'].get(key)
-                                if translated_value:
-                                    results[uri_of_product]['Translations'].append(translated_value)
-
+                                    "InstanceURL": instance_url,
+                                    "InstanceName": instance_name,
+                                    "Username": username,
+                                    "Password": password,
+                                    "ConnectorFile": connector_file,
+                                    'Translations': []
+                                }
+                            
+                            translations = translate_properties(data, source_location_dict[uri_of_product])
+                            results[uri_of_product]['Translations'].extend(translations)
+                                                        
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON from file '{filename}': {e}")
                 except Exception as e:
                     print(f"An error occurred with file '{filename}': {e}")
         
         return results
-        
+      
 
     # Function established connection to source system via API provided by the source systems vendor. Dynamic consideration of API-file, specified in the JSON (=AAS) of the data connector 
     def run_connect_and_fetch_data(source_system, db_prop_names):
@@ -737,7 +738,7 @@ def get_asset():
         return jsonify({"error": "No JSON data provided"}), 400
     source = data.get('source')
 
-    # From the selected mode: Search the model signature, fetch all IRI source locations, eliminate duplicates, and assign the IRDIs to the source location.
+    # From the selected models: Search the model signature, fetch all IRI source locations, eliminate duplicates, and assign the IRDIs to the source location.
     # Example: https://iop.rwth-aachen.de/PPC/1/1/odoo': ['0173-1#02-ABF201#002', '0173-1#02-XXX999#999']
 
     source_location_dict = {}
@@ -764,12 +765,16 @@ def get_asset():
     # Path where the JSON (=AAS) of the source systems are stored
     # WARNING: Absolute Path !!!
     directory = r"C:\PPCinIM-Demonstrator\DS-Modelcatalog\PPCinIM-Webinterface\src\pages\datasources\jsonFiles\db_login"
-
-    results = translate_values(directory, source_location_dict)
-    #print("RESULTS: ",results)
     
+    results = translate_values(directory, source_location_dict)
+    # Extract the relevant section of the JSON data
+
+    #print("RESULTS: ",results)
+    #print("SL DICT  ",source_location_dict)
+    #print("SL DICHT LIST  ", source_location_dict_list)
+    
+    #Print results for checking purposes - to be deleted
     '''
-    Print results for checking purposes - to be deleted
     for uri, translations in results.items():
         print(f"URI: {uri}")
         for key, value in translations.items():
@@ -782,13 +787,28 @@ def get_asset():
     for key, value in results.items():
         translations = value.get('Translations', [])
         db_prop_names.extend(translations)
-    
+
+    combined_results = []
+
     for source_location in source_location_dict_list:
-        testvalue = run_connect_and_fetch_data(results[source_location]['Connector_file'], results[source_location]['Translations'])
-  
-    # Extract 'name' and 'production_duration_expected'
-    names, durations = extract_data(testvalue)
-    # Save the result in JSON format  
+        translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], results[source_location]['Translations'])
+        combined_results += translated_data
+
+    # Initialize dictionary to hold lists for each property name
+    extracted_values = {prop_name: [] for prop_name in db_prop_names}
+
+    # Extract values
+    for array in combined_results:
+        for entry in array:
+            for prop_name in db_prop_names:
+                if prop_name in entry:
+                    extracted_values[prop_name].append(entry[prop_name])
+    
+    # still hardcoded since the jsonify handover not yet working 
+    names = extracted_values['name']
+    durations = extracted_values['production_duration_expected']
+    
+    # Save the result in JSON format 
     return jsonify({"names": names, "durations": durations})
 
 
@@ -796,11 +816,21 @@ def get_asset():
 def get_execution():
     # Extract name and duration from the json
     data = request.get_json()
+    # Here Hardcoded values are okay since this function directly is assigned to a specific use case, i.e., production scheduling, where the required variables has to be specified.
     names = data['names']
     durations = data['durations']
-    # Optimization model
+    # Get preprocessing(s) from model signature if applicable
+    # Model Signature: "Preprocessing"
+    # Expected value from test2.json: preprocessing_for_test2 
+
+    # Get model from model signature
+    # Model Signature: "ModelFile"
+    # Expected value from test2.json: name_of_the_model_test2
     result = optimization_model(durations)
-    # Optimal job order
+
+    # Get postprocessing(s) from model signature if applicable
+    # Model Signature: "Postprocessing" 
+    # Expected value from test2.json: postprocessing_for_test2
     post_result = process_results(result, names)
     return jsonify(post_result)
 
@@ -808,8 +838,6 @@ def get_execution():
 def get_execution_logs(model_name):
     logs = total_execution(model_name)
     return jsonify(logs)
-
-
 
 def extract_idShort(data):
     return [shell['idShort'] for shell in data['assetAdministrationShells']]

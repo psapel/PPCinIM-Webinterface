@@ -6,8 +6,7 @@
     "Password":"ikv123!",
     "data": {
         "0173-1#02-XXX999#999": "name",
-        "0173-1#02-XXX999#HIO": "anything",
-        "0173-1#02-ABF201#002": "production_duration_expected"
+        "0173-1#02-XXX999#HIO": "anything"
     },
     "Connector_file": "odoo_connect"
 }

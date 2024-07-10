@@ -1,0 +1,605 @@
+{
+  "assetAdministrationShells": [
+    {
+      "idShort": "odooDataTranslator",
+      "displayName": [
+        {
+          "language": "en",
+          "text": "odoo ERP Data Translator"
+        }
+      ],
+      "description": [],
+      "administration": {
+        "version": "1",
+        "revision": "1"
+      },
+      "id": "https://iop.rwth-aachen.de/PPC/asset/1/1/odooDataTranslator",
+      "assetInformation": {
+        "assetKind": "Instance",
+        "globalAssetId": "https://iop.rwth-aachen.de/PPC/asset/1/1/odooDataTranslator",
+        "assetType": "odoo",
+        "defaultThumbnail": {
+          "path": ""
+        }
+      },
+      "submodels": [
+        {
+          "type": "ModelReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://admin-shell.io/idta/SoftwareNameplate/1/0/odoo"
+            }
+          ]
+        },
+        {
+          "type": "ExternalReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/dataPoints/odoo"
+            }
+          ]
+        },
+        {
+          "type": "ExternalReference",
+          "keys": [
+            {
+              "type": "Submodel",
+              "value": "https://iop.rwth-aachen.de/PPC/sm/1/1/odoo"
+            }
+          ]
+        }
+      ],
+      "modelType": "AssetAdministrationShell"
+    }
+  ],
+  "submodels": [
+    {
+      "idShort": "DataPoints",
+      "displayName": [
+        {
+          "language": "en",
+          "text": "Data Points"
+        }
+      ],
+      "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/dataPoints/odoo",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "mrp.production",
+          "value": [
+            {
+              "idShort": "jobName",
+              "displayName": [
+                {
+                  "language": "en",
+                  "text": "Job name"
+                }
+              ],
+              "semanticId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-XXX999#999"
+                  }
+                ]
+              },
+              "value": {
+                "type": "ExternalReference",
+                "referredSemanticId": {
+                  "type": "ModelReference",
+                  "keys": []
+                },
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "mrp.production"
+                  },
+                  {
+                    "type": "Property",
+                    "value": "name"
+                  }
+                ]
+              },
+              "modelType": "ReferenceElement"
+            },
+            {
+              "idShort": "anything",
+              "displayName": [
+                {
+                  "language": "en",
+                  "text": "Job duration"
+                }
+              ],
+              "semanticId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-XXX999#HIO"
+                  }
+                ]
+              },
+              "value": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "mrp.production"
+                  },
+                  {
+                    "type": "GlobalReference",
+                    "value": "anything"
+                  }
+                ]
+              },
+              "modelType": "ReferenceElement"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "UserAdministration",
+      "id": "https://iop.rwth-aachen.de/PPC/sm/1/1/odoo",
+      "kind": "Instance",
+      "submodelElements": [
+        {
+          "idShort": "Username",
+          "displayName": [
+            {
+              "language": "en",
+              "text": "Username"
+            }
+          ],
+          "valueType": "xs:string",
+          "value": "patrick.sapel@ikv.rwth-aachen.de",
+          "modelType": "Property"
+        },
+        {
+          "idShort": "Password",
+          "displayName": [
+            {
+              "language": "en",
+              "text": "Password"
+            }
+          ],
+          "valueType": "xs:string",
+          "value": "ikv123!",
+          "modelType": "Property"
+        }
+      ],
+      "modelType": "Submodel"
+    },
+    {
+      "idShort": "SoftwareNameplate",
+      "description": [
+        {
+          "language": "en",
+          "text": "Contains the nameplate information attached to the software product"
+        }
+      ],
+      "administration": {
+        "version": "0",
+        "revision": "15"
+      },
+      "id": "https://admin-shell.io/idta/SoftwareNameplate/1/0/odoo",
+      "kind": "Instance",
+      "semanticId": {
+        "type": "ExternalReference",
+        "keys": []
+      },
+      "qualifiers": [
+        {
+          "type": "FormTitle",
+          "valueType": "xs:string",
+          "value": "A template for a software nameplate submodel, v0.15"
+        },
+        {
+          "type": "FormInfo",
+          "valueType": "xs:string",
+          "value": "This form is based on Version 0.15"
+        },
+        {
+          "type": "FormUrl",
+          "valueType": "xs:string",
+          "value": "https://admin-shell.io/idta/SoftwareNameplate_15"
+        }
+      ],
+      "submodelElements": [
+        {
+          "idShort": "SoftwareNameplateType",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/SoftwareNameplate/1/0/SoftwareNameplate/SoftwareNameplateType"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "valueType": "xs:string",
+              "value": "ZeroToOne"
+            }
+          ],
+          "embeddedDataSpecifications": [],
+          "value": [
+            {
+              "category": "CONSTANT",
+              "idShort": "URIOfTheProduct",
+              "semanticId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAY811#001"
+                  }
+                ]
+              },
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "valueType": "xs:string",
+                  "value": "One"
+                }
+              ],
+              "embeddedDataSpecifications": [],
+              "valueType": "xs:string",
+              "value": "https://iop.rwth-aachen.de/PPC/1/1/odoo",
+              "modelType": "Property"
+            },
+            {
+              "category": "PARAMETER",
+              "idShort": "ManufacturerName",
+              "semanticId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "0173-1#02-AAO677#002"
+                  }
+                ]
+              },
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "valueType": "xs:string",
+                  "value": "One"
+                }
+              ],
+              "embeddedDataSpecifications": [],
+              "value": [
+                {
+                  "language": "en",
+                  "text": "odoo"
+                }
+              ],
+              "modelType": "MultiLanguageProperty"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        },
+        {
+          "idShort": "SoftwareNameplateInstance",
+          "semanticId": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "https://admin-shell.io/idta/SoftwareNameplate/1/0/SoftwareNameplate/SoftwareNameplateInstance"
+              }
+            ]
+          },
+          "qualifiers": [
+            {
+              "type": "Multiplicity",
+              "valueType": "xs:string",
+              "value": "ZeroToOne"
+            }
+          ],
+          "embeddedDataSpecifications": [],
+          "value": [
+            {
+              "idShort": "InstanceURL",
+              "displayName": [
+                {
+                  "language": "en",
+                  "text": "Instance URL"
+                }
+              ],
+              "valueType": "xs:string",
+              "value": "https://edu-ikvds-rwth-aachen.odoo.com",
+              "modelType": "Property"
+            },
+            {
+              "category": "PARAMETER",
+              "idShort": "InstanceName",
+              "description": [
+                {
+                  "language": "de",
+                  "text": "Der Name der konkreten Instanz"
+                }
+              ],
+              "semanticId": {
+                "type": "ExternalReference",
+                "keys": [
+                  {
+                    "type": "GlobalReference",
+                    "value": "https://admin-shell.io/idta/SoftwareNameplate/1/0/SoftwareNameplate/SoftwareNameplateInstance/InstanceName"
+                  }
+                ]
+              },
+              "qualifiers": [
+                {
+                  "type": "Multiplicity",
+                  "valueType": "xs:string",
+                  "value": "ZeroToOne"
+                }
+              ],
+              "embeddedDataSpecifications": [],
+              "valueType": "xs:string",
+              "value": "edu-ikvds-rwth-aachen",
+              "valueId": {
+                "type": "ExternalReference",
+                "keys": []
+              },
+              "modelType": "Property"
+            },
+            {
+              "idShort": "ConnectorFile",
+              "displayName": [],
+              "value": "odoo_connect",
+              "contentType": "text/plain",
+              "modelType": "File"
+            }
+          ],
+          "modelType": "SubmodelElementCollection"
+        }
+      ],
+      "modelType": "Submodel"
+    }
+  ],
+  "conceptDescriptions": [
+    {
+      "idShort": "SoftwareNameplate_Type",
+      "description": [
+        {
+          "language": "en",
+          "text": "This collection contains the type related information "
+        }
+      ],
+      "id": "https://admin-shell.io/idta/SoftwareNameplate/1/0/SoftwareNameplate/SoftwareNameplateType",
+      "modelType": "ConceptDescription"
+    },
+    {
+      "idShort": "URIOfTheProduct",
+      "id": "0173-1#02-AAY811#001",
+      "embeddedDataSpecifications": [
+        {
+          "dataSpecification": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0"
+              }
+            ]
+          },
+          "dataSpecificationContent": {
+            "preferredName": [
+              {
+                "language": "en",
+                "text": ""
+              }
+            ],
+            "shortName": [
+              {
+                "language": "en",
+                "text": ""
+              }
+            ],
+            "definition": [
+              {
+                "language": "en",
+                "text": "unique global identification of the product using an universal resource identifier (URI)"
+              }
+            ],
+            "value": "",
+            "modelType": "DataSpecificationIec61360"
+          }
+        }
+      ],
+      "modelType": "ConceptDescription"
+    },
+    {
+      "idShort": "ManufacturerName",
+      "id": "0173-1#02-AAO677#002",
+      "embeddedDataSpecifications": [
+        {
+          "dataSpecification": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0"
+              }
+            ]
+          },
+          "dataSpecificationContent": {
+            "preferredName": [
+              {
+                "language": "en",
+                "text": ""
+              }
+            ],
+            "shortName": [
+              {
+                "language": "en",
+                "text": ""
+              }
+            ],
+            "definition": [
+              {
+                "language": "en",
+                "text": "legally valid designation of the natural or judicial person which is directly responsible for the design, production, packaging and labeling of a product in respect to its being brought into circulation"
+              }
+            ],
+            "value": "",
+            "modelType": "DataSpecificationIec61360"
+          }
+        }
+      ],
+      "modelType": "ConceptDescription"
+    },
+    {
+      "idShort": "SoftwareNameplate_Instance",
+      "description": [
+        {
+          "language": "en",
+          "text": "This collection contains the type related information "
+        }
+      ],
+      "id": "https://admin-shell.io/idta/SoftwareNameplate/1/0/SoftwareNameplate/SoftwareNameplateInstance",
+      "modelType": "ConceptDescription"
+    },
+    {
+      "idShort": "instanceName",
+      "administration": {
+        "version": "1",
+        "revision": "0"
+      },
+      "id": "https://admin-shell.io/idta/SoftwareNameplate/1/0/SoftwareNameplate/SoftwareNameplateInstance/InstanceName",
+      "embeddedDataSpecifications": [
+        {
+          "dataSpecification": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0"
+              }
+            ]
+          },
+          "dataSpecificationContent": {
+            "preferredName": [
+              {
+                "language": "en",
+                "text": "instance name"
+              },
+              {
+                "language": "de",
+                "text": "Instanzname"
+              }
+            ],
+            "shortName": [
+              {
+                "language": "en",
+                "text": "instance name"
+              },
+              {
+                "language": "de",
+                "text": "Instanzname"
+              }
+            ],
+            "dataType": "STRING",
+            "definition": [
+              {
+                "language": "en",
+                "text": "The name of the software instance."
+              },
+              {
+                "language": "de",
+                "text": "Instanzname"
+              }
+            ],
+            "value": "",
+            "modelType": "DataSpecificationIec61360"
+          }
+        }
+      ],
+      "modelType": "ConceptDescription"
+    },
+    {
+      "idShort": "jobName",
+      "displayName": [
+        {
+          "language": "en",
+          "text": "Job Name"
+        }
+      ],
+      "id": "0173-1#02-XXX999#999",
+      "embeddedDataSpecifications": [
+        {
+          "dataSpecification": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0"
+              }
+            ]
+          },
+          "dataSpecificationContent": {
+            "preferredName": [
+              {
+                "language": "en?",
+                "text": ""
+              }
+            ],
+            "dataType": "STRING",
+            "modelType": "DataSpecificationIec61360"
+          }
+        }
+      ],
+      "modelType": "ConceptDescription"
+    },
+    {
+      "idShort": "duration",
+      "description": [
+        {
+          "language": "en",
+          "text": "range of a time interval"
+        }
+      ],
+      "id": "0173-1#02-ABF201#002",
+      "embeddedDataSpecifications": [
+        {
+          "dataSpecification": {
+            "type": "ExternalReference",
+            "keys": [
+              {
+                "type": "GlobalReference",
+                "value": "http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0"
+              }
+            ]
+          },
+          "dataSpecificationContent": {
+            "preferredName": [
+              {
+                "language": "en?",
+                "text": "duration"
+              }
+            ],
+            "unit": "s",
+            "dataType": "TIME",
+            "definition": [
+              {
+                "language": "en",
+                "text": "range of a time interval"
+              }
+            ],
+            "modelType": "DataSpecificationIec61360"
+          }
+        }
+      ],
+      "modelType": "ConceptDescription"
+    }
+  ]
+}

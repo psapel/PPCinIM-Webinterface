@@ -43,5 +43,5 @@ def connect_and_fetch_data(url, db, username, password, db_prop_names):
                                    table, 'read', [record_id], {'fields': fields_to_read})
         data.append(record)
     
-    print(f"Fetched data: {data}")
+    print(f"Fetched data from odoo: {data}")
     return data

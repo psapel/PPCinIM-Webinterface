@@ -18,20 +18,17 @@
                 "id": "0173-1#02-XXX999#999",
                 "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
             },
-            "Test": {
-                "id": "0173-1#02-XXX999#HIO",
-                "source_location": "https://iop.rwth-aachen.de/PPC/1/1/monkey"
-            },
             "jobDuration": {    
                 "id": "0173-1#02-ABF201#002",
-                "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
+                "source_location":"https://iop.rwth-aachen.de/PPC/1/1/monkey"
             }
         },
+        "ModelFile": "name_of_the_model_test2",
         "Preprocessing": [
-            "preprocessing.py"
+            "preprocessing_for_test2"
         ],
         "Postprocessing": [
-            "postprocessing.py"
+            "postprocessing"
         ],
         "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
     }
