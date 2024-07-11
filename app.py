@@ -737,7 +737,12 @@ def get_asset():
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
     source = data.get('source')
-
+    
+    if not source:
+        return jsonify({"error": "No 'source' key in JSON data"}), 400
+    
+    print("source xxxxxxxxxxxx:", source)
+    
     # From the selected models: Search the model signature, fetch all IRI source locations, eliminate duplicates, and assign the IRDIs to the source location.
     # Example: https://iop.rwth-aachen.de/PPC/1/1/odoo': ['0173-1#02-ABF201#002', '0173-1#02-XXX999#999']
 
@@ -756,12 +761,8 @@ def get_asset():
 
     for source_location in source_location_dict:
         source_location_dict_list.append(source_location)
-    
-    #print("source:", source)
 
-    if not source:
-        return jsonify({"error": "No 'source' key in JSON data"}), 400
-    
+
     # Path where the JSON (=AAS) of the source systems are stored
     # WARNING: Absolute Path !!!
     directory = r"C:\PPCinIM-Demonstrator\DS-Modelcatalog\PPCinIM-Webinterface\src\pages\datasources\jsonFiles\db_login"
@@ -808,29 +809,57 @@ def get_asset():
     names = extracted_values['name']
     durations = extracted_values['production_duration_expected']
     
+    #'ModelFile': 'name_of_the_model_test2', 'Postprocessing': ['postprocessing'], 'Preprocessing':
+    print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
+
+    preprocessing = source["Preprocessing"]
+    modelfile = source["ModelFile"]
+    postprocessing = source["Postprocessing"]
+
     # Save the result in JSON format 
-    return jsonify({"names": names, "durations": durations})
+
+    response_data = {
+        "names": names,
+        "durations": durations,
+        "preprocessing": preprocessing,
+        "modelfile" : modelfile,
+        "postprocessing" : postprocessing
+    }
+
+    #print(response_data)
+    return jsonify(response_data)
 
 
 @app.route('/api/execution', methods=['POST'])
 def get_execution():
     # Extract name and duration from the json
+    
     data = request.get_json()
+    print("das ist data:     ", data)
+    
     # Here Hardcoded values are okay since this function directly is assigned to a specific use case, i.e., production scheduling, where the required variables has to be specified.
     names = data['names']
     durations = data['durations']
-    # Get preprocessing(s) from model signature if applicable
+    #preprocess = data['preprocessing']
+    #modelfile = data['modelfile']
+    #postprocess = data['postprocessing']
+    #print(names)
+    #print(preprocess)
+
+        # Get preprocessing(s) from model signature if applicable
     # Model Signature: "Preprocessing"
     # Expected value from test2.json: preprocessing_for_test2 
 
     # Get model from model signature
     # Model Signature: "ModelFile"
     # Expected value from test2.json: name_of_the_model_test2
+    
     result = optimization_model(durations)
 
     # Get postprocessing(s) from model signature if applicable
     # Model Signature: "Postprocessing" 
     # Expected value from test2.json: postprocessing_for_test2
+   
     post_result = process_results(result, names)
     return jsonify(post_result)
 
