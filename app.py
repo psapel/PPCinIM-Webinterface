@@ -764,8 +764,7 @@ def get_asset():
 
 
     # Path where the JSON (=AAS) of the source systems are stored
-    # WARNING: Absolute Path !!!
-    directory = r"C:\PPCinIM-Demonstrator\DS-Modelcatalog\PPCinIM-Webinterface\src\pages\datasources\jsonFiles\db_login"
+    directory = os.path.abspath(os.path.join(os.path.dirname(__file__),  r'src\pages\datasources\jsonFiles\db_login'))
     
     results = translate_values(directory, source_location_dict)
     # Extract the relevant section of the JSON data
