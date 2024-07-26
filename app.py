@@ -825,7 +825,7 @@ def get_asset():
         "postprocessing" : postprocessing
     }
 
-    #print(response_data)
+    print('dataaaaaaaaaaaaaaaaa', response_data)
     return jsonify(response_data)
 
 

@@ -7,6 +7,7 @@ function FilteredModel() {
   const { filteredModels } = useLocation().state;
   const [isChecked, setIsChecked] = useState({});
   const [tableData, setTableData] = useState([]);
+  const [data, setData] = useState([]);
 
   const navigate = useNavigate();
 
@@ -43,6 +44,8 @@ function FilteredModel() {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
+            console.log(data);
+            setData(data);
             setTableData((prevData) => [
               ...prevData,
               { names: data.names, durations: data.durations },
@@ -187,7 +190,7 @@ function FilteredModel() {
             className="btn text-white bg-secondary hover:bg-primary rounded"
             onClick={() => {
               navigate("/execution-model", {
-                state: { isChecked, tableData },
+                state: { isChecked, tableData, data },
               });
             }}
           >

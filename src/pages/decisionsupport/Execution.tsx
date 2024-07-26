@@ -8,6 +8,7 @@ const Execution = () => {
 
   const location = useLocation();
   const tableData = location.state.tableData;
+  const data = location.state.data;
   const { isChecked } = location.state;
   const [showDetails, setShowDetails] = useState(false);
 
@@ -66,6 +67,7 @@ const Execution = () => {
 
   console.log("isChecked", isChecked);
   console.log(tableData);
+  console.log("needed data", data);
   console.log("executionData", executionData);
 
   return (
