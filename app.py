@@ -839,9 +839,9 @@ def get_execution():
     # Here Hardcoded values are okay since this function directly is assigned to a specific use case, i.e., production scheduling, where the required variables has to be specified.
     names = data['names']
     durations = data['durations']
-    #preprocess = data['preprocessing']
-    #modelfile = data['modelfile']
-    #postprocess = data['postprocessing']
+    # preprocess = data['preprocessing']
+    # modelfile = data['modelfile']
+    # postprocess = data['postprocessing']
     #print(names)
     #print(preprocess)
 

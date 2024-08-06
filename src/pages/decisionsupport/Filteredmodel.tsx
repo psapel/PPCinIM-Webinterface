@@ -21,6 +21,7 @@ function FilteredModel() {
   useEffect(() => {
     const fetchData = async () => {
       setTableData([]); // Clear the table data before fetching new data
+      setData([]); // Clear the data array before fetching new data
 
       for (const modelName of Object.keys(isChecked)) {
         if (isChecked[modelName]) {
@@ -43,12 +44,16 @@ function FilteredModel() {
             if (!response.ok) {
               throw new Error(`HTTP error! status: ${response.status}`);
             }
-            const data = await response.json();
-            console.log(data);
-            setData(data);
-            setTableData((prevData) => [
-              ...prevData,
-              { names: data.names, durations: data.durations },
+            const fetchedData = await response.json();
+            console.log(fetchedData);
+
+            // Update the data state with the new fetched data
+            setData((prevData) => [...prevData, fetchedData]);
+
+            // Update the table data with the relevant information
+            setTableData((prevTableData) => [
+              ...prevTableData,
+              { names: fetchedData.names, durations: fetchedData.durations },
             ]);
           } catch (error) {
             console.error("Error fetching data:", error);
@@ -62,6 +67,7 @@ function FilteredModel() {
 
   useEffect(() => {
     console.log(tableData);
+    console.log("data:", data);
   }, [tableData]);
 
   return (

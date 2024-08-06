@@ -34,7 +34,7 @@ const Execution = () => {
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify(tableData[0]),
+              body: JSON.stringify(data[0]),
             }
           );
           if (!executionResponse.ok) {
@@ -54,7 +54,7 @@ const Execution = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          setExecutionLogsData(data);
+          setExecutionLogsData(data[0]);
         } catch (error) {
           console.error("Error fetching execution logs data:", error);
         }
