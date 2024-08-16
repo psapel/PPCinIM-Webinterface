@@ -1,15 +1,15 @@
 {
-    "_id": "47fb45a4-ca2d-4180-89ee-072771a14874",
-    "name": "test_sapel",
+    "_id": "f39d0214-a115-4e6e-90be-483b27fb76e4",
+    "name": "seqdepsetup",
     "model_id": "Model-Id",
     "GrahamNotation": {
-        "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/parallelMachines",
+        "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
-            "http://www.iop.rwth-aachen.de/PPC/1/1/seqDepSetup"
+            "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility"
         ],
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
             "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
-            "http://www.iop.rwth-aachen.de/PPC/1/1/sumCompletionTime"
+            "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
         ]
     },
     "inputData": {
@@ -29,5 +29,5 @@
     "Postprocessing": [
         "postprocessing.py"
     ],
-    "formula": "P\u2098 | s\u1d62\u2c7c  | C\u2098\u2090\u2093, \u03a3w\u2c7cW\u2c7c"
+    "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
 }

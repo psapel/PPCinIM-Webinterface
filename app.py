@@ -24,8 +24,8 @@ from gui_setup.translator_new import translate_identifiers
 #from pages.datasources.jsonFiles.connector.odoo_connect import connect_and_fetch_data
 from gui_setup.mappings import id_to_name_mapping, id_to_duration_mapping
 from gui_setup.preprocessing import extract_data
-from gui_setup.model import optimization_model
-from gui_setup.postprocessing import process_results
+#from gui_setup.SingleMachineWithSeqDepSetuptime import optimization_model
+from gui_setup.postprocessing_odoo_jobnames import postprocessing
 from gui_setup.extract import run_extraction
 
 from python_files.execution_logs import total_execution
@@ -809,7 +809,7 @@ def get_asset():
     durations = extracted_values['production_duration_expected']
     
     #'ModelFile': 'name_of_the_model_test2', 'Postprocessing': ['postprocessing'], 'Preprocessing':
-    print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
+    #print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
 
     preprocessing = source["Preprocessing"]
     modelfile = source["ModelFile"]
@@ -824,8 +824,6 @@ def get_asset():
         "modelfile" : modelfile,
         "postprocessing" : postprocessing
     }
-
-    print('dataaaaaaaaaaaaaaaaa', response_data)
     return jsonify(response_data)
 
 
@@ -834,38 +832,106 @@ def get_execution():
     # Extract name and duration from the json
     
     data = request.get_json()
-    print("das ist data:     ", data)
+    #print("das ist data:     ", data)
     
-    # Here Hardcoded values are okay since this function directly is assigned to a specific use case, i.e., production scheduling, where the required variables has to be specified.
+    # Here Hardcoded values of names and durations are okay since this function directly is assigned to a specific use case, i.e., production scheduling, where the required variables has to be specified.
     names = data['names']
     durations = data['durations']
-    # preprocess = data['preprocessing']
-    # modelfile = data['modelfile']
-    # postprocess = data['postprocessing']
-    #print(names)
-    #print(preprocess)
-
-        # Get preprocessing(s) from model signature if applicable
-    # Model Signature: "Preprocessing"
-    # Expected value from test2.json: preprocessing_for_test2 
-
-    # Get model from model signature
-    # Model Signature: "ModelFile"
-    # Expected value from test2.json: name_of_the_model_test2
+    preprocess_file = data['preprocessing']
+    model_file = data['modelfile']
+    postprocess_file = data['postprocessing']
     
-    result = optimization_model(durations)
 
-    # Get postprocessing(s) from model signature if applicable
-    # Model Signature: "Postprocessing" 
-    # Expected value from test2.json: postprocessing_for_test2
-   
-    post_result = process_results(result, names)
-    return jsonify(post_result)
+    # Check, if preprocessing is present in Model Signature, if yes, execute file
+
+    if preprocess_file != "":
+        module_name = preprocess_file
+        function_name = "preprocessing"
+
+        # Construct the module path
+        module_path = f"gui_setup.{module_name}"
+        
+        try:
+            # Dynamically import the module
+            module = importlib.import_module(module_path)
+            
+            # Get the function from the module
+            func = getattr(module, function_name)
+            
+            # Call the function with parameters
+            result_preprocessing = func()
+            
+        except ModuleNotFoundError:
+            print(f"Module '{module_path}' does not exist.")
+        except AttributeError:
+            print(f"Function '{function_name}' does not exist in the module '{module_path}'.")
+
+    # Get model file from model signature
+    
+    module_name = model_file
+    function_name = "optimization_model"
+
+    # Construct the module path
+    module_path = f"gui_setup.{module_name}"
+    
+    try:
+        # Dynamically import the module
+        module = importlib.import_module(module_path)
+        
+        # Get the function from the module
+        func = getattr(module, function_name)
+        
+        # Call the function with parameters
+        result_model = func(durations,names)
+        
+    except ModuleNotFoundError:
+        print(f"Module '{module_path}' does not exist.")
+    except AttributeError:
+        print(f"Function '{function_name}' does not exist in the module '{module_path}'.")
+    
+    
+    # Check, if postprocessing is present in Model Signature, if yes, execute file
+    
+    if postprocess_file != "":
+
+        module_name = postprocess_file
+        function_name = "postprocessing"
+
+        # Construct the module path
+        module_path = f"gui_setup.{module_name}"
+                
+        try:
+            # Dynamically import the module
+            module = importlib.import_module(module_path)
+            
+            # Get the function from the module
+            func = getattr(module, function_name)
+            
+            # Call the function with parameters
+            result_postprocessing = func(result_model, names)
+
+        except ModuleNotFoundError:
+            print(f"Module '{module_path}' does not exist.")
+        except AttributeError:
+            print(f"Function '{function_name}' does not exist in the module '{module_path}'.")
+
+    #print("das ist result PP               .",result_postprocessing)
+    #print("das ist logs          ",logs)
+    return jsonify(result_postprocessing) 
+
+
 
 @app.route('/api/execution_logs/<model_name>')
 def get_execution_logs(model_name):
-    logs = total_execution(model_name)
+    data = request.get_json()
+    logs = data.get('final_logs')
+    # logs = total_execution(model_name) >> old one which connects again to the odoo database
     return jsonify(logs)
+
+
+#########################################################################
+#############     CODE FOR USE CASE PRODUCTION PLANNING     #############
+#########################################################################
 
 def extract_idShort(data):
     return [shell['idShort'] for shell in data['assetAdministrationShells']]

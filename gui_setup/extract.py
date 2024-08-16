@@ -35,8 +35,9 @@ def run_extraction(file_path):
             scheduling_constraints = []
             objective_functions = []
             input_data = None
+            model_file = None
             preprocessing = None
-            post_processing = None
+            postprocessing = None
             scope_of_model = None
             model_id = None
             
@@ -51,9 +52,13 @@ def run_extraction(file_path):
                                     scheduling_constraints.append(value_item)
                                 elif value_item["idShort"] == "SchedulingObjectiveFunction":
                                     objective_functions.append(value_item)
-                            input_data = element
+                            graham_data = element
                         elif element["idShort"] == "InputData":
                             input_data = element
+                        #elif element["idShort"] == "ModelFile":
+                            #if element["idShort"] == "ModelFileVersion":
+                                #if element["idShort"] == "DigitalFile":
+                                    #model_file = element                            
                         elif element["idShort"] == "Preprocessing":
                             preprocessing = element
                         elif element["idShort"] == "Postprocessing":
@@ -65,6 +70,8 @@ def run_extraction(file_path):
             
             # Create a dictionary to store extracted data
             required_data = {}
+            graham_aas_data = {}
+            input_aas_data = {}
             
             # Add a 'name' attribute based on the filename
             required_data['name'] = os.path.splitext(filename)[0].replace("Model", "model_").replace(" ", "_").lower()
@@ -78,7 +85,7 @@ def run_extraction(file_path):
                 extracted_data = {
                     machine_environment['semanticId']['keys'][0]['value']: machine_environment['valueId']['keys'][0]['value']
                 }
-                required_data.update(extracted_data)
+                graham_aas_data.update(extracted_data)
                 
             # Extract "Scheduling Constraints" 
             if scheduling_constraints:
@@ -88,7 +95,7 @@ def run_extraction(file_path):
                         value_ids = [value_id['value'] for value_id in constraint.get('valueId', {}).get('keys', [])]
                         if value_ids:
                             extracted_data[key] = value_ids
-                            required_data.update(extracted_data)
+                            graham_aas_data.update(extracted_data)
                 
             # Extract "Objective Functions" 
             if objective_functions:
@@ -98,14 +105,44 @@ def run_extraction(file_path):
                         value_ids = [value_id['value'] for value_id in function.get('valueId', {}).get('keys', [])]
                         if value_ids:
                             extracted_data[key] = value_ids
-                            required_data.update(extracted_data)
+                            graham_aas_data.update(extracted_data)
                     
             # Extract "Input Data" 
+            #if input_data:
+                #for item in input_data.get("value", []):
+                    #if 'value' in item and 'keys' in item['value'] and len(item['value']['keys']) > 1:
+                        #required_data[item['idShort']] = item['value']['keys'][1]['value']         
+    
             if input_data:
-                for item in input_data.get("value", []):
-                    if 'value' in item and 'keys' in item['value'] and len(item['value']['keys']) > 1:
-                        required_data[item['idShort']] = item['value']['keys'][1]['value']
+                for submodel in data.get("submodels", []):
+                    for element in submodel.get("submodelElements", []):
+                        if element.get("idShort") == "InputData":
+                            # Iterate over the items in "InputData" to extract the necessary fields
+                            for item in element.get("value", []):
+                                id_short = item.get("idShort")
+                                value_keys = item.get("value", {}).get("keys", [])
+                                
+                                # Extract id and source_location
+                                if len(value_keys) >= 2:
+                                    source_location = value_keys[0].get("value")
+                                    id_value = value_keys[1].get("value")
+                                    
+                                    # Construct the entry in the input_data dictionary
+                                    input_aas_data[id_short] = {
+                                        "id": id_value,
+                                        "source_location": source_location
+                                    }
             
+            # Extract "Model FIle"
+            for submodel in data.get('submodels', []):
+                for element in submodel.get('submodelElements', []):
+                    if element.get('idShort') == 'ModelFile':
+                        for item in element.get('value', []):
+                            if item.get('idShort') == 'ModelFileVersion':
+                                for version in item.get('value', []):
+                                    if version.get('idShort') == 'DigitalFile':
+                                        model_file = version.get('value')
+
             # Extract "Preprocessing"
             if preprocessing:
                 preprocessing_values = [item['value'] for item in preprocessing.get("value", [])]
@@ -123,11 +160,22 @@ def run_extraction(file_path):
                 required_data['formula'] = scope_of_model.get('value', None)
             
             # Create a new dictionary with the extracted data under "GrahamNotation" key
-            graham_notation_data = {"_id": file_id, "GrahamNotation": required_data}
+            #graham_notation_data = {"_id": file_id, "GrahamNotation": required_data}
+            model_signature_data = {
+                "_id": file_id, 
+                "name": required_data['name'],
+                "model_id": required_data['model_id'],
+                "GrahamNotation": graham_aas_data,
+                "inputData": input_aas_data,
+                "ModelFile": model_file,
+                "Preprocessing": required_data[preprocessing['idShort']],
+                "Postprocessing": required_data[postprocessing['idShort']],
+                "formula": required_data['formula']
+                }            
             
             # Save the extracted data as a new JSON file
             with open(dest_path, 'w') as new_file:
-                json.dump(graham_notation_data, new_file, indent=4)
+                json.dump(model_signature_data, new_file, indent=4)
 
 if __name__ == "__main__":
     run_extraction()

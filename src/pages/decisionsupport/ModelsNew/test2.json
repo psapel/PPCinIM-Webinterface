@@ -1,8 +1,8 @@
 {
-    "_id": "a142f856-7597-4272-9541-5e0a412569ef",
+    "_id": "7037a027-5453-458d-9ba8-90a18e32fefd",
+    "name": "test2",
+    "model_id": "Model-Id",
     "GrahamNotation": {
-        "name": "test2",
-        "model_id": "Model-Id",
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
             "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility"
@@ -10,26 +10,24 @@
         "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
             "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
             "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
-        ],
-        "jobName": "0173-1#02-XXX999#999",
-        "jobDuration": "0173-1#02-ABF201#002",
-        "inputData": {
-            "jobName": {
-                "id": "0173-1#02-XXX999#999",
-                "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
-            },
-            "jobDuration": {    
-                "id": "0173-1#02-ABF201#002",
-                "source_location":"https://iop.rwth-aachen.de/PPC/1/1/monkey"
-            }
+        ]
+    },
+    "inputData": {
+        "jobName": {
+            "id": "0173-1#02-XXX999#999",
+            "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
         },
-        "ModelFile": "name_of_the_model_test2",
-        "Preprocessing": [
-            "preprocessing_for_test2"
-        ],
-        "Postprocessing": [
-            "postprocessing"
-        ],
-        "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
-    }
+        "jobDuration": {
+            "id": "0173-1#02-ABF201#002",
+            "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+        }
+    },
+    "ModelFile": "",
+    "Preprocessing": [
+        "preprocessing.py"
+    ],
+    "Postprocessing": [
+        "postprocessing.py"
+    ],
+    "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
 }

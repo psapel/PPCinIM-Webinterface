@@ -1,4 +1,4 @@
-def process_results(opt_result, job_names):
+def postprocessing(opt_result, job_names):
     """
     Get the optimal job order from the optimization result and map to job identifiers.
 
@@ -9,6 +9,7 @@ def process_results(opt_result, job_names):
     Returns:
     - list: A list of sublists, where each sublist contains a job number with 'u' prefix and its corresponding job identifier in the optimal order.
     """
+    global optimal_order
     if "status" in opt_result and opt_result["status"] == 'Optimal':
         decision_variables = opt_result["decision_variables"]
         job_order = sorted([(int(var[0][1]), int(var[0][2])) for var in decision_variables if var[0][0] == 'x' and var[1] == 1],
@@ -19,5 +20,4 @@ def process_results(opt_result, job_names):
     else:
         print("No optimal solution found.")
         return []
-
 

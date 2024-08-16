@@ -54,7 +54,7 @@ const Execution = () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          setExecutionLogsData(data[0]);
+          setExecutionLogsData(data[1]);
         } catch (error) {
           console.error("Error fetching execution logs data:", error);
         }
