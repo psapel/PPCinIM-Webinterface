@@ -108,11 +108,11 @@ function FilteredModel() {
                     <p>
                       Machine Environment:{" "}
                       {urlToNameMapping[
-                        model[
+                        model['GrahamNotation'][
                           "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
                         ]
                       ] ||
-                        model[
+                        model['GrahamNotation'][
                           "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment"
                         ]}
                     </p>
@@ -120,21 +120,21 @@ function FilteredModel() {
                     <p>
                       Scheduling Constraints:{" "}
                       {Array.isArray(
-                        model[
+                        model['GrahamNotation'][
                           "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                         ]
                       )
-                        ? model[
+                        ? model['GrahamNotation'][
                             "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                           ]
                             .map((url) => urlToNameMapping[url] || url)
                             .join(", ")
                         : urlToNameMapping[
-                            model[
+                            model['GrahamNotation'][
                               "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                             ]
                           ] ||
-                          model[
+                          model['GrahamNotation'][
                             "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints"
                           ]}
                     </p>
@@ -142,21 +142,21 @@ function FilteredModel() {
                     <p>
                       Scheduling Objective Function:{" "}
                       {Array.isArray(
-                        model[
+                        model['GrahamNotation'][
                           "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                         ]
                       )
-                        ? model[
+                        ? model['GrahamNotation'][
                             "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                           ]
                             .map((url) => urlToNameMapping[url] || url)
                             .join(", ")
                         : urlToNameMapping[
-                            model[
+                            model['GrahamNotation'][
                               "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                             ]
                           ] ||
-                          model[
+                          model['GrahamNotation'][
                             "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction"
                           ]}
                     </p>

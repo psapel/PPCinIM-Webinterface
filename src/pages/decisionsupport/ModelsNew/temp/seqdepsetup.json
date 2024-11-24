@@ -1,6 +1,6 @@
 {
-    "_id": "b3ec1371-d1b5-4254-bba2-87752fc21162",
-    "name": "new_format",
+    "_id": "155c0ca4-923b-4e69-bbbc-9e5d197f2280",
+    "name": "seqdepsetup",
     "model_id": "Model-Id",
     "GrahamNotation": {
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
@@ -22,7 +22,7 @@
             "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
         }
     },
-    "ModelFile": "digital file value",
+    "ModelFile": "",
     "Preprocessing": [
         "preprocessing.py"
     ],

@@ -2,8 +2,8 @@
     "URIOfTheProduct": "https://iop.rwth-aachen.de/PPC/1/1/odoo",
     "InstanceURL": "https://edu-ikvds-rwth-aachen.odoo.com",
     "InstanceName": "edu-ikvds-rwth-aachen",
-    "Username":"patrick.sapel@ikv.rwth-aachen.de",
-    "Password":"ikv123!",
+    "Username":"patrick.sapel@rwth-aachen.de",
+    "Password":"ikv123!!",
     "data": {
         "0173-1#02-XXX999#999": "name",
         "0173-1#02-XXX999#HIO": "anything"

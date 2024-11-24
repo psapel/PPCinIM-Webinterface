@@ -159,7 +159,7 @@ def run_extraction(file_path):
             if scope_of_model:
                 required_data['formula'] = scope_of_model.get('value', None)
             
-            # Create a new dictionary with the extracted data under "GrahamNotation" key
+            # OLD: Create a new dictionary with the extracted data under "GrahamNotation" key  >> no this was an old structure, now we dont have any keys and use the whole json
             #graham_notation_data = {"_id": file_id, "GrahamNotation": required_data}
             model_signature_data = {
                 "_id": file_id, 

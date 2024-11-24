@@ -466,6 +466,8 @@ def delete_datasource(datasource_id):
 #     # Return a response to the frontend
 #     return jsonify({'message': 'Model created successfully'}), 200
 
+
+
 index_settings = {
     "settings": {
         "number_of_shards": 1,
@@ -475,6 +477,7 @@ index_settings = {
     "mappings": {
         "properties": {
             "GrahamNotation": {
+                "type": "nested",
                 "properties": {
                     "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": {"type": "keyword"},
                     "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": {"type": "keyword"},
@@ -485,12 +488,19 @@ index_settings = {
         }
     }
 }
+    
 
 index_name = 'ppcinim_final'
+print("Was daaaas              ",index_settings["mappings"])
+
+#if es.indices.exists(index=index_name):
+    #es.indices.delete(index=index_name)
+    #print(f"Index '{index_name}' wurde gelöscht.")
 
 if not es.indices.exists(index=index_name):
     # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
-    es.indices.create(index=index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
+    #es.indices.create(index=index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
+    es.indices.create(index=index_name, body={"settings": index_settings["settings"], "mappings": index_settings["mappings"]})
 
 def update_index_name():
     global index_name
@@ -504,7 +514,8 @@ def update_index_name():
     # Check if the new index exists and create it if it doesn't
     if not es.indices.exists(index=new_index_name):
         try:
-            es.indices.create(index=new_index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
+            #es.indices.create(index=new_index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
+            es.indices.create(index=new_index_name, body={"settings": index_settings["settings"], "mappings": index_settings["mappings"]})
             print(f"Index created: {new_index_name}")
             index_name = new_index_name  # Update global index_name only after successful creation
         except Exception as e:
@@ -525,7 +536,9 @@ def load_models(es):
                     model_data = json.load(f)
                     model_id = model_data.get('_id')
                     del model_data['_id']
-                    es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'], refresh=True)
+                    es.index(index=index_name, id=model_id, body=model_data, refresh=True)
+                    #print("Dieser KOMICSCHE INDEX      :",es.index(index=index_name, id=model_id, body=model_data, refresh=True))
+                    #es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'], refresh=True)
                     models.append(model_data)   
             except FileNotFoundError:
                 print(f"Failed to load model: {model_path}")
@@ -536,68 +549,97 @@ def load_models(es):
 # loaded_models = load_models(es)
 
 def find_matching_model(es, url1, url2, url3):
+    print("hier die URLs      :", url1, url2, url3)
     len_2 = len(url2)
     len_3 = len(url3)
 
     query = {
+    
         "query": {
-        "bool": {
-            "must": [
-            {
-                "match_phrase": {
-                "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": url1
-                }
-            },
-            {
-                "terms_set": {
-                "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword": {
-                    "terms": url2,
-                    "minimum_should_match_script": {
-                    "source": "params.num_terms",
-                    "params": {
-                        "num_terms": len_2
+            "bool": {
+                "must": [
+                    {
+                        "nested": {
+                            "path": "GrahamNotation",
+                            "query": {
+                                "match_phrase": {
+                                    "GrahamNotation.http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": url1
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "nested": {
+                            "path": "GrahamNotation",
+                            "query": {
+                                "terms_set": {
+                                    "GrahamNotation.http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": {
+                                        "terms": url2,
+                                        "minimum_should_match_script": {
+                                            "source": "params.num_terms",
+                                            "params": {
+                                                "num_terms": len(url2)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "nested": {
+                            "path": "GrahamNotation",
+                            "query": {
+                                "script": {
+                                    "script": {
+                                        "source": "doc['GrahamNotation.http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints'].length == params.fixed_array_length",
+                                        "params": {
+                                            "fixed_array_length": len(url2)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "nested": {
+                            "path": "GrahamNotation",
+                            "query": {
+                                "terms_set": {
+                                    "GrahamNotation.http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": {
+                                        "terms": url3,
+                                        "minimum_should_match_script": {
+                                            "source": "params.num_terms",
+                                            "params": {
+                                                "num_terms": len(url3)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "nested": {
+                            "path": "GrahamNotation",
+                            "query": {
+                                "script": {
+                                    "script": {
+                                        "source": "doc['GrahamNotation.http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction'].length == params.fixed_array_length",
+                                        "params": {
+                                            "fixed_array_length": len(url3)
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
-                    }
-                }
-                }
-            },
-            {
-                "script": {
-                "script": {
-                    "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints.keyword'].length == params.fixed_array_length",
-                    "params": {
-                    "fixed_array_length": len_2
-                    }
-                }
-                }
-            },
-            {
-                "terms_set": {
-                "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword": {
-                    "terms": url3,
-                    "minimum_should_match_script": {
-                    "source": "params.num_terms",
-                    "params": {
-                        "num_terms": len_3
-                    }
-                    }
-                }
-                }
-            },
-            {
-                "script": {
-                "script": {
-                    "source": "doc['http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction.keyword'].length == params.fixed_array_length",
-                    "params": {
-                    "fixed_array_length": len_3
-                    }
-                }
-                }
+                ]
             }
-            ]
-        }
         }
     }
+
+
     
     print("Elasticsearch Query:", query)
 
@@ -616,12 +658,12 @@ def delete_index():
     try:
     # Initiate delete by query with refresh=True to make sure the operation is complete
         es.delete_by_query(index=index_name, body={"query": {"match_all": {}}}, refresh=True, wait_for_completion=True)
-
         print(f"All documents deleted from index '{index_name}'.")
     except Exception as e:
         print(f"Failed to delete documents from index '{index_name}': {str(e)}")
 
 
+# read input parameters (model graham notation) from GUI
 @app.route('/api/mapping', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -631,7 +673,7 @@ def index():
 
     delete_index()
     load_models(es)
-    
+
     matching_model = find_matching_model(es, machine_environment, scheduling_constraints, scheduling_objective_function)
 
     # Extract the relevant information from the hits
@@ -651,7 +693,7 @@ def index():
 def get_asset():
     
     # Function searches all JSON (=AAS) files of data sources within a specific directory by matching the IRI from the model signature with the IRI from the JSONs.
-    # This is an exemplary  result: {'https://iop.rwth-aachen.de/PPC/1/1/odoo': {'0173-1#02-ABF201#002': 'production_duration_expected', '0173-1#02-XXX999#999': 'name'}, 'https://iop.rwth-aachen.de/PPC/1/1/other_db': {'0173-1#02-XXX999#HIO': 'name_whatever'}}   
+    # This is an exemplary  result: {'https://iop.rwth-aachen.de/PPC/1/1/odoo': {'0173-1#02-ABF201#002': 'duration_expected', '0173-1#02-XXX999#999': 'name'}, 'https://iop.rwth-aachen.de/PPC/1/1/other_db': {'0173-1#02-XXX999#HIO': 'name_whatever'}}   
     
     def translate_values(directory, source_location_dict):
         results = {}
@@ -699,7 +741,7 @@ def get_asset():
                     print(f"An error occurred with file '{filename}': {e}")
         
         return results
-      
+     
 
     # Function established connection to source system via API provided by the source systems vendor. Dynamic consideration of API-file, specified in the JSON (=AAS) of the data connector 
     def run_connect_and_fetch_data(source_system, db_prop_names):
@@ -806,8 +848,9 @@ def get_asset():
     
     # still hardcoded since the jsonify handover not yet working 
     names = extracted_values['name']
-    durations = extracted_values['production_duration_expected']
+    durations = extracted_values['duration_expected']
     
+    print("aaaaaaaaaaa names",names,"           duration: ", durations)
     #'ModelFile': 'name_of_the_model_test2', 'Postprocessing': ['postprocessing'], 'Preprocessing':
     #print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
 
@@ -840,7 +883,7 @@ def get_execution():
     preprocess_file = data['preprocessing']
     model_file = data['modelfile']
     postprocess_file = data['postprocessing']
-    
+    print("This is data                ",data)
 
     # Check, if preprocessing is present in Model Signature, if yes, execute file
 

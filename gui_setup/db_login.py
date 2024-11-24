@@ -1,7 +1,7 @@
 def get_odoo_credentials():
     # Odoo User
-    user_ps = 'patrick.sapel@ikv.rwth-aachen.de'
-    pw_ps = 'ikv123!'
+    user_ps = 'patrick.sapel@rwth-aachen.de'
+    pw_ps = 'ikv123!!'
 
     # Database credentials
     url = 'https://edu-ikvds-rwth-aachen.odoo.com'

@@ -1,6 +1,6 @@
 {
-    "_id": "7037a027-5453-458d-9ba8-90a18e32fefd",
-    "name": "test2",
+    "_id": "a142f856-7597-4272-9541-5e0a412569",
+    "name": "SingleMachineWithSeqDepSetuptimeneWERDERBREMEN",
     "model_id": "Model-Id",
     "GrahamNotation": {
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
@@ -12,22 +12,20 @@
             "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
         ]
     },
+    "jobName": "0173-1#02-XXX999#999",
+    "jobDuration": "0173-1#02-ABF201#002",
     "inputData": {
         "jobName": {
             "id": "0173-1#02-XXX999#999",
-            "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
         },
-        "jobDuration": {
+        "jobDuration": {    
             "id": "0173-1#02-ABF201#002",
-            "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/monkey"
         }
     },
-    "ModelFile": "",
-    "Preprocessing": [
-        "preprocessing.py"
-    ],
-    "Postprocessing": [
-        "postprocessing.py"
-    ],
+    "ModelFile": "SingleMachineWithSeqDepSetuptime",
+    "Preprocessing": "",
+    "Postprocessing": "postprocessing_odoo_jobnames",
     "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
 }

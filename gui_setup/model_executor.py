@@ -27,7 +27,7 @@ if selected_json:
     # Connect to odoo and fetch data
     db_values = connect_and_fetch_data(url, db, username, password, db_prop_names)
     
-    # Extract 'name' and 'production_duration_expected'
+    # Extract 'name' and 'duration_expected'
     names, durations = extract_data(db_values)
    
     # Optimization model

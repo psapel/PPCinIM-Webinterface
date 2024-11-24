@@ -135,7 +135,7 @@
                             },
                             {
                                "type":"GlobalReference",
-                               "value":"production_duration_expected"
+                               "value":"duration_expected"
                             }
                          ]
                       },

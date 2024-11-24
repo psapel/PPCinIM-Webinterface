@@ -7,8 +7,8 @@ from datetime import date
 
 def connect(model_id):
     # Odoo User
-    user_ps = 'patrick.sapel@ikv.rwth-aachen.de'
-    pw_ps = 'ikv123!'
+    user_ps = 'patrick.sapel@rwth-aachen.de'
+    pw_ps = 'ikv123!!'
 
     # Database credentials
     url = 'https://edu-ikvds-rwth-aachen.odoo.com'
@@ -59,7 +59,7 @@ def connect(model_id):
     jobs = (models.execute_kw(db, uid, password,
                               model_value, 'search_read',
                               [[['state', '=', state]]],
-                              {'fields': ['name', 'production_duration_expected', 'date_planned_finished', 'product_id',
+                              {'fields': ['name', 'duration_expected', 'date_planned_finished', 'product_id',
                                           'product_uom_qty', 'state', 'company_id']}))
 
     # Building a deepcopy to prohibit errors in original file
@@ -81,15 +81,15 @@ def connect(model_id):
         name_first_array.append(name_first)
         i_name_ini = i_name_ini + 1
 
-    # Read production_duration_expected from all jobs
+    # Read duration_expected from all jobs
     pj_first = []
     pj_first_array = []
     i_pj_ini = 0
     i_pj_end = len(jobs_copy) - 1
 
-    # Insert values for production_duration_expected
+    # Insert values for duration_expected
     while i_pj_ini <= i_pj_end:
-        pj_first = jobs_copy[i_pj_ini]['production_duration_expected']
+        pj_first = jobs_copy[i_pj_ini]['duration_expected']
         pj_first_array.append(pj_first)
         i_pj_ini = i_pj_ini + 1
 
@@ -124,8 +124,8 @@ def connect(model_id):
     for i in range(0, len(jobs)):
         jobs[i]['Reference'] = jobs[i]['name']
         del jobs[i]['name']
-        jobs[i]['Duration'] = jobs[i]['production_duration_expected']
-        del jobs[i]['production_duration_expected']
+        jobs[i]['Duration'] = jobs[i]['duration_expected']
+        del jobs[i]['duration_expected']
         jobs[i]['Company'] = jobs[i]['company_id']
         del jobs[i]['company_id']
         jobs[i]['Product'] = jobs[i]['product_id']

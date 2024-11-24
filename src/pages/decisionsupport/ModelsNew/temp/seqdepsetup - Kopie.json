@@ -1,0 +1,31 @@
+{
+    "_id": "155c0ca4-923b-4e69-bbbc-9e5d197f2280",
+    "name": "seqdepsetup",
+    "model_id": "Model-Id",
+    "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
+    "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingConstraints": [
+        "http://www.iop.rwth-aachen.de/PPC/1/1/maschineEligibility"
+    ],
+    "http://www.iop.rwth-aachen.de/PPC/1/1/schedulingObjectiveFunction": [
+        "http://www.iop.rwth-aachen.de/PPC/1/1/maxCompletionTime",
+        "http://www.iop.rwth-aachen.de/PPC/1/1/weightedSumCompletionTime"
+    ],
+    "inputData": {
+        "jobName": {
+            "id": "0173-1#02-XXX999#999",
+            "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+        },
+        "jobDuration": {
+            "id": "0173-1#02-ABF201#002",
+            "source_location": "https://iop.rwth-aachen.de/PPC/1/1/odoo"
+        }
+    },
+    "ModelFile": "",
+    "Preprocessing": [
+        "preprocessing.py"
+    ],
+    "Postprocessing": [
+        "postprocessing.py"
+    ],
+    "formula": "R\u2098 | M\u2c7c | C\u2098\u2090\u2093, \u03a3w\u2c7cC\u2c7c"
+}

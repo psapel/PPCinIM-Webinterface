@@ -131,7 +131,7 @@
                   },
                   {
                     "type": "Property",
-                    "value": "production_duration_expected"
+                    "value": "duration_expected"
                   }
                 ]
               },
@@ -157,7 +157,7 @@
             }
           ],
           "valueType": "xs:string",
-          "value": "patrick.sapel@ikv.rwth-aachen.de",
+          "value": "patrick.sapel@rwth-aachen.de",
           "modelType": "Property"
         },
         {
@@ -169,7 +169,7 @@
             }
           ],
           "valueType": "xs:string",
-          "value": "ikv123!",
+          "value": "ikv123!!",
           "modelType": "Property"
         }
       ],
