@@ -35,7 +35,7 @@ def connect_and_fetch_data(url, db, username, password, db_prop_names):
     record_ids = models.execute_kw(db, uid, password,
                                    table, 'search', [domain])
     
-
+    #print("TYPEN ODOO         ",type(['state']), type(db_prop_names),db_prop_names,[db_prop_names])
     data = []
     for record_id in record_ids:
         fields_to_read = db_prop_names + ['state']

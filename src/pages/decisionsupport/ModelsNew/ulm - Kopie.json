@@ -15,11 +15,11 @@
     "inputData": {
         "jobName": {
             "id": "0173-1#02-XXX999#999",
-            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
+            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/dummyERP"
         },
         "jobDuration": {    
             "id": "0173-1#02-ABF201#002",
-            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
+            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/dummyERP"
         }
     },
     "ModelFile": "SingleMachineWithSeqDepSetuptime",

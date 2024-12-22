@@ -491,7 +491,6 @@ index_settings = {
     
 
 index_name = 'ppcinim_final'
-print("Was daaaas              ",index_settings["mappings"])
 
 #if es.indices.exists(index=index_name):
     #es.indices.delete(index=index_name)
@@ -537,8 +536,6 @@ def load_models(es):
                     model_id = model_data.get('_id')
                     del model_data['_id']
                     es.index(index=index_name, id=model_id, body=model_data, refresh=True)
-                    #print("Dieser KOMICSCHE INDEX      :",es.index(index=index_name, id=model_id, body=model_data, refresh=True))
-                    #es.index(index=index_name, id=model_id, body=model_data['GrahamNotation'], refresh=True)
                     models.append(model_data)   
             except FileNotFoundError:
                 print(f"Failed to load model: {model_path}")
@@ -548,8 +545,8 @@ def load_models(es):
 
 # loaded_models = load_models(es)
 
+# 
 def find_matching_model(es, url1, url2, url3):
-    print("hier die URLs      :", url1, url2, url3)
     len_2 = len(url2)
     len_3 = len(url3)
 
@@ -663,7 +660,7 @@ def delete_index():
         print(f"Failed to delete documents from index '{index_name}': {str(e)}")
 
 
-# read input parameters (model graham notation) from GUI
+# read input parameters (model graham notation) from GUI, find suitable model signatures and extract their data
 @app.route('/api/mapping', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -674,6 +671,7 @@ def index():
     delete_index()
     load_models(es)
 
+    # Build elasticsearch query for finding model signatures that match with the user's input
     matching_model = find_matching_model(es, machine_environment, scheduling_constraints, scheduling_objective_function)
 
     # Extract the relevant information from the hits
@@ -688,14 +686,15 @@ def index():
         return "No matching model found."
     return jsonify({"message": "Invalid request method"})
 
-
+# After fetching all matching model signatures, prepare and execute for further processes, i.e. connection to 
+# source system and fetch data
 @app.route('/api/underlying_asset', methods=['POST'])
 def get_asset():
     
     # Function searches all JSON (=AAS) files of data sources within a specific directory by matching the IRI from the model signature with the IRI from the JSONs.
     # This is an exemplary  result: {'https://iop.rwth-aachen.de/PPC/1/1/odoo': {'0173-1#02-ABF201#002': 'duration_expected', '0173-1#02-XXX999#999': 'name'}, 'https://iop.rwth-aachen.de/PPC/1/1/other_db': {'0173-1#02-XXX999#HIO': 'name_whatever'}}   
     
-    def translate_values(directory, source_location_dict_sorted):
+    def translate_values(directory, source_location_dict):
         results = {}
 
         # Ensure the directory exists
@@ -714,10 +713,12 @@ def get_asset():
                     with open(file_path, 'r', encoding='utf-8') as file:
                         data = json.load(file)
                         
-                        # Check if the 'URIOfTheProduct' matches any key in the lookup dictionary
+                        #
+                        # Check if the 'URIOfTheProduct' from the AAS matches any key in the lookup dictionary
                         #uri_of_product = data.get('URIOfTheProduct')
                         uri_of_product = fetch_URIOfTheProduct(data)
-                        if uri_of_product in source_location_dict_sorted:
+                        print("SL DICT in der  tarnslate funktion       :",source_location_dict)
+                        if uri_of_product in source_location_dict:
                             # Initialize results for the current URI if not already present. Fetches the login information for the database.
                             # Note: We assume that every source system have the same pattern regarding instance name etc. Due to demonstration purposes, we do not use a dynamic function
                             
@@ -732,10 +733,40 @@ def get_asset():
                                     "ConnectorFile": connector_file,
                                     'Translations': []
                                 }
+                            #translations = translate_properties(data, source_location_dict[uri_of_product])
+                            model_signatur_names = [tup[0] for tup in source_location_dict.get(uri_of_product, [])]
+                            source_location_keys = [tup[1] for tup in source_location_dict.get(uri_of_product, [])]
                             
-                            translations = translate_properties(data, source_location_dict_sorted[uri_of_product])
+                            translations = translate_properties(data, model_signatur_names, source_location_keys)
                             results[uri_of_product]['Translations'].extend(translations)
-                                                        
+                            #print("Le resultata XXXXX              ",results)
+
+
+
+                            # Werte aus dem Tupel extrahieren
+                            #tupels = source_location_dict.get(uri_of_product, [])
+
+
+                            # Übersetzungen ermitteln
+                            #translations = translate_properties(data, ids)
+
+                            # Ergebnisse kombinieren: erster Wert aus dem Tupel + dynamisch übersetzte Werte
+
+
+
+                            '''
+                            combined_translations = [
+                                (tup[0], translated_value) for tup, translated_value in zip(tupels, translations)
+                            ]
+
+                            # Ergebnis erweitern
+                            if uri_of_product not in results:
+                                results[uri_of_product] = {'Translations': []}
+
+                            results[uri_of_product]['Translations'].extend(combined_translations)
+                            print("Das sind die Tupel Ergebnnisse       ",results)
+                            '''
+
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON from file '{filename}': {e}")
                 except Exception as e:
@@ -757,6 +788,8 @@ def get_asset():
         # Construct the module path
         module_path = f"src.pages.datasources.jsonFiles.connector.{module_name}"
         
+        print("DB PROP    ",db_prop_names)
+
         try:
             # Dynamically import the module
             module = importlib.import_module(module_path)
@@ -776,7 +809,6 @@ def get_asset():
 
         return fetch_data
     
-    
     data = request.json
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
@@ -785,13 +817,13 @@ def get_asset():
     if not source:
         return jsonify({"error": "No 'source' key in JSON data"}), 400
     
-    print("source xxxxxxxxxxxx:", source)
-    
-    # From the selected models: Search the model signature, fetch all IRI source locations, eliminate duplicates, and assign the IRDIs to the source location.
+    # From the selected models: Search the model signature, fetch all IRI(IRDI) source locations, eliminate duplicates, 
+    # and assign the IRDIs to the source location.
     # Example: https://iop.rwth-aachen.de/PPC/1/1/odoo': ['0173-1#02-ABF201#002', '0173-1#02-XXX999#999']
 
+    
     source_location_dict = {}
-
+    '''
     for key, value in source["inputData"].items():
         source_location = value["source_location"]
         id_value = value["id"]
@@ -799,32 +831,41 @@ def get_asset():
             source_location_dict[source_location].append(id_value)
         else:
             source_location_dict[source_location] = [id_value]
+    '''
+
+    for key, value in source["inputData"].items():
+        source_location = value["source_location"]
+        id_value = value["id"]
+        
+        # Füge das Tupel (Key, id) zur entsprechenden source_location hinzu
+        if source_location in source_location_dict:
+            source_location_dict[source_location].append((key, id_value))
+        else:
+            source_location_dict[source_location] = [(key, id_value)] 
     
-    source_location_dict_sorted = {
-    key: value for key, value in sorted(source_location_dict.items(), key=lambda item: item[1])
-    }
-    
-    
+    #print("NEUE SOURCE LOC DICT         ",source_location_dict)
+
+
+    #source_location_dict_sorted = {
+    #key: value for key, value in sorted(source_location_dict.items(), key=lambda item: item[1])
+    #}
     
     # Separate the IRI of source systems to a single list
     source_location_dict_list = []
     
-    #dise muss sortiert werden
-    print("sl DICL     ",source_location_dict)
-    print("sl DICL    sorted ",source_location_dict_sorted)
-
-    for source_location in source_location_dict_sorted:
+    #for source_location in source_location_dict_sorted:
+    for source_location in source_location_dict:        
         source_location_dict_list.append(source_location)
-
+    #print("SL DICHT LIST  ", source_location_dict_list)
     # Path where the JSON (=AAS) of the source systems are stored
     directory = os.path.abspath(os.path.join(os.path.dirname(__file__),  r'src\pages\datasources\jsonFiles\db_login'))
     
-    results = translate_values(directory, source_location_dict_sorted)
+    #results = translate_values(directory, source_location_dict_sorted)
+    results = translate_values(directory, source_location_dict)
     # Extract the relevant section of the JSON data
 
-    #print("RESULTS: ",results)
+    print("RESULTS: ",results)
     #print("SL DICT  ",source_location_dict)
-    print("SL DICHT LIST  ", source_location_dict_list)
     
     #Print results for checking purposes - to be deleted
     '''
@@ -839,17 +880,57 @@ def get_asset():
 
     for key, value in results.items():
         translations = value.get('Translations', [])
-        db_prop_names.extend(translations)
+        db_prop_names.extend([tup[1] for tup in translations])
 
     combined_results = []
-
+    #print("UGA AGA UGA        ",results[source_location]['Translations'][0][1])
+    #print("DB PROP NAMES        ",results[source_location]['Translations'])
+    #print("DB PROP NAMES        ",db_prop_names[0], "type   :", type(db_prop_names[0]))
+    
+   
+    '''
+    # Zugriff auf die Translations und Extraktion der zweiten Werte aus den Tupeln
+    if source_location in results:
+        translations = results[source_location].get('Translations', [])
+        for translation in translations:
+            translated_values_isolated.append(translation[1])
+    print("TRANS VALUES      ",translated_values_isolated)
+    
+    
     for source_location in source_location_dict_list:
-        translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], results[source_location]['Translations'])
+        #translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], results[source_location]['Translations'])
+        translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], translated_values_isolated)
         combined_results += translated_data
+    print("COMBINED RESULTE       ",combined_results)
+    '''
+
+
+    # Funktion anpassen, um immer den zweiten Wert der Tupel in Translations zu nehmen
+    for source_location in source_location_dict_list:
+        if source_location in results:
+            # Extrahiere die zweiten Werte der Tupel in Translations
+            translations = results[source_location].get('Translations', [])
+            second_values = [translation[1] for translation in translations]
+            
+            # Übergabe der extrahierten Werte an die Funktion run_connect_and_fetch_data
+            translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], second_values)
+            
+            # Ausgabe der resultierenden Daten (zum Testen)
+            print(translated_data)
+
+            combined_results += translated_data
+    print("COMBINED RESULTE       ",combined_results)
+
+
+
+
+
+
+
+
 
     # Initialize dictionary to hold lists for each property name
     extracted_values = {prop_name: [] for prop_name in db_prop_names}
-    print("COMBINED RESULTE       ",combined_results)
     # Extract values
     for array in combined_results:
         for entry in array:
@@ -878,8 +959,38 @@ def get_asset():
     #'ModelFile': 'name_of_the_model_test2', 'Postprocessing': ['postprocessing'], 'Preprocessing':
     #print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
     
-    names = extracted_values['name']
-    durations = extracted_values['duration_expected']
+    # ggf das auslagern als UseCase
+
+
+    # Leere Liste zum Speichern der Tupel
+    model_signatur_to_propietary = [] 
+    
+    # Durchlaufe alle Einträge im Dictionary und extrahiere die Tupel aus Translations 
+    for key, value in results.items(): 
+        translations = value.get('Translations', []) 
+        model_signatur_to_propietary.extend(translations)
+    print("MS SIGGI", model_signatur_to_propietary)
+
+
+
+
+
+
+    # Leeres Dictionary für die übersetzten Werte
+    adjusted_dict = {}
+
+    # Durchlaufe die Übersetzungstabelle und hole die entsprechenden Werte aus dem gemeinsamen Dictionary
+    for translation in model_signatur_to_propietary:
+        key, translated_key = translation
+        if translated_key in extracted_values:
+            adjusted_dict[key] = extracted_values[translated_key]
+
+    # Ausgabe des resultierenden Dictionaries
+    #print(adjusted_dict)
+
+
+    names = adjusted_dict['jobName']
+    durations = adjusted_dict['jobDuration']
     preprocessing = source["Preprocessing"]
     modelfile = source["ModelFile"]
     postprocessing = source["Postprocessing"]
@@ -893,6 +1004,8 @@ def get_asset():
         "modelfile" : modelfile,
         "postprocessing" : postprocessing
     }
+
+    print("RD         ",response_data)
     return jsonify(response_data)
 
 

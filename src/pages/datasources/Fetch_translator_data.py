@@ -41,8 +41,12 @@ def fetch_login_data(data):
     return instance_url, instance_name, username, password, connector_file
 
 
-def translate_properties(data, source_location_keys):
+def translate_properties(data, model_signatur_names, source_location_keys):
     translations = []
+    
+    # Verknüpfe semantic IDs (source_location_keys) mit den Signaturnamen
+    semantic_to_name_map = dict(zip(source_location_keys, model_signatur_names))
+    
     # Find the 'DataPoints' submodel
     for submodel in data.get("submodels", []):
         if submodel.get("idShort") == "DataPoints":
@@ -53,5 +57,9 @@ def translate_properties(data, source_location_keys):
                         # Fetch the corresponding "type": "Property" value
                         for key in element.get("value", {}).get("keys", []):
                             if key.get("type") == "Property":
-                                translations.append(key.get("value"))
+                                # Hole den korrekten model_signatur_name aus der Map
+                                model_name = semantic_to_name_map.get(semantic_id)
+                                translations.append((model_name, key.get("value")))
     return translations
+
+
