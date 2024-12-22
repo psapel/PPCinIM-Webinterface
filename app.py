@@ -695,13 +695,14 @@ def get_asset():
     # Function searches all JSON (=AAS) files of data sources within a specific directory by matching the IRI from the model signature with the IRI from the JSONs.
     # This is an exemplary  result: {'https://iop.rwth-aachen.de/PPC/1/1/odoo': {'0173-1#02-ABF201#002': 'duration_expected', '0173-1#02-XXX999#999': 'name'}, 'https://iop.rwth-aachen.de/PPC/1/1/other_db': {'0173-1#02-XXX999#HIO': 'name_whatever'}}   
     
-    def translate_values(directory, source_location_dict):
+    def translate_values(directory, source_location_dict_sorted):
         results = {}
-        
+
         # Ensure the directory exists
         if not os.path.isdir(directory):
             raise FileNotFoundError(f"The directory '{directory}' does not exist.")
-        
+        # hier soll er die files nach vorkommen aufmachen, wie in source_location_dict_sorted
+
         # Iterate through all files in the directory
         for filename in os.listdir(directory):
             # Check if the file has a .json extension
@@ -716,7 +717,7 @@ def get_asset():
                         # Check if the 'URIOfTheProduct' matches any key in the lookup dictionary
                         #uri_of_product = data.get('URIOfTheProduct')
                         uri_of_product = fetch_URIOfTheProduct(data)
-                        if uri_of_product in source_location_dict:
+                        if uri_of_product in source_location_dict_sorted:
                             # Initialize results for the current URI if not already present. Fetches the login information for the database.
                             # Note: We assume that every source system have the same pattern regarding instance name etc. Due to demonstration purposes, we do not use a dynamic function
                             
@@ -732,7 +733,7 @@ def get_asset():
                                     'Translations': []
                                 }
                             
-                            translations = translate_properties(data, source_location_dict[uri_of_product])
+                            translations = translate_properties(data, source_location_dict_sorted[uri_of_product])
                             results[uri_of_product]['Translations'].extend(translations)
                                                         
                 except json.JSONDecodeError as e:
@@ -764,6 +765,7 @@ def get_asset():
             func = getattr(module, function_name)
             
             # Call the function with parameters
+            print("fetch data  ",param1, param2, param3, param4, db_prop_names)
             fetch_data = func(param1, param2, param3, param4, db_prop_names)
             print(f"Function result: {fetch_data}")
             
@@ -797,23 +799,32 @@ def get_asset():
             source_location_dict[source_location].append(id_value)
         else:
             source_location_dict[source_location] = [id_value]
-
+    
+    source_location_dict_sorted = {
+    key: value for key, value in sorted(source_location_dict.items(), key=lambda item: item[1])
+    }
+    
+    
+    
     # Separate the IRI of source systems to a single list
     source_location_dict_list = []
+    
+    #dise muss sortiert werden
+    print("sl DICL     ",source_location_dict)
+    print("sl DICL    sorted ",source_location_dict_sorted)
 
-    for source_location in source_location_dict:
+    for source_location in source_location_dict_sorted:
         source_location_dict_list.append(source_location)
-
 
     # Path where the JSON (=AAS) of the source systems are stored
     directory = os.path.abspath(os.path.join(os.path.dirname(__file__),  r'src\pages\datasources\jsonFiles\db_login'))
     
-    results = translate_values(directory, source_location_dict)
+    results = translate_values(directory, source_location_dict_sorted)
     # Extract the relevant section of the JSON data
 
     #print("RESULTS: ",results)
     #print("SL DICT  ",source_location_dict)
-    #print("SL DICHT LIST  ", source_location_dict_list)
+    print("SL DICHT LIST  ", source_location_dict_list)
     
     #Print results for checking purposes - to be deleted
     '''
@@ -838,22 +849,37 @@ def get_asset():
 
     # Initialize dictionary to hold lists for each property name
     extracted_values = {prop_name: [] for prop_name in db_prop_names}
-
+    print("COMBINED RESULTE       ",combined_results)
     # Extract values
     for array in combined_results:
         for entry in array:
             for prop_name in db_prop_names:
                 if prop_name in entry:
                     extracted_values[prop_name].append(entry[prop_name])
+    print("ext values", extracted_values)
+
+
     
-    # still hardcoded since the jsonify handover not yet working 
-    names = extracted_values['name']
-    durations = extracted_values['duration_expected']
-    
-    print("aaaaaaaaaaa names",names,"           duration: ", durations)
+    #FALSCH, da sich je nach konfiguration des modellsignatur die Reihenfolge ändert
+    # gucken, wie wir das von odoo bekomkmen, weil da weiß man ja 
+
+    #names = db_prop_names[1]
+    #durations = db_prop_names[0]
+
+    # kann ich hier so machen weil ich weiß dass in der Modellsignatur zuerst auftrtagsname, dann dauer kommt
+    # reihenfolge als immer gleich ist
+    #names = extracted_values['auftragsname']
+    #durations = extracted_values['auftragsdauer']
+    #print("WAS KOMMT DA RAUS", names, durations)
+    #names = extracted_values['auftragsname']
+    #durations = extracted_values['auftragsdauer']
+
+    #print("aaaaaaaaaaa names",names,"           duration: ", durations)
     #'ModelFile': 'name_of_the_model_test2', 'Postprocessing': ['postprocessing'], 'Preprocessing':
     #print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
-
+    
+    names = extracted_values['name']
+    durations = extracted_values['duration_expected']
     preprocessing = source["Preprocessing"]
     modelfile = source["ModelFile"]
     postprocessing = source["Postprocessing"]

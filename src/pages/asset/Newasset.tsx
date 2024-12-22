@@ -20,6 +20,8 @@ const Newasset = () => {
     "images/sumitomo.jpg",
     "images/gwk.jpg",
     "images/oni.jpg",
+    "images/wittmann.jpg",
+    "images/staeubli.jpg",
   ];
 
   // const handleImageChange = (event) => {

@@ -1,7 +1,7 @@
 {
   "assetAdministrationShells": [
     {
-      "idShort": "odooDataTranslator",
+      "idShort": "monkeyDataTranslator",
       "displayName": [
         {
           "language": "en",
@@ -70,11 +70,11 @@
           "idShort": "mrp.production",
           "value": [
             {
-              "idShort": "jobName",
+              "idShort": "auftragsname",
               "displayName": [
                 {
                   "language": "en",
-                  "text": "Job name"
+                  "text": "Auftragsname"
                 }
               ],
               "semanticId": {
@@ -95,22 +95,22 @@
                 "keys": [
                   {
                     "type": "GlobalReference",
-                    "value": "mrp.production"
+                    "value": ""
                   },
                   {
                     "type": "Property",
-                    "value": "name"
+                    "value": "auftragsname"
                   }
                 ]
               },
               "modelType": "ReferenceElement"
             },
             {
-              "idShort": "anything",
+              "idShort": "auftragsdauer",
               "displayName": [
                 {
                   "language": "en",
-                  "text": "Job duration"
+                  "text": "Auftragsdauer"
                 }
               ],
               "semanticId": {
@@ -127,11 +127,11 @@
                 "keys": [
                   {
                     "type": "GlobalReference",
-                    "value": "mrp.production"
+                    "value": ""
                   },
                   {
                     "type": "Property",
-                    "value": "duration_expected"
+                    "value": "auftragsdauer"
                   }
                 ]
               },
@@ -157,7 +157,7 @@
             }
           ],
           "valueType": "xs:string",
-          "value": "patrick.sapel@rwth-aachen.de",
+          "value": "postgres",
           "modelType": "Property"
         },
         {
@@ -169,7 +169,7 @@
             }
           ],
           "valueType": "xs:string",
-          "value": "ikv123!!",
+          "value": "password",
           "modelType": "Property"
         }
       ],
@@ -252,7 +252,7 @@
               ],
               "embeddedDataSpecifications": [],
               "valueType": "xs:string",
-              "value": "https://iop.rwth-aachen.de/PPC/1/1/odoo",
+              "value": "https://iop.rwth-aachen.de/PPC/1/1/dummyERP",
               "modelType": "Property"
             },
             {
@@ -278,7 +278,7 @@
               "value": [
                 {
                   "language": "en",
-                  "text": "odoo"
+                  "text": "Sapel_IKV"
                 }
               ],
               "modelType": "MultiLanguageProperty"
@@ -315,7 +315,7 @@
                 }
               ],
               "valueType": "xs:string",
-              "value": "https://edu-ikvds-rwth-aachen.odoo.com",
+              "value": "localhost",
               "modelType": "Property"
             },
             {
@@ -345,7 +345,7 @@
               ],
               "embeddedDataSpecifications": [],
               "valueType": "xs:string",
-              "value": "edu-ikvds-rwth-aachen",
+              "value": "test_erp_iop_ikv",
               "valueId": {
                 "type": "ExternalReference",
                 "keys": []
@@ -355,7 +355,7 @@
             {
               "idShort": "ConnectorFile",
               "displayName": [],
-              "value": "odoo_connect",
+              "value": "dummyERP_connect",
               "contentType": "text/plain",
               "modelType": "File"
             }
@@ -534,7 +534,7 @@
           "text": "Job Name"
         }
       ],
-      "id": "0173-1#02-XXX999#999",
+      "id": "0173-1#02-XXX999#HIO",
       "embeddedDataSpecifications": [
         {
           "dataSpecification": {

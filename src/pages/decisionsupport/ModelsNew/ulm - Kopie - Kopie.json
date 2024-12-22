@@ -1,6 +1,6 @@
 {
     "_id": "a142f856-7597-4272-9541-5e0a412569",
-    "name": "SingleMachineWithSeqDepSetuptime",
+    "name": "SingleMachineWithSeqDepSetuptime-2",
     "model_id": "Model-Id",
     "GrahamNotation": {
         "http://www.iop.rwth-aachen.de/PPC/1/1/machineEnvironment": "http://www.iop.rwth-aachen.de/PPC/1/1/unrelatedMachines",
@@ -19,7 +19,7 @@
         },
         "jobDuration": {    
             "id": "0173-1#02-ABF201#002",
-            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/odoo"
+            "source_location":"https://iop.rwth-aachen.de/PPC/1/1/dummyERP"
         }
     },
     "ModelFile": "SingleMachineWithSeqDepSetuptime",
