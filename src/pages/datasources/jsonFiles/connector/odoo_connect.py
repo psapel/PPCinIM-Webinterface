@@ -40,7 +40,7 @@ def connect_and_fetch_data(url, db, username, password, db_prop_names):
     for record_id in record_ids:
         fields_to_read = db_prop_names + ['state']
         record = models.execute_kw(db, uid, password,
-                                   table, 'read', [record_id], {'fields': fields_to_read})
+                                   table,   read', [record_id], {'fields': fields_to_read})
         data.append(record)
 
     print(f"Fetched data from odoo: {data}")

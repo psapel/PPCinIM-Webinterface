@@ -90,12 +90,6 @@ class DataSource(db.Model):
 with app.app_context():
     db.create_all() 
 
-# def base64_to_file(base64_string, filename):
-#     with open(filename, 'wb') as file_to_save:
-#         decoded_data = base64.b64decode(base64_string)
-#         file_to_save.write(decoded_data)
-
-
 #test routes for sqlalchemy
 @app.route('/test', methods=['POST'])
 def create_testasset():
@@ -202,17 +196,11 @@ def create_testmodel():
         db.session.add(model)
         db.session.commit()
 
-        # update_index_name()
-
-        # print(f"After change create: {index_name}")
-        # load_models(es)
-
         return "model created"
     except Exception as e:
         print(e)
         return jsonify({"error": "An error occurred"}), 500
 
-        
 
 @app.route('/testmodel2', methods=['GET'])
 def get_testmodel():
@@ -334,16 +322,10 @@ def delete_model(model_id):
     db.session.delete(model)
     db.session.commit()
 
-    # update_index_name()
-
-    # print(f"After change delete: {index_name}")
-    # load_models(es)
-
     return jsonify({'message': 'Model deleted'}), 200
 
 @app.route('/delete_datasource/<int:datasource_id>', methods=['DELETE'])
 def delete_datasource(datasource_id):
-
 
     datasource = DataSource.query.get(datasource_id)
     if datasource is None:
@@ -365,107 +347,6 @@ def delete_datasource(datasource_id):
     db.session.commit()
 
     return jsonify({'message': 'Data source deleted'}), 200   
-
-
-# #ppcim python script starts here
-# @app.route('/api/create_asset', methods=['POST'])
-# def create_asset():
-#     try:
-#         models = request.get_json()
-
-#         asset_name = models.get('assetName')
-#         asset_type = models.get('assetType')
-#         asset_data = models.get('assetData')
-#         asset_categories = models.get('assetCategories')
-#         asset_image = models.get('assetImage')
-
-#         # Check if assetType matches assetType value in assetData
-#         asset_type_from_data = asset_data['assetAdministrationShells'][0]['assetInformation']['assetType']
-#         if asset_type != asset_type_from_data:
-#             return jsonify({"error": "Asset Type does not match model selection"}), 400
-
-#         if asset_name and asset_type and asset_data:
-#             # Store asset in memory
-#             memory_storage.append({
-#                 'assetType': asset_type,
-#                 'assetData': asset_data,
-#                 'assetName': asset_name,
-#                 'assetCategories': asset_categories,
-#                 'assetImage': asset_image
-#             })
-            
-#             return jsonify({"message": "Asset created successfully"}), 200
-#         else:
-#             return jsonify({"error": "Incomplete asset information provided"}), 400
-
-#     except Exception as e:
-#         print(e)
-#         return jsonify({"error": "Failed to create asset"}), 500
-
-# # Get asset by name
-# @app.route('/api/get_assets', methods=['GET'])
-# def get_assets():
-#     try:
-#         asset = memory_storage
-#         if asset:
-#             return jsonify(asset), 200
-#         else:
-#             return jsonify({"error": "Asset not found"}), 404
-#     except Exception as e:
-#         print(e)
-#         return jsonify({"error": "Failed to retrieve asset"}), 500
-
-
-# @app.route('/api/search_assets', methods=['GET'])
-# def search_assets():
-#     try:
-#         search_query = request.args.get('q')
-
-#         # Retrieve all assets ordered by id
-#         assets = Asset.query.order_by(Asset.id).all()
-#         # Convert the query results to a list of dictionaries
-#         asset_dicts = [{
-#             "assetId": asset.id,
-#             "assetName": asset.asset_name,
-#             "assetType": asset.asset_type,
-#             "assetData": json.loads(asset.asset_data),
-#             "assetCategories": json.loads(asset.asset_categories),
-#             "assetImage": asset.asset_image
-#             } for asset in assets]
-
-#         if search_query:
-#             # Filter assets based on the search query
-#             filtered_assets = [asset for asset in asset_dicts if
-#                                any(word.lower().startswith(search_query.lower()) for word in asset['assetName'].split()) or
-#                                any(word.lower().startswith(search_query.lower()) for word in asset['assetType'].split()) or
-#                                any(category.lower().startswith(search_query.lower()) for category in asset['assetCategories'])]
-#             return jsonify(filtered_assets), 200
-#         else:
-#             return jsonify(asset_dicts), 200
-#     except Exception as e:
-#         print(e)
-#         return jsonify({"error": "Failed to retrieve assets"}), 500
-
-# @app.route('/api/create_model', methods=['POST'])
-# def create_model():
-#     # Assuming you're receiving form data
-#     model_name = request.form.get('modelName')
-#     model_type = request.form.get('modelType')
-#     model_image = request.files['modelImage']
-#     model_file = request.files['modelFile']
-#     aasx_file = request.files['aasxFile']
-
-#     # Process the files as needed (e.g., save to disk, database, etc.)
-#     # For demonstration, let's print some info
-#     print(f"Model Name: {model_name}")
-#     print(f"Model Type: {model_type}")
-#     print(f"Model Image File Name: {model_image.filename}")
-#     print(f"Model File Name: {model_file.filename}")
-#     print(f"AASX File Name: {aasx_file.filename}")
-
-#     # Return a response to the frontend
-#     return jsonify({'message': 'Model created successfully'}), 200
-
 
 
 index_settings = {
@@ -492,13 +373,7 @@ index_settings = {
 
 index_name = 'ppcinim_final'
 
-#if es.indices.exists(index=index_name):
-    #es.indices.delete(index=index_name)
-    #print(f"Index '{index_name}' wurde gelöscht.")
-
 if not es.indices.exists(index=index_name):
-    # es.indices.create(index=index_name, body={"settings": index_settings["settings"]})
-    #es.indices.create(index=index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
     es.indices.create(index=index_name, body={"settings": index_settings["settings"], "mappings": index_settings["mappings"]})
 
 def update_index_name():
@@ -508,12 +383,9 @@ def update_index_name():
     random_str = ''.join(random.choice(string.digits) for _ in range(20))
     new_index_name = "my_index_" + random_str
 
-    # new_index_name="hsadhhasd"
-
     # Check if the new index exists and create it if it doesn't
     if not es.indices.exists(index=new_index_name):
         try:
-            #es.indices.create(index=new_index_name, body={"settings": index_settings["settings"]}, mappings=index_settings["mappings"])
             es.indices.create(index=new_index_name, body={"settings": index_settings["settings"], "mappings": index_settings["mappings"]})
             print(f"Index created: {new_index_name}")
             index_name = new_index_name  # Update global index_name only after successful creation
@@ -543,9 +415,6 @@ def load_models(es):
     return models
 
 
-# loaded_models = load_models(es)
-
-# 
 def find_matching_model(es, url1, url2, url3):
     len_2 = len(url2)
     len_3 = len(url3)
@@ -700,7 +569,6 @@ def get_asset():
         # Ensure the directory exists
         if not os.path.isdir(directory):
             raise FileNotFoundError(f"The directory '{directory}' does not exist.")
-        # hier soll er die files nach vorkommen aufmachen, wie in source_location_dict_sorted
 
         # Iterate through all files in the directory
         for filename in os.listdir(directory):
@@ -713,11 +581,9 @@ def get_asset():
                     with open(file_path, 'r', encoding='utf-8') as file:
                         data = json.load(file)
                         
-                        #
                         # Check if the 'URIOfTheProduct' from the AAS matches any key in the lookup dictionary
-                        #uri_of_product = data.get('URIOfTheProduct')
                         uri_of_product = fetch_URIOfTheProduct(data)
-                        print("SL DICT in der  tarnslate funktion       :",source_location_dict)
+                        #print("source_location_dict : ",source_location_dict)
                         if uri_of_product in source_location_dict:
                             # Initialize results for the current URI if not already present. Fetches the login information for the database.
                             # Note: We assume that every source system have the same pattern regarding instance name etc. Due to demonstration purposes, we do not use a dynamic function
@@ -733,39 +599,12 @@ def get_asset():
                                     "ConnectorFile": connector_file,
                                     'Translations': []
                                 }
-                            #translations = translate_properties(data, source_location_dict[uri_of_product])
+
                             model_signatur_names = [tup[0] for tup in source_location_dict.get(uri_of_product, [])]
                             source_location_keys = [tup[1] for tup in source_location_dict.get(uri_of_product, [])]
                             
                             translations = translate_properties(data, model_signatur_names, source_location_keys)
                             results[uri_of_product]['Translations'].extend(translations)
-                            #print("Le resultata XXXXX              ",results)
-
-
-
-                            # Werte aus dem Tupel extrahieren
-                            #tupels = source_location_dict.get(uri_of_product, [])
-
-
-                            # Übersetzungen ermitteln
-                            #translations = translate_properties(data, ids)
-
-                            # Ergebnisse kombinieren: erster Wert aus dem Tupel + dynamisch übersetzte Werte
-
-
-
-                            '''
-                            combined_translations = [
-                                (tup[0], translated_value) for tup, translated_value in zip(tupels, translations)
-                            ]
-
-                            # Ergebnis erweitern
-                            if uri_of_product not in results:
-                                results[uri_of_product] = {'Translations': []}
-
-                            results[uri_of_product]['Translations'].extend(combined_translations)
-                            print("Das sind die Tupel Ergebnnisse       ",results)
-                            '''
 
                 except json.JSONDecodeError as e:
                     print(f"Error decoding JSON from file '{filename}': {e}")
@@ -773,7 +612,6 @@ def get_asset():
                     print(f"An error occurred with file '{filename}': {e}")
         
         return results
-     
 
     # Function established connection to source system via API provided by the source systems vendor. Dynamic consideration of API-file, specified in the JSON (=AAS) of the data connector 
     def run_connect_and_fetch_data(source_system, db_prop_names):
@@ -788,7 +626,7 @@ def get_asset():
         # Construct the module path
         module_path = f"src.pages.datasources.jsonFiles.connector.{module_name}"
         
-        print("DB PROP    ",db_prop_names)
+        #print("Database properties to be fetched: ",db_prop_names)
 
         try:
             # Dynamically import the module
@@ -798,9 +636,8 @@ def get_asset():
             func = getattr(module, function_name)
             
             # Call the function with parameters
-            print("fetch data  ",param1, param2, param3, param4, db_prop_names)
+            print("Data to be fetched: ",param1, param2, param3, param4, db_prop_names)
             fetch_data = func(param1, param2, param3, param4, db_prop_names)
-            print(f"Function result: {fetch_data}")
             
         except ModuleNotFoundError:
             print(f"Module '{module_path}' does not exist.")
@@ -821,34 +658,17 @@ def get_asset():
     # and assign the IRDIs to the source location.
     # Example: https://iop.rwth-aachen.de/PPC/1/1/odoo': ['0173-1#02-ABF201#002', '0173-1#02-XXX999#999']
 
-    
     source_location_dict = {}
-    '''
-    for key, value in source["inputData"].items():
-        source_location = value["source_location"]
-        id_value = value["id"]
-        if source_location in source_location_dict:
-            source_location_dict[source_location].append(id_value)
-        else:
-            source_location_dict[source_location] = [id_value]
-    '''
 
     for key, value in source["inputData"].items():
         source_location = value["source_location"]
         id_value = value["id"]
         
-        # Füge das Tupel (Key, id) zur entsprechenden source_location hinzu
+        # Prepare new tupels consist of designator from model signature and translated value from source system
         if source_location in source_location_dict:
             source_location_dict[source_location].append((key, id_value))
         else:
             source_location_dict[source_location] = [(key, id_value)] 
-    
-    #print("NEUE SOURCE LOC DICT         ",source_location_dict)
-
-
-    #source_location_dict_sorted = {
-    #key: value for key, value in sorted(source_location_dict.items(), key=lambda item: item[1])
-    #}
     
     # Separate the IRI of source systems to a single list
     source_location_dict_list = []
@@ -856,24 +676,13 @@ def get_asset():
     #for source_location in source_location_dict_sorted:
     for source_location in source_location_dict:        
         source_location_dict_list.append(source_location)
-    #print("SL DICHT LIST  ", source_location_dict_list)
+
     # Path where the JSON (=AAS) of the source systems are stored
     directory = os.path.abspath(os.path.join(os.path.dirname(__file__),  r'src\pages\datasources\jsonFiles\db_login'))
     
-    #results = translate_values(directory, source_location_dict_sorted)
     results = translate_values(directory, source_location_dict)
-    # Extract the relevant section of the JSON data
 
     print("RESULTS: ",results)
-    #print("SL DICT  ",source_location_dict)
-    
-    #Print results for checking purposes - to be deleted
-    '''
-    for uri, translations in results.items():
-        print(f"URI: {uri}")
-        for key, value in translations.items():
-            print(f"  {key} -> {value}")
-    '''
 
     # Seperate the translated property names as a preperation for the fetching process 
     db_prop_names = []
@@ -883,27 +692,6 @@ def get_asset():
         db_prop_names.extend([tup[1] for tup in translations])
 
     combined_results = []
-    #print("UGA AGA UGA        ",results[source_location]['Translations'][0][1])
-    #print("DB PROP NAMES        ",results[source_location]['Translations'])
-    #print("DB PROP NAMES        ",db_prop_names[0], "type   :", type(db_prop_names[0]))
-    
-   
-    '''
-    # Zugriff auf die Translations und Extraktion der zweiten Werte aus den Tupeln
-    if source_location in results:
-        translations = results[source_location].get('Translations', [])
-        for translation in translations:
-            translated_values_isolated.append(translation[1])
-    print("TRANS VALUES      ",translated_values_isolated)
-    
-    
-    for source_location in source_location_dict_list:
-        #translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], results[source_location]['Translations'])
-        translated_data = run_connect_and_fetch_data(results[source_location]['ConnectorFile'], translated_values_isolated)
-        combined_results += translated_data
-    print("COMBINED RESULTE       ",combined_results)
-    '''
-
 
     # Funktion anpassen, um immer den zweiten Wert der Tupel in Translations zu nehmen
     for source_location in source_location_dict_list:
@@ -919,15 +707,7 @@ def get_asset():
             print(translated_data)
 
             combined_results += translated_data
-    print("COMBINED RESULTE       ",combined_results)
-
-
-
-
-
-
-
-
+    #print("Combined result: ",combined_results)
 
     # Initialize dictionary to hold lists for each property name
     extracted_values = {prop_name: [] for prop_name in db_prop_names}
@@ -939,55 +719,21 @@ def get_asset():
                     extracted_values[prop_name].append(entry[prop_name])
     print("ext values", extracted_values)
 
-
-    
-    #FALSCH, da sich je nach konfiguration des modellsignatur die Reihenfolge ändert
-    # gucken, wie wir das von odoo bekomkmen, weil da weiß man ja 
-
-    #names = db_prop_names[1]
-    #durations = db_prop_names[0]
-
-    # kann ich hier so machen weil ich weiß dass in der Modellsignatur zuerst auftrtagsname, dann dauer kommt
-    # reihenfolge als immer gleich ist
-    #names = extracted_values['auftragsname']
-    #durations = extracted_values['auftragsdauer']
-    #print("WAS KOMMT DA RAUS", names, durations)
-    #names = extracted_values['auftragsname']
-    #durations = extracted_values['auftragsdauer']
-
-    #print("aaaaaaaaaaa names",names,"           duration: ", durations)
-    #'ModelFile': 'name_of_the_model_test2', 'Postprocessing': ['postprocessing'], 'Preprocessing':
-    #print("HIER SOURCE DINGER                ", source["ModelFile"],source["Preprocessing"],source["Postprocessing"])
-    
-    # ggf das auslagern als UseCase
-
-
-    # Leere Liste zum Speichern der Tupel
+    # EMpty list for saving the tuples
     model_signatur_to_propietary = [] 
     
-    # Durchlaufe alle Einträge im Dictionary und extrahiere die Tupel aus Translations 
+    # Extract tuples from translations 
     for key, value in results.items(): 
         translations = value.get('Translations', []) 
         model_signatur_to_propietary.extend(translations)
-    print("MS SIGGI", model_signatur_to_propietary)
+    #print("Model signaure and Translated values: ", model_signatur_to_propietary)
 
-
-
-
-
-
-    # Leeres Dictionary für die übersetzten Werte
     adjusted_dict = {}
 
-    # Durchlaufe die Übersetzungstabelle und hole die entsprechenden Werte aus dem gemeinsamen Dictionary
     for translation in model_signatur_to_propietary:
         key, translated_key = translation
         if translated_key in extracted_values:
             adjusted_dict[key] = extracted_values[translated_key]
-
-    # Ausgabe des resultierenden Dictionaries
-    #print(adjusted_dict)
-
 
     names = adjusted_dict['jobName']
     durations = adjusted_dict['jobDuration']
@@ -996,7 +742,6 @@ def get_asset():
     postprocessing = source["Postprocessing"]
 
     # Save the result in JSON format 
-
     response_data = {
         "names": names,
         "durations": durations,
@@ -1005,7 +750,7 @@ def get_asset():
         "postprocessing" : postprocessing
     }
 
-    print("RD         ",response_data)
+    print("Response Data: ",response_data)
     return jsonify(response_data)
 
 
@@ -1014,7 +759,6 @@ def get_execution():
     # Extract name and duration from the json
     
     data = request.get_json()
-    #print("das ist data:     ", data)
     
     # Here Hardcoded values of names and durations are okay since this function directly is assigned to a specific use case, i.e., production scheduling, where the required variables has to be specified.
     names = data['names']
@@ -1022,7 +766,6 @@ def get_execution():
     preprocess_file = data['preprocessing']
     model_file = data['modelfile']
     postprocess_file = data['postprocessing']
-    print("This is data                ",data)
 
     # Check, if preprocessing is present in Model Signature, if yes, execute file
 
@@ -1097,10 +840,7 @@ def get_execution():
         except AttributeError:
             print(f"Function '{function_name}' does not exist in the module '{module_path}'.")
 
-    #print("das ist result PP               .",result_postprocessing)
-    #print("das ist logs          ",logs)
     return jsonify(result_postprocessing) 
-
 
 
 @app.route('/api/execution_logs/<model_name>')

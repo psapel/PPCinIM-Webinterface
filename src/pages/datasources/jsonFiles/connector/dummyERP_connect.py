@@ -31,10 +31,10 @@ def connect_and_fetch_data(url, db, username, password, db_prop_names):
         result = [dict(zip(column_names, row)) for row in cur.fetchall()]
         formatted_results = [[result] for result in result]
 
-        # Ergebnisse ausgeben
-        print("Aufträge in der Tabelle:")
-        for row in result:
-            print("HIER DIE REIHEN AUS POSTGRES FETCH         ",row)
+        # Print results
+        #print("Data in table:")
+        #for row in result:
+            #print("Data: ",row)
         
         data = []
         for row in formatted_results:
